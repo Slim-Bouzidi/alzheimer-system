@@ -13,5 +13,7 @@ public interface PatientService {
 
     PatientResponse findById(Long id);
 
+    PatientResponse update(Long id, PatientRequest request);
+
     void delete(Long id);
 }

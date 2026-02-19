@@ -1,0 +1,20 @@
+// Design Tokens — Modern iOS-like SaaS
+$sidebar-width: 280px;
+$sidebar-width-collapsed: 72px;
+$topbar-height: 64px;
+$footer-height: 60px;
+
+$transition-duration: 0.3s;
+$border-radius: 10px;
+$border-radius-lg: 12px;
+$border-radius-pill: 999px;
+
+// Primary accent (slate-800)
+$primary: #1E293B;
+$primary-light: #334155;
+$primary-50: #f1f5f9;
+
+// Z-Indices
+$z-topbar: 997;
+$z-sidebar: 998;
+$z-overlay: 999;

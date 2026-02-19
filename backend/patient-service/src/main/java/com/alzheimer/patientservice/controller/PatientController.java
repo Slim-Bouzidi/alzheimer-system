@@ -31,6 +31,11 @@ public class PatientController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponse> update(@PathVariable Long id, @RequestBody PatientRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

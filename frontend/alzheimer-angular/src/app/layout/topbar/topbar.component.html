@@ -1,0 +1,42 @@
+<div class="topbar">
+  <div class="topbar-search">
+    <i class="pi pi-search search-icon"></i>
+    <input
+      type="text"
+      pInputText
+      class="search-input"
+      placeholder="Search for patients, caregivers, or staff..."
+      [(ngModel)]="searchValue"
+    />
+  </div>
+
+  <div class="topbar-actions">
+    <button
+      pButton
+      type="button"
+      class="p-button-rounded p-button-text p-button-secondary icon-btn"
+      pTooltip="Notifications"
+      tooltipPosition="bottom"
+    >
+      <i class="pi pi-bell"></i>
+    </button>
+    <button
+      pButton
+      type="button"
+      class="p-button-rounded p-button-text p-button-secondary icon-btn"
+      pTooltip="Help"
+      tooltipPosition="bottom"
+    >
+      <i class="pi pi-question-circle"></i>
+    </button>
+    <p-button
+      label="Add New User"
+      icon="pi pi-plus"
+      iconPos="left"
+      (click)="onAddUser()"
+      styleClass="add-user-btn"
+    />
+  </div>
+</div>
+
+<app-user-create-dialog #createDialog />

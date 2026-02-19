@@ -1,0 +1,70 @@
+<nav class="sidebar">
+  <!-- Header: CareConnect branding -->
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="logo-box">
+        <span class="logo-letter">C</span>
+      </div>
+      @if (!collapsed()) {
+        <div class="brand-text">
+          <span class="brand-name">CareConnect</span>
+          <span class="brand-subtitle">Alzheimer's Admin</span>
+        </div>
+      }
+    </div>
+    <button
+      type="button"
+      class="toggle-btn"
+      (click)="onToggleSidebar($event)"
+      [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+      [attr.aria-expanded]="!collapsed()"
+    >
+      <i class="pi" [class.pi-chevron-right]="collapsed()" [class.pi-chevron-left]="!collapsed()"></i>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-content">
+    <ul class="nav-list">
+      @for (item of navItems; track item.route) {
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            [routerLink]="item.route"
+            routerLinkActive="nav-link--active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+            [pTooltip]="collapsed() ? item.label : ''"
+            tooltipPosition="right"
+          >
+            <i [class]="item.icon + ' nav-icon'"></i>
+            @if (!collapsed()) {
+              <span class="nav-label">{{ item.label }}</span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <!-- Footer: User profile -->
+  <div class="sidebar-footer">
+    <div class="user-profile">
+      <p-avatar
+        image="https://randomuser.me/api/portraits/women/44.jpg"
+        shape="circle"
+        size="large"
+        styleClass="profile-avatar"
+      />
+      @if (!collapsed()) {
+        <div class="user-info">
+          <span class="user-name">Dr. Sarah Chen</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+        <button type="button" class="profile-menu-btn" (click)="profileMenu.toggle($event)" aria-label="Profile menu">
+          <i class="pi pi-ellipsis-v"></i>
+        </button>
+      }
+      <p-menu #profileMenu [model]="profileMenuItems" [popup]="true" appendTo="body" />
+    </div>
+  </div>
+</nav>

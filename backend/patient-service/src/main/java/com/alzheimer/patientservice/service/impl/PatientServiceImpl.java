@@ -43,4 +43,16 @@ public class PatientServiceImpl implements PatientService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public PatientResponse update(Long id, PatientRequest request) {
+        Patient patient = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+        
+        patient.setFirstName(request.getFirstName());
+        patient.setLastName(request.getLastName());
+        patient.setAge(request.getAge());
+        
+        return PatientMapper.toResponse(repository.save(patient));
+    }
 }

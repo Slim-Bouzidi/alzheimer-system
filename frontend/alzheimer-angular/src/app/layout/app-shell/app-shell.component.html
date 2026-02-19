@@ -1,0 +1,12 @@
+<div class="app-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <app-sidebar (toggleCollapse)="onSidebarToggle($event)" />
+  <div class="app-main" [style.marginLeft]="sidebarCollapsed ? sidebarCollapsedWidth : sidebarWidth">
+    <app-topbar [sidebarOffset]="sidebarCollapsed ? sidebarCollapsedWidth : sidebarWidth" />
+    <main class="app-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<p-toast position="top-right" />
+<p-confirmDialog />
