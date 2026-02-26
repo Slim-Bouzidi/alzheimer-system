@@ -153,12 +153,47 @@ export class ManageUsersComponent implements OnInit {
     },
   ]);
 
-  // Meter Group Data for User Distribution
-  readonly meterData = computed(() => [
-    { label: 'Patients', color: '#6366f1', value: this.realPatients().length, icon: 'pi pi-user' },
-    { label: 'Caregivers', color: '#f59e0b', value: this.staticUsers.length, icon: 'pi pi-heart' },
-    { label: 'Staff', color: '#10b981', value: 0, icon: 'pi pi-id-card' }
-  ]);
+  // Donut Chart Data for User Distribution
+  readonly donutChartData = computed(() => {
+    const total = this.realPatients().length + this.staticUsers.length;
+    const patientsPercent = total > 0 ? Math.round((this.realPatients().length / total) * 100) : 0;
+    const caregiversPercent = total > 0 ? Math.round((this.staticUsers.length / total) * 100) : 0;
+    const staffPercent = total > 0 ? Math.round((0 / total) * 100) : 0;
+    
+    return {
+      labels: ['Patients', 'Caregivers', 'Staff'],
+      datasets: [{
+        data: [patientsPercent, caregiversPercent, staffPercent],
+        backgroundColor: ['#6366f1', '#f59e0b', '#10b981'],
+        borderColor: '#ffffff',
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    };
+  });
+
+  readonly donutChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context: any) {
+            return context.label + ': ' + context.parsed + '%';
+          }
+        }
+      }
+    },
+    cutout: '70%',
+    animation: {
+      animateRotate: true,
+      animateScale: false,
+      duration: 1000
+    }
+  };
 
   // Chart Data for Registration Trends
   readonly chartData = computed(() => ({

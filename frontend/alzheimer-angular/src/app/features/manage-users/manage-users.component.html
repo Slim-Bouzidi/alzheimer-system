@@ -54,7 +54,18 @@
         <p class="insight-subtitle">Roles within your network</p>
       </div>
       <div class="insight-card__body">
-        <p-meterGroup [value]="meterData()" labelPosition="start" />
+        <div class="donut-chart-container">
+          <p-chart type="doughnut" [data]="donutChartData()" [options]="donutChartOptions" width="160px" height="160px" />
+          <div class="chart-legend">
+            @for (item of donutChartData().datasets[0].data; track $index; let i = $index) {
+              <div class="legend-item">
+                <span class="legend-color" [style.background-color]="donutChartData().datasets[0].backgroundColor[i]"></span>
+                <span class="legend-label">{{ donutChartData().labels[i] }}</span>
+                <span class="legend-value">{{ item }}%</span>
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
 
@@ -65,7 +76,7 @@
         <p class="insight-subtitle">Growth over the last 6 months</p>
       </div>
       <div class="insight-card__body chart-container">
-        <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="120px" />
+        <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="100px" />
       </div>
     </div>
   </div>
