@@ -344,16 +344,33 @@
 
   // --- Reflex Theme ---
   .reflex-theme {
-    background: #2b87d1;
+    background: #CE2636;
+    color: white !important;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 
-    &.waiting   { background: #2b87d1; }
+    &.waiting   { background: #CE2636; }
     &.ready     { background: #4bdb66; }
     &.feedback  { background: #2b87d1; }
-    &.too-early { background: #ce263c; } // Alert Red
+    &.too-early { background: #CE2636; } // Updated specific red
 
-    .reflex-stage { text-align: center; .hero-icon { font-size: 8rem; margin-bottom: 2rem; } h2 { font-size: 4rem; font-weight: 800; } .hero-ms { font-size: 7rem; font-weight: 950; margin: 0; } .reflex-footer { position: absolute; bottom: 3rem; font-weight: 700; opacity: 0.8; } }
+    .reflex-stage { 
+      text-align: center; 
+      .hero-icon { font-size: 8rem; margin-bottom: 2rem; } 
+      h2 { 
+        font-size: 4rem; 
+        font-weight: 800; 
+        letter-spacing: -0.05em;
+        margin-bottom: 2.5rem;
+      } 
+      .hero-ms { 
+        font-size: 7rem; 
+        font-weight: 950; 
+        margin: 0; 
+        letter-spacing: -0.07em;
+      } 
+      .reflex-footer { position: absolute; bottom: 3rem; font-weight: 700; opacity: 0.8; } 
+    }
     .dot-spinner { display: flex; gap: 12px; justify-content: center; margin-bottom: 2rem; span { width: 18px; height: 18px; background: white; border-radius: 50%; border: 3px solid rgba(0,0,0,0.1); animation: dot-p 1.4s infinite ease-in-out both; &:nth-child(1) { animation-delay: -0.32s; } &:nth-child(2) { animation-delay: -0.16s; } } }
   }
 
