@@ -1,1 +1,27 @@
-# Maventarget/*.log# IntelliJ.idea/*.iml# Nodenode_modules/dist/.angular/# OS.DS_StoreThumbs.db# Docker*.pid
+# Maven
+**/target/
+*.log
+
+# IntelliJ
+**/.idea/
+*.iml
+
+# Node
+**/node_modules/
+**/dist/
+.angular/
+
+# VS Code
+**/.vscode/
+
+# Maven Wrapper
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid

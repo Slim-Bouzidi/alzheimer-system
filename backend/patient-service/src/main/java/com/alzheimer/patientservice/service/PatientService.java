@@ -13,6 +13,10 @@ public interface PatientService {
 
     PatientResponse findById(Long id);
 
+    PatientResponse findByKeycloakId(String keycloakId);
+
+    PatientResponse saveOrUpdateByKeycloakId(String keycloakId, PatientRequest request);
+
     PatientResponse update(Long id, PatientRequest request);
 
     void delete(Long id);

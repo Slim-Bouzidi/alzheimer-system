@@ -12,6 +12,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MeterGroupModule } from 'primeng/metergroup';
 import { ChartModule } from 'primeng/chart';
 import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
+import { TagModule } from 'primeng/tag';
 import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../core/models/patient.model';
 
@@ -44,7 +45,8 @@ export interface DirectoryUser {
     ToastModule,
     ConfirmDialogModule,
     MeterGroupModule,
-    ChartModule
+    ChartModule,
+    TagModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './manage-users.component.html',

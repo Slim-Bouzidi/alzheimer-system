@@ -6,6 +6,7 @@ import com.alzheimer.patientservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 import java.util.List;
 
@@ -16,8 +17,18 @@ public class PatientController {
 
     private final PatientService service;
 
+    @GetMapping("/me")
+    public ResponseEntity<PatientResponse> findMe(@RequestHeader("X-User-Id") String keycloakId) {
+        return ResponseEntity.ok(service.findByKeycloakId(keycloakId));
+    }
+
+    @PostMapping("/me")
+    public ResponseEntity<PatientResponse> updateMe(@RequestHeader("X-User-Id") String keycloakId, @Valid @RequestBody PatientRequest request) {
+        return ResponseEntity.ok(service.saveOrUpdateByKeycloakId(keycloakId, request));
+    }
+
     @PostMapping
-    public ResponseEntity<PatientResponse> create(@RequestBody PatientRequest request) {
+    public ResponseEntity<PatientResponse> create(@Valid @RequestBody PatientRequest request) {
         return ResponseEntity.ok(service.create(request));
     }
 
@@ -32,7 +43,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientResponse> update(@PathVariable Long id, @RequestBody PatientRequest request) {
+    public ResponseEntity<PatientResponse> update(@PathVariable Long id, @Valid @RequestBody PatientRequest request) {
         return ResponseEntity.ok(service.update(id, request));
     }
 

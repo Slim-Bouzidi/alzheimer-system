@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostBinding, Output, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import keycloak from '../../keycloak';
 import { TooltipModule } from 'primeng/tooltip';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
@@ -33,12 +34,20 @@ export class SidebarComponent {
     { label: 'Manage Users', icon: 'pi pi-users', route: '/manage-users', exact: false },
     { label: 'Patients', icon: 'pi pi-users', route: '/patients', exact: false },
     { label: 'Appointments', icon: 'pi pi-calendar', route: '/appointments', exact: false },
-    { label: 'Clinical Reports', icon: 'pi pi-file', route: '/clinical-reports', exact: false },
+    { label: 'Report History', icon: 'pi pi-file', route: '/clinical-reports/history', exact: false },
+    { label: 'New Clinical Report', icon: 'pi pi-plus-circle', route: '/clinical-reports/new', exact: false },
     { label: 'System Settings', icon: 'pi pi-cog', route: '/settings', exact: false },
+    { label: 'My Workspace', icon: 'pi pi-home', route: '/patient/dashboard', exact: false },
   ];
 
+  constructor(private router: Router) {}
+
   readonly profileMenuItems: MenuItem[] = [
-    { label: 'My Profile', icon: 'pi pi-user' },
+    { 
+      label: 'My Profile', 
+      icon: 'pi pi-user',
+      command: () => this.router.navigate(['/profile'])
+    },
     { label: 'Account Settings', icon: 'pi pi-cog' },
     { separator: true },
     { 

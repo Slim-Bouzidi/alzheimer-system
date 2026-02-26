@@ -40,8 +40,50 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientResponse findByKeycloakId(String keycloakId) {
+        return repository.findByKeycloakId(keycloakId)
+                .map(PatientMapper::toResponse)
+                .orElse(null);
+    }
+
+    @Override
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public PatientResponse saveOrUpdateByKeycloakId(String keycloakId, PatientRequest request) {
+        Patient patient = repository.findByKeycloakId(keycloakId)
+                .orElse(new Patient());
+        
+        patient.setKeycloakId(keycloakId);
+        if (patient.getFirstName() == null || patient.getFirstName().isEmpty()) {
+            patient.setFirstName(request.getFirstName() != null ? request.getFirstName() : "New");
+        }
+        if (patient.getLastName() == null || patient.getLastName().isEmpty()) {
+            patient.setLastName(request.getLastName() != null ? request.getLastName() : "Patient");
+        }
+        if (request.getAge() != null) {
+            patient.setAge(request.getAge());
+        }
+        
+        // Clinical Metrics
+        patient.setBmi(request.getBmi());
+        patient.setSystolicBP(request.getSystolicBP());
+        patient.setDiastolicBP(request.getDiastolicBP());
+        patient.setHeartRate(request.getHeartRate());
+        patient.setBloodSugar(request.getBloodSugar());
+        patient.setCholesterolTotal(request.getCholesterolTotal());
+        patient.setSmokingStatus(request.getSmokingStatus());
+        patient.setAlcoholConsumption(request.getAlcoholConsumption());
+        patient.setPhysicalActivity(request.getPhysicalActivity());
+        patient.setDietQuality(request.getDietQuality());
+        patient.setSleepQuality(request.getSleepQuality());
+        patient.setFamilyHistory(request.getFamilyHistory());
+        patient.setDiabetes(request.getDiabetes());
+        patient.setHypertension(request.getHypertension());
+        
+        return PatientMapper.toResponse(repository.save(patient));
     }
 
     @Override
@@ -52,6 +94,22 @@ public class PatientServiceImpl implements PatientService {
         patient.setFirstName(request.getFirstName());
         patient.setLastName(request.getLastName());
         patient.setAge(request.getAge());
+        
+        // Clinical Metrics
+        patient.setBmi(request.getBmi());
+        patient.setSystolicBP(request.getSystolicBP());
+        patient.setDiastolicBP(request.getDiastolicBP());
+        patient.setHeartRate(request.getHeartRate());
+        patient.setBloodSugar(request.getBloodSugar());
+        patient.setCholesterolTotal(request.getCholesterolTotal());
+        patient.setSmokingStatus(request.getSmokingStatus());
+        patient.setAlcoholConsumption(request.getAlcoholConsumption());
+        patient.setPhysicalActivity(request.getPhysicalActivity());
+        patient.setDietQuality(request.getDietQuality());
+        patient.setSleepQuality(request.getSleepQuality());
+        patient.setFamilyHistory(request.getFamilyHistory());
+        patient.setDiabetes(request.getDiabetes());
+        patient.setHypertension(request.getHypertension());
         
         return PatientMapper.toResponse(repository.save(patient));
     }

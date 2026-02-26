@@ -159,20 +159,21 @@
   <!-- User Directory -->
   <section class="directory-section">
     <div class="directory-header">
-      <h2 class="directory-title">User Directory</h2>
+      <div class="header-main">
+        <h2 class="directory-title">Network Directory</h2>
+        <span class="directory-count">{{ total() }} records found</span>
+      </div>
       <div class="directory-actions">
         <p-button
           label="Filter"
           icon="pi pi-filter"
-          [outlined]="true"
-          severity="secondary"
+          styleClass="p-button-outlined p-button-secondary p-button-sm border-round-xl"
           (onClick)="onFilter()"
         />
         <p-button
           label="Export"
           icon="pi pi-download"
-          [outlined]="true"
-          severity="secondary"
+          styleClass="p-button-outlined p-button-secondary p-button-sm border-round-xl"
           (onClick)="onExport()"
         />
       </div>
@@ -182,12 +183,12 @@
       <table class="directory-table">
         <thead>
           <tr>
-            <th>USER</th>
-            <th>CONTACT EMAIL</th>
-            <th>ROLE</th>
-            <th>STATUS</th>
-            <th>LAST ACTIVITY</th>
-            <th>ACTIONS</th>
+            <th>Identity</th>
+            <th>Contact</th>
+            <th>Network Role</th>
+            <th>Status</th>
+            <th>Last Seen</th>
+            <th class="text-right">Manage</th>
           </tr>
         </thead>
         <tbody>
@@ -199,48 +200,43 @@
                     [image]="user.avatar"
                     [label]="user.avatar ? '' : getInitials(user.name)"
                     shape="circle"
-                    size="normal"
-                    [styleClass]="'user-avatar ' + (user.avatar ? '' : user.avatarBg)"
+                    size="large"
+                    [styleClass]="'user-avatar-premium ' + (user.avatar ? '' : user.avatarBg)"
                   />
-                  <div class="user-cell__info">
-                    <span class="user-name">{{ user.name }}</span>
-                    <span class="user-id">ID: #{{ user.id }}</span>
+                  <div class="user-info-stack">
+                    <span class="u-name">{{ user.name }}</span>
+                    <span class="u-id">#{{ user.id.substring(0,8) }}</span>
                   </div>
                 </div>
               </td>
-              <td><span class="email-cell">{{ user.email }}</span></td>
               <td>
-                <span
-                  class="role-pill"
-                  [class.role-pill--caregiver]="user.role === 'Caregiver'"
-                  [class.role-pill--patient]="user.role === 'Patient'"
-                  [class.role-pill--staff]="user.role === 'Staff'"
-                >
-                  {{ user.role }}
-                </span>
-              </td>
-              <td>
-                <span
-                  class="status-pill"
-                  [class.status-pill--active]="user.status === 'Active'"
-                  [class.status-pill--offline]="user.status === 'Offline'"
-                >
-                  <span class="status-dot"></span>
-                  {{ user.status }}
-                </span>
-              </td>
-              <td><span class="activity-cell">{{ user.lastActivity }}</span></td>
-              <td>
-                <div class="actions-cell">
-                  <button 
-                    type="button" 
-                    class="action-icon-btn" 
-                    aria-label="Actions"
-                    (click)="activeUser = user; menu.toggle($event)"
-                  >
-                    <i class="pi pi-ellipsis-v"></i>
-                  </button>
+                <div class="contact-block">
+                   <span class="u-email">{{ user.email }}</span>
                 </div>
+              </td>
+              <td>
+                <p-tag 
+                  [value]="user.role" 
+                  [severity]="user.role === 'Patient' ? 'warning' : (user.role === 'Caregiver' ? 'info' : 'success')"
+                  [rounded]="true"
+                  styleClass="role-tag-premium"
+                />
+              </td>
+              <td>
+                <div class="status-indicator" [class.online]="user.status === 'Active'">
+                  <span class="pulse-dot" *ngIf="user.status === 'Active'"></span>
+                  <span class="status-text">{{ user.status }}</span>
+                </div>
+              </td>
+              <td><span class="activity-text">{{ user.lastActivity }}</span></td>
+              <td class="text-right">
+                <button 
+                  type="button" 
+                  class="premium-action-btn" 
+                  (click)="activeUser = user; menu.toggle($event)"
+                >
+                  <i class="pi pi-ellipsis-h"></i>
+                </button>
               </td>
             </tr>
           }
@@ -249,36 +245,16 @@
     </div>
 
     <div class="pagination-bar">
-      <span class="pagination-info">Showing {{ first() + 1 }}-{{ first() + rows() }} of {{ total() }} users</span>
-      <div class="pagination-controls">
-        <button
-          type="button"
-          class="page-btn"
-          [disabled]="first() === 0"
-          (click)="prevPage()"
-          aria-label="Previous page"
-        >
-          <i class="pi pi-chevron-left"></i>
-        </button>
-        <button
-          type="button"
-          class="page-btn page-btn--active"
-        >
-          1
-        </button>
-        <button type="button" class="page-btn">2</button>
-        <button type="button" class="page-btn">3</button>
-        <span class="page-ellipsis">...</span>
-        <button
-          type="button"
-          class="page-btn"
-          [disabled]="first() + rows() >= total()"
-          (click)="nextPage()"
-          aria-label="Next page"
-        >
-          <i class="pi pi-chevron-right"></i>
-        </button>
+      <div class="pagination-info">
+        Displaying <b>{{ first() + 1 }}</b> - <b>{{ first() + rows() }}</b> of <b>{{ total() }}</b> members
+      </div>
+      <div class="pagination-controls-premium">
+        <button [disabled]="first() === 0" (click)="prevPage()"><i class="pi pi-chevron-left"></i></button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button [disabled]="first() + rows() >= total()" (click)="nextPage()"><i class="pi pi-chevron-right"></i></button>
       </div>
     </div>
   </section>
+
 </div>
