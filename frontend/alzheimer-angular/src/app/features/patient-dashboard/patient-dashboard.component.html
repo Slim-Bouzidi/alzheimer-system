@@ -108,13 +108,23 @@
               </td>
               <td class="score-cell-modern">{{ activity.score }}{{ activity.gameType === 'reflex' ? 'ms' : '' }}</td>
               <td>
-                <div class="pct-flex-container">
-                  <span class="pct-bar-label">{{ getPercentile(activity.score, activity.gameType) }}</span>
-                  <p-progressBar 
-                    [value]="getPercentileRaw(activity.score, activity.gameType)" 
-                    [showValue]="false"
-                    [styleClass]="'pct-progress-bar ' + getPctClass(activity.score, activity.gameType)">
-                  </p-progressBar>
+                <div
+                  class="pct-flex-container"
+                  [ngClass]="getPctClass(activity.score, activity.gameType)"
+                  [ngStyle]="{ display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'nowrap', color: getPctColor(activity.score, activity.gameType) }"
+                >
+                  <span class="pct-bar-label" [ngStyle]="{ minWidth: '56px', textAlign: 'right', lineHeight: '1' }">
+                    {{ getPercentile(activity.score, activity.gameType) }}
+                  </span>
+                  <div
+                    class="pct-bar"
+                    [ngStyle]="{ height: '2px', width: '140px', backgroundColor: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }"
+                  >
+                    <div
+                      class="pct-bar-fill"
+                      [ngStyle]="{ height: '100%', width: (getPercentileRaw(activity.score, activity.gameType) + '%'), backgroundColor: getPctColor(activity.score, activity.gameType), borderRadius: '999px' }"
+                    ></div>
+                  </div>
                 </div>
               </td>
 

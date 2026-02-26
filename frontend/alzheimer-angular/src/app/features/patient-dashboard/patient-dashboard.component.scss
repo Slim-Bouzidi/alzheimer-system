@@ -1,7 +1,8 @@
 .patient-dashboard {
+  margin: -1.5rem -2rem -2rem;
   padding: 3rem 1.5rem;
   background: #f1f5f9;
-  min-height: 100vh;
+  min-height: calc(100vh - var(--topbar-height));
   font-family: 'Inter', system-ui, sans-serif;
   color: #1e293b;
   
@@ -226,7 +227,7 @@
     }
 
     // ✨ Percentile Bar Container (FORCE FLEX)
-    div.pct-flex-container {
+    ::ng-deep div.pct-flex-container {
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
@@ -237,12 +238,16 @@
       white-space: nowrap !important;
     }
 
+    ::ng-deep div.pct-flex-container.pct-low  { color: #ef4444 !important; }
+    ::ng-deep div.pct-flex-container.pct-mid  { color: #f59e0b !important; }
+    ::ng-deep div.pct-flex-container.pct-high { color: #22c55e !important; }
+
     // ✨ PrimeNG Progress Bar Overrides (ULTRA-SPECIFIC)
-    ::ng-deep .p-progressbar.pct-progress-bar {
+    ::ng-deep div.pct-flex-container .p-progressbar.pct-progress-bar {
       height: 2px !important;
       flex: 1 !important;
       min-width: 60px !important;
-      max-width: 80px !important;
+      max-width: 140px !important;
       background-color: #e2e8f0 !important;
       border: none !important;
       border-radius: 999px !important;
@@ -261,10 +266,12 @@
       &.pct-high .p-progressbar-value { background-color: #22c55e !important; }
     }
 
-    .pct-bar-label {
+    ::ng-deep .pct-bar-label {
       font-size: 0.75rem !important;
       font-weight: 800 !important;
-      color: #334155 !important;
+      color: currentColor !important;
+      min-width: 56px !important;
+      text-align: right !important;
       flex-shrink: 0 !important;
       line-height: 1 !important;
     }

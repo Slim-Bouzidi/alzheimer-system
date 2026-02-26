@@ -15,7 +15,7 @@ import { TopbarComponent } from '../topbar/topbar.component';
   styleUrl: './app-shell.component.scss',
 })
 export class AppShellComponent {
-  sidebarCollapsed = false;
+  sidebarCollapsed = true;
   readonly sidebarWidth = '280px';
   readonly sidebarCollapsedWidth = '72px';
 

@@ -410,6 +410,13 @@ export class PatientDashboardComponent implements OnInit {
     return 'pct-high';
   }
 
+  getPctColor(score: number, type: string): string {
+    const cls = this.getPctClass(score, type);
+    if (cls === 'pct-low') return '#ef4444';
+    if (cls === 'pct-mid') return '#f59e0b';
+    return '#22c55e';
+  }
+
   tryAgain() {
     if (this.activeGame === 'reflex') this.startReflexGame();
     else if (this.activeGame === 'memory') this.startMemoryGame();

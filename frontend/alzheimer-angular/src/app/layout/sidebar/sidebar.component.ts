@@ -27,7 +27,7 @@ export class SidebarComponent {
     return this.collapsed();
   }
 
-  collapsed = signal(false);
+  collapsed = signal(true);
 
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'pi pi-th-large', route: '/', exact: true },
