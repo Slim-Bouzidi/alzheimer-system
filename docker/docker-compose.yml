@@ -5,8 +5,9 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: "%"
@@ -29,6 +30,8 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_URL: http://localhost:8081
+      KC_HOSTNAME_STRICT: "false"
     volumes:
       - keycloak_data:/opt/keycloak/data
     networks:
@@ -82,12 +85,14 @@ services:
       dockerfile: Dockerfile
     container_name: api-gateway
     ports:
-      - "8080:8080"
+      - "8090:8080"
     environment:
       SPRING_APPLICATION_NAME: api-gateway
       SERVER_PORT: 8080
       EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://discovery-server:8761/eureka
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:8080/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:8081/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:8080/realms/alzheimer-realm/protocol/openid-connect/certs
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       # Route 0 - patient-service
       SPRING_CLOUD_GATEWAY_ROUTES_0_ID: patient-service
       SPRING_CLOUD_GATEWAY_ROUTES_0_URI: lb://patient-service
@@ -131,7 +136,9 @@ services:
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_SHOW-SQL: "true"
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:8080/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:8081/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:8080/realms/alzheimer-realm/protocol/openid-connect/certs
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
     depends_on:
       discovery-server:
         condition: service_healthy
@@ -161,7 +168,9 @@ services:
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_SHOW-SQL: "true"
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:8080/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:8081/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:8080/realms/alzheimer-realm/protocol/openid-connect/certs
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
@@ -187,7 +196,7 @@ services:
       dockerfile: Dockerfile
     container_name: assistance-quotidienne
     ports:
-      - "8088:8088"
+      - "8098:8088"
     environment:
       SPRING_APPLICATION_NAME: assistance-quotidienne
       SERVER_PORT: 8088
@@ -198,10 +207,11 @@ services:
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_SHOW-SQL: "true"
       SPRING_JPA_HIBERNATE_DDL-AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_GLOBALLY_QUOTED_IDENTIFIERS: "true"
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://keycloak:8080/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI: http://localhost:8081/realms/alzheimer-realm
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:8080/realms/alzheimer-realm/protocol/openid-connect/certs
     depends_on:
       discovery-server:
         condition: service_healthy

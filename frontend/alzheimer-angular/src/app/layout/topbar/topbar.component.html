@@ -4,7 +4,6 @@
     <i class="pi pi-search search-icon"></i>
     <input
       type="text"
-      pInputText
       class="search-input"
       placeholder="Search for patients, caregivers, or staff..."
       [(ngModel)]="searchValue"
@@ -12,31 +11,13 @@
   </div>
 
   <div class="topbar-actions">
-    <button
-      pButton
-      type="button"
-      class="p-button-rounded p-button-text p-button-secondary icon-btn"
-      pTooltip="Notifications"
-      tooltipPosition="bottom"
-    >
+    <button type="button" class="icon-btn" title="Notifications">
       <i class="pi pi-bell"></i>
     </button>
-    <button
-      pButton
-      type="button"
-      class="p-button-rounded p-button-text p-button-secondary icon-btn"
-      pTooltip="Help"
-      tooltipPosition="bottom"
-    >
+    <button type="button" class="icon-btn" title="Help">
       <i class="pi pi-question-circle"></i>
     </button>
-    <p-button
-      label="Add New User"
-      icon="pi pi-plus"
-      iconPos="left"
-      (click)="onAddUser()"
-      styleClass="add-user-btn"
-    />
+    <button type="button" class="add-user-btn" (click)="onAddUser()">Add New User</button>
   </div>
 </div>
 

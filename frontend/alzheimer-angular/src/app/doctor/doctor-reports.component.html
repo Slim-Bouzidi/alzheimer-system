@@ -191,7 +191,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let f of fichesRecues">
+                            <tr *ngFor="let f of pagedFiches">
                                 <td><span class="file-id">#{{ f.id }}</span></td>
                                 <td><strong>{{ f.patientNom || f.patient?.nomComplet || '—' }}</strong></td>
                                 <td>{{ f.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -210,6 +210,26 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <div class="pagination-info">
+                            Affichage {{ ficheRangeStart }}–{{ ficheRangeEnd }} / {{ fichesPagination.totalItems }}
+                        </div>
+
+                        <div class="pagination-controls">
+                            <label class="page-size-label">
+                                Par page
+                                <select class="page-size-select" [(ngModel)]="fichesPagination.pageSize" (ngModelChange)="onFichePageSizeChange()">
+                                    <option *ngFor="let s of fichesPagination.pageSizeOptions" [ngValue]="s">{{ s }}</option>
+                                </select>
+                            </label>
+
+                            <button class="btn-outline btn-page" (click)="prevFichePage()" [disabled]="fichesPagination.currentPage <= 1">◀</button>
+                            <span class="page-indicator">Page {{ fichesPagination.currentPage }} / {{ fichesPagination.totalPages }}</span>
+                            <button class="btn-outline btn-page" (click)="nextFichePage()" [disabled]="fichesPagination.currentPage >= fichesPagination.totalPages">▶</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -476,7 +496,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let rapport of filteredRapports">
+                            <tr *ngFor="let rapport of pagedRapports">
                                 <td>
                                     <div class="file-info">
                                         <span class="file-icon">📄</span>
@@ -527,6 +547,26 @@
                         <span class="empty-icon">📭</span>
                         <p *ngIf="searchQuery">{{ 'DOCTOR_REPORTS.NO_REPORT_MATCH' | translate }}</p>
                         <p *ngIf="!searchQuery">{{ 'DOCTOR_REPORTS.NO_REPORT_AVAILABLE' | translate }}</p>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar" *ngIf="filteredRapports.length > 0">
+                        <div class="pagination-info">
+                            Affichage {{ rapportRangeStart }}–{{ rapportRangeEnd }} / {{ rapportsPagination.totalItems }}
+                        </div>
+
+                        <div class="pagination-controls">
+                            <label class="page-size-label">
+                                Par page
+                                <select class="page-size-select" [(ngModel)]="rapportsPagination.pageSize" (ngModelChange)="onRapportPageSizeChange()">
+                                    <option *ngFor="let s of rapportsPagination.pageSizeOptions" [ngValue]="s">{{ s }}</option>
+                                </select>
+                            </label>
+
+                            <button class="btn-outline btn-page" (click)="prevRapportPage()" [disabled]="rapportsPagination.currentPage <= 1">◀</button>
+                            <span class="page-indicator">Page {{ rapportsPagination.currentPage }} / {{ rapportsPagination.totalPages }}</span>
+                            <button class="btn-outline btn-page" (click)="nextRapportPage()" [disabled]="rapportsPagination.currentPage >= rapportsPagination.totalPages">▶</button>
+                        </div>
                     </div>
                 </div>
 

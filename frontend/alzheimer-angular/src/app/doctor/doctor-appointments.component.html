@@ -15,10 +15,7 @@
                 <button class="btn btn-primary btn-schedule" (click)="scheduleNew()">
                     <span class="btn-icon-plus">+</span> {{ 'DOCTOR_APPOINTMENTS.NEW_APPOINTMENT' | translate }}
                 </button>
-                <button class="icon-btn notice-btn">
-                    <span class="icon">🔔</span>
-                    <span class="badge-dot" *ngIf="todayAppointments.length > 0"></span>
-                </button>
+                <app-notification-bell></app-notification-bell>
                 <button class="btn btn-logout" (click)="logout()">
                     <span>Déconnexion</span>
                 </button>

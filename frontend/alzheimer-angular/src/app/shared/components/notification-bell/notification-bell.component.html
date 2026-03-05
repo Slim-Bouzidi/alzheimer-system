@@ -1,0 +1,49 @@
+<div class="notification-bell-wrapper">
+  <button class="icon-btn notice-btn" (click)="toggleDropdown()" title="Notifications">
+    <span class="icon">🔔</span>
+    <span class="badge-dot" *ngIf="unreadCount > 0"></span>
+    <span class="badge-count" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </button>
+
+  <!-- Dropdown Panel -->
+  <div class="notification-dropdown" *ngIf="showDropdown" (click)="$event.stopPropagation()">
+    <div class="dropdown-header">
+      <h3>Notifications</h3>
+      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }} non lues</span>
+    </div>
+
+    <div class="dropdown-body">
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        <span class="empty-icon">📭</span>
+        <p>Aucune notification</p>
+      </div>
+
+      <div *ngFor="let notif of notifications" 
+           class="notification-item" 
+           [class.unread]="!notif.lu"
+           (click)="markAsRead(notif, $event)">
+        <div class="notif-icon">{{ getNotificationIcon(notif.type || '') }}</div>
+        <div class="notif-content">
+          <div class="notif-title">{{ notif.titre }}</div>
+          <div class="notif-message">{{ notif.message }}</div>
+          <div class="notif-time">{{ getTimeAgo(notif.dateCreation) }}</div>
+        </div>
+        <button *ngIf="!notif.lu" 
+                class="mark-read-btn" 
+                (click)="markAsRead(notif, $event)"
+                title="Marquer comme lu">
+          ✓
+        </button>
+      </div>
+    </div>
+
+    <div class="dropdown-footer">
+      <button class="view-all-btn" (click)="viewAllNotifications()">
+        Voir toutes les notifications →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop to close dropdown -->
+<div class="notification-backdrop" *ngIf="showDropdown" (click)="toggleDropdown()"></div>

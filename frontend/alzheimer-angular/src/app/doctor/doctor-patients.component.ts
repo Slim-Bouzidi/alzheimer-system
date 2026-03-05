@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
 import { PatientService, Patient } from '../services/patient.service';
 import { UserService, User } from '../services/user.service';
 import { EmergencyContactService } from '../services/emergency-contact.service';
@@ -18,7 +19,7 @@ import { FormValidator, ValidationErrors, sanitizeObject } from '../shared/valid
 @Component({
     selector: 'app-doctor-patients',
     standalone: true,
-    imports: [CommonModule, FormsModule, SidebarComponent, TranslateModule],
+    imports: [CommonModule, FormsModule, SidebarComponent, NotificationBellComponent, TranslateModule],
     templateUrl: './doctor-patients.component.html',
     styleUrls: ['./doctor-patients.component.css', './report-medical-pro.css']
 })

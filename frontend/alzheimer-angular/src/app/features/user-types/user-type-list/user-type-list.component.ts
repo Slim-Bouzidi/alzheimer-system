@@ -68,9 +68,9 @@ export class UserTypeListComponent implements OnInit {
   ];
 
   // Map numbers to valid PrimeNG severity strings
-  readonly levelSeverityMap: Record<number, 'secondary' | 'info' | 'warning' | 'success' | 'danger'> = {
+  readonly levelSeverityMap: Record<number, 'secondary' | 'info' | 'warn' | 'success' | 'danger'> = {
     1: 'secondary', 2: 'secondary', 3: 'info',
-    4: 'info',      5: 'warning',   6: 'warning',
+    4: 'info',      5: 'warn',   6: 'warn',
     7: 'success',   8: 'success',   9: 'danger', 10: 'danger',
   };
 
@@ -174,7 +174,7 @@ export class UserTypeListComponent implements OnInit {
   }
 
   // Strictly typed return for Badge severity
-  getLevelSeverity(level: number): 'secondary' | 'info' | 'warning' | 'success' | 'danger' {
+  getLevelSeverity(level: number): 'secondary' | 'info' | 'warn' | 'success' | 'danger' {
     return this.levelSeverityMap[level] ?? 'secondary';
   }
 

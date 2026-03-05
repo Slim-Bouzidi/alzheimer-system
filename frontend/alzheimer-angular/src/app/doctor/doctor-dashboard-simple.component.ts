@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SoignantService } from '../soignant/soignant.service';
 import { User } from '../models/user.model';
@@ -11,7 +12,7 @@ import keycloak from '../keycloak';
 @Component({
   selector: 'app-doctor-dashboard-simple',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, TranslateModule],
+  imports: [CommonModule, SidebarComponent, NotificationBellComponent, TranslateModule],
   templateUrl: './doctor-dashboard-simple.component.html',
   styleUrls: ['./doctor-dashboard-simple.component.css']
 })

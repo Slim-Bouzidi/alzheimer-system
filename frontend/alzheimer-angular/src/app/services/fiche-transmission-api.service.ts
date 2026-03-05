@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 export class FicheTransmissionApiService {
   private baseUrl = `${environment.apiUrl}/fiches`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');

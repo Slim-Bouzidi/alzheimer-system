@@ -2,16 +2,13 @@ import { Component, input, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import keycloak from '../../keycloak';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
 import { ViewChild } from '@angular/core';
 import { UserCreateDialogComponent } from '../../features/manage-users/user-create-dialog/user-create-dialog.component';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, TooltipModule, UserCreateDialogComponent],
+  imports: [CommonModule, FormsModule, UserCreateDialogComponent],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
 })

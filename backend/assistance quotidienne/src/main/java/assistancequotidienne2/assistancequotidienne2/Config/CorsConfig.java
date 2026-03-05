@@ -12,6 +12,7 @@ public class CorsConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/ws/**").permitAll()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/api/users/login", "/api/users/register").permitAll()
                 .anyRequest().authenticated()

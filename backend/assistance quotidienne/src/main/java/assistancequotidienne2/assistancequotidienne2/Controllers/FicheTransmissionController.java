@@ -31,6 +31,9 @@ public class FicheTransmissionController {
     @Autowired
     private FichePdfService fichePdfService;
 
+    @Autowired
+    private assistancequotidienne2.assistancequotidienne2.Services.NotificationWsService notificationWsService;
+
     // CREATE — auto-generates Rapport + Notification for the doctor
     @PostMapping
     public ResponseEntity<FicheTransmission> create(@RequestBody FicheTransmission fiche) {
@@ -210,7 +213,10 @@ public class FicheTransmissionController {
                         + ". Le rapport PDF est disponible dans votre espace Rapports patients.");
                 notif.setReferenceId(saved.getId());
                 notif.setReferenceType("FICHE_TRANSMISSION");
-                notificationRepository.save(notif);
+                Notification savedNotif = notificationRepository.save(notif);
+                
+                // Send real-time notification via WebSocket
+                notificationWsService.notifyDoctor(savedNotif);
             }
         } catch (Exception e) {
             System.err.println("Erreur notification envoi médecin: " + e.getMessage());

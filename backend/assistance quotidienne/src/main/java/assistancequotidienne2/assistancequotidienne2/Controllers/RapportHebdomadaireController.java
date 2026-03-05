@@ -5,6 +5,7 @@ import assistancequotidienne2.assistancequotidienne2.Entities.FicheTransmission;
 import assistancequotidienne2.assistancequotidienne2.Entities.Notification;
 import assistancequotidienne2.assistancequotidienne2.Entities.Patient;
 import assistancequotidienne2.assistancequotidienne2.Entities.User;
+import assistancequotidienne2.assistancequotidienne2.Services.NotificationWsService;
 import assistancequotidienne2.assistancequotidienne2.Repositories.RapportHebdomadaireRepository;
 import assistancequotidienne2.assistancequotidienne2.Repositories.FicheTransmissionRepository;
 import assistancequotidienne2.assistancequotidienne2.Repositories.PatientRepository;
@@ -31,6 +32,9 @@ public class RapportHebdomadaireController {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationWsService notificationWsService;
 
     // CREATE
     @PostMapping
@@ -121,7 +125,8 @@ public class RapportHebdomadaireController {
                 notif.setMessage("Le soignant a envoyé un rapport hebdomadaire pour " + patientNom + periode + ". Consultez-le dans vos rapports patients.");
                 notif.setReferenceId(saved.getId());
                 notif.setReferenceType("RAPPORT_HEBDOMADAIRE");
-                notificationRepository.save(notif);
+                Notification savedNotif = notificationRepository.save(notif);
+                notificationWsService.notifyDoctor(savedNotif);
             }
         } catch (Exception e) {
             // Don't fail the send if notification fails

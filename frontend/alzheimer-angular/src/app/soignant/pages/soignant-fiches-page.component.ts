@@ -21,8 +21,14 @@ export class SoignantFichesPageComponent implements OnInit {
   // Data
   fiches: any[] = [];
   filteredFiches: any[] = [];
+  pagedFiches: any[] = [];
   patients: Patient[] = [];
   loading = true;
+
+  // Pagination
+  pageSize = 10;
+  currentPage = 1;
+  readonly pageSizeOptions = [5, 10, 20, 50];
 
   // Filters
   searchQuery = '';
@@ -60,7 +66,7 @@ export class SoignantFichesPageComponent implements OnInit {
     private http: HttpClient,
     private translate: TranslateService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -84,7 +90,7 @@ export class SoignantFichesPageComponent implements OnInit {
 
     this.patientService.getAll().subscribe({
       next: (data) => this.patients = data,
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -123,15 +129,29 @@ export class SoignantFichesPageComponent implements OnInit {
     // Search
     const q = this.searchQuery.toLowerCase().trim();
     if (q) {
-      result = result.filter(f =>
-        (f.patientNom || f.patient?.nom || '').toLowerCase().includes(q) ||
-        (f.patientPrenom || f.patient?.prenom || '').toLowerCase().includes(q) ||
-        (f.commentaireLibre || '').toLowerCase().includes(q) ||
-        String(f.id || '').includes(q)
-      );
+      result = result.filter(f => {
+        // Nom du patient
+        const nom = (f.patientNom || f.patient?.nom || '').toLowerCase();
+        // Prénom du patient
+        const prenom = (f.patientPrenom || f.patient?.prenom || '').toLowerCase();
+        // Nom complet
+        const nomComplet = (f.patient?.nomComplet || '').toLowerCase();
+        // Commentaire
+        const commentaire = (f.commentaireLibre || '').toLowerCase();
+        // Numéro de fiche (ID)
+        const ficheId = String(f.id || '');
+        
+        return nom.includes(q) || 
+               prenom.includes(q) || 
+               nomComplet.includes(q) ||
+               commentaire.includes(q) || 
+               ficheId.includes(q);
+      });
     }
 
     this.filteredFiches = result;
+    this.currentPage = 1;
+    this.applyPagination();
   }
 
   resetFilters(): void {
@@ -141,6 +161,57 @@ export class SoignantFichesPageComponent implements OnInit {
     this.filterDateDebut = '';
     this.filterDateFin = '';
     this.applyFilters();
+  }
+
+  // ═══ PAGINATION ═══
+  get totalFiltered(): number {
+    return this.filteredFiches.length;
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalFiltered / this.pageSize));
+  }
+
+  get rangeStart(): number {
+    if (this.totalFiltered === 0) return 0;
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get rangeEnd(): number {
+    return Math.min(this.totalFiltered, this.currentPage * this.pageSize);
+  }
+
+  applyPagination(): void {
+    const safePage = Math.min(Math.max(1, this.currentPage), this.totalPages);
+    this.currentPage = safePage;
+
+    const startIdx = (this.currentPage - 1) * this.pageSize;
+    const endIdx = startIdx + this.pageSize;
+    this.pagedFiches = this.filteredFiches.slice(startIdx, endIdx);
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.applyPagination();
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.applyPagination();
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.applyPagination();
+    }
+  }
+
+  onPageSizeChange(): void {
+    this.currentPage = 1;
+    this.applyPagination();
   }
 
   // ═══ HELPERS ═══

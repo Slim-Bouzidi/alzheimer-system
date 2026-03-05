@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RendezVousService, RendezVous } from '../services/rendez-vous.service';
 import { PatientService, Patient } from '../services/patient.service';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import localeFr from '@angular/common/locales/fr';
 import keycloak from '../keycloak';
@@ -15,7 +16,7 @@ registerLocaleData(localeFr, 'fr-FR');
 @Component({
     selector: 'app-doctor-appointments',
     standalone: true,
-    imports: [CommonModule, FormsModule, SidebarComponent, TranslateModule],
+    imports: [CommonModule, FormsModule, SidebarComponent, NotificationBellComponent, TranslateModule],
     templateUrl: './doctor-appointments.component.html',
     styleUrls: ['./doctor-appointments.component.css']
 })

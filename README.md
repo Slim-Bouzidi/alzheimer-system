@@ -7,7 +7,7 @@
 
 ## 📌 Overview
 
-The **Alzheimer Risk Detection System** is a distributed microservices platform designed to provide intelligent monitoring for Alzheimer's patients. By leveraging a modern web architecture, this system assists caregivers and doctors in detecting risky situations—such as falls, wandering, or abnormal behavior patterns—in real-time.
+The *Alzheimer Risk Detection System** is a distributed microservices platform designed to provide intelligent monitoring for Alzheimer's patients. By leveraging a modern web architecture, this system assists caregivers and doctors in detecting risky situations—such as falls, wandering, or abnormal behavior patterns—in real-time.
 
 Built on a robust **Spring Boot** backend and a responsive **Angular** frontend, this project demonstrates a scalable, secure, and microservices-based approach to healthcare monitoring.
 

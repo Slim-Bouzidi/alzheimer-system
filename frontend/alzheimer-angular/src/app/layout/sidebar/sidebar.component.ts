@@ -2,10 +2,6 @@ import { Component, EventEmitter, HostBinding, Output, signal } from '@angular/c
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import keycloak from '../../keycloak';
-import { TooltipModule } from 'primeng/tooltip';
-import { AvatarModule } from 'primeng/avatar';
-import { MenuModule } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
 
 interface NavItem {
   label: string;
@@ -17,7 +13,7 @@ interface NavItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TooltipModule, AvatarModule, MenuModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
@@ -41,21 +37,6 @@ export class SidebarComponent {
   ];
 
   constructor(private router: Router) {}
-
-  readonly profileMenuItems: MenuItem[] = [
-    { 
-      label: 'My Profile', 
-      icon: 'pi pi-user',
-      command: () => this.router.navigate(['/admin/profile'])
-    },
-    { label: 'Account Settings', icon: 'pi pi-cog' },
-    { separator: true },
-    { 
-      label: 'Sign Out', 
-      icon: 'pi pi-sign-out',
-      command: () => this.onLogout()
-    },
-  ];
 
   onLogout(): void {
     import('../../keycloak').then(m => m.default.logout());

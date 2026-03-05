@@ -99,7 +99,7 @@
       <table class="fiches-table">
         <thead>
           <tr>
-            <th>#</th>
+
             <th>Patient</th>
             <th>Date</th>
             <th>Statut</th>
@@ -109,8 +109,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let fiche of filteredFiches" [class.row-brouillon]="!fiche.statut || fiche.statut === 'brouillon'">
-            <td class="col-id">{{ fiche.id }}</td>
+          <tr *ngFor="let fiche of pagedFiches" [class.row-brouillon]="!fiche.statut || fiche.statut === 'brouillon'">
+
             <td class="col-patient">
               <strong>{{ getPatientName(fiche) }}</strong>
             </td>
@@ -144,6 +144,26 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar" *ngIf="!loading && filteredFiches.length > 0">
+      <div class="pagination-info">
+        Affichage {{ rangeStart }}–{{ rangeEnd }} / {{ totalFiltered }}
+      </div>
+
+      <div class="pagination-controls">
+        <label class="page-size-label">
+          Par page
+          <select class="page-size-select" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()">
+            <option *ngFor="let s of pageSizeOptions" [ngValue]="s">{{ s }}</option>
+          </select>
+        </label>
+
+        <button class="btn-outline btn-page" (click)="prevPage()" [disabled]="currentPage <= 1">◀</button>
+        <span class="page-indicator">Page {{ currentPage }} / {{ totalPages }}</span>
+        <button class="btn-outline btn-page" (click)="nextPage()" [disabled]="currentPage >= totalPages">▶</button>
+      </div>
     </div>
 
     <!-- Empty -->

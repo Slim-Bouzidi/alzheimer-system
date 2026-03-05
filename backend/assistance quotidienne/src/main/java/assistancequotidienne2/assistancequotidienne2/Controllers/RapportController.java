@@ -1,12 +1,15 @@
 package assistancequotidienne2.assistancequotidienne2.Controllers;
 
-import assistancequotidienne2.assistancequotidienne2.Entities.Rapport;
+import assistancequotidienne2.assistancequotidienne2.DTOs.RapportRequest;
+import assistancequotidienne2.assistancequotidienne2.Entities.*;
 import assistancequotidienne2.assistancequotidienne2.Repositories.RapportRepository;
 import assistancequotidienne2.assistancequotidienne2.Repositories.PatientRepository;
+import assistancequotidienne2.assistancequotidienne2.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,11 +22,38 @@ public class RapportController {
     @Autowired
     private PatientRepository patientRepository;
 
-    // CREATE
+    @Autowired(required = false)
+    private UserRepository userRepository;
+
+    // CREATE — with @Valid DTO validation
     @PostMapping
-    public ResponseEntity<Rapport> create(@RequestBody Rapport rapport) {
-        patientRepository.findById(rapport.getPatient().getId())
+    public ResponseEntity<Rapport> create(@Valid @RequestBody RapportRequest request) {
+        Patient patient = patientRepository.findById(request.getPatient().getId())
                 .orElseThrow(() -> new RuntimeException("Patient non trouvé"));
+
+        // Period consistency check (server-side)
+        if (request.getPeriodeFin().isBefore(request.getPeriodeDebut())) {
+            throw new IllegalArgumentException("La date de fin doit être postérieure à la date de début.");
+        }
+
+        Rapport rapport = new Rapport();
+        rapport.setPatient(patient);
+
+        // Resolve soignant if possible
+        if (request.getSoignant() != null && request.getSoignant().getId() != null && userRepository != null) {
+            userRepository.findById(request.getSoignant().getId()).ifPresent(rapport::setSoignant);
+        }
+
+        rapport.setTypeRapport(TypeRapport.valueOf(request.getTypeRapport()));
+        rapport.setPeriodeDebut(request.getPeriodeDebut());
+        rapport.setPeriodeFin(request.getPeriodeFin());
+        rapport.setTitre(request.getTitre());
+        rapport.setContenuTexte(request.getContenuTexte());
+        rapport.setDirectives(request.getDirectives());
+        rapport.setRecommandations(request.getRecommandations());
+        if (request.getStatut() != null) {
+            rapport.setStatut(StatutRapport.valueOf(request.getStatut()));
+        }
         
         return ResponseEntity.ok(rapportRepository.save(rapport));
     }

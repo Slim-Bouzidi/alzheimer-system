@@ -33,8 +33,6 @@
             [routerLink]="item.route"
             routerLinkActive="nav-link--active"
             [routerLinkActiveOptions]="{ exact: !!item.exact }"
-            [pTooltip]="collapsed() ? item.label : ''"
-            tooltipPosition="right"
           >
             <i [class]="item.icon + ' nav-icon'"></i>
             @if (!collapsed()) {
@@ -49,22 +47,16 @@
   <!-- Footer: User profile -->
   <div class="sidebar-footer">
     <div class="user-profile">
-      <p-avatar
-        image="https://randomuser.me/api/portraits/women/44.jpg"
-        shape="circle"
-        size="large"
-        styleClass="profile-avatar"
-      />
+      <div class="profile-avatar" aria-hidden="true"></div>
       @if (!collapsed()) {
         <div class="user-info">
           <span class="user-name">Dr. Sarah Chen</span>
           <span class="user-role">Super Admin</span>
         </div>
-        <button type="button" class="profile-menu-btn" (click)="profileMenu.toggle($event)" aria-label="Profile menu">
-          <i class="pi pi-ellipsis-v"></i>
+        <button type="button" class="profile-menu-btn" (click)="onLogout()" aria-label="Sign Out">
+          <i class="pi pi-sign-out"></i>
         </button>
       }
-      <p-menu #profileMenu [model]="profileMenuItems" [popup]="true" appendTo="body" />
     </div>
   </div>
 </nav>

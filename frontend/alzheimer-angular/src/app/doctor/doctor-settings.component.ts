@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { NotificationBellComponent } from '../shared/components/notification-bell/notification-bell.component';
 import keycloak from '../keycloak';
 
 @Component({
     selector: 'app-doctor-settings',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TranslateModule],
+    imports: [CommonModule, SidebarComponent, NotificationBellComponent, TranslateModule],
     templateUrl: './doctor-settings.component.html',
     styleUrls: ['./doctor-settings.component.css']
 })

@@ -9,10 +9,7 @@
             <h1 class="page-title-small">{{ 'DOCTOR.PATIENT_MANAGEMENT' | translate }}</h1>
 
             <div class="topbar-actions">
-                <button class="icon-btn notice-btn">
-                    <span class="icon">🔔</span>
-                    <span class="badge-dot"></span>
-                </button>
+                <app-notification-bell></app-notification-bell>
                 <button class="btn btn-logout" (click)="logout()">
                     <span>Déconnexion</span>
                     <span class="icon">🚪</span>

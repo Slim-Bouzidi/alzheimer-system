@@ -57,7 +57,7 @@ export class DoctorReportCreateComponent implements OnInit {
   errorMessage = '';
   formErrors: ValidationErrors = {};
   /** Bloc à mettre en évidence en cas d'erreur de validation (scroll + style) */
-  errorBlockId: 'identity' | 'observance' | 'directives' | 'period' | null = null;
+  errorBlockId: 'identity' | 'observance' | 'directives' | 'period' | 'validation' | null = null;
 
   constructor(
     private router: Router,
@@ -182,30 +182,60 @@ export class DoctorReportCreateComponent implements OnInit {
     };
   }
 
-  submit(): void {
-    this.errorMessage = '';
-    this.errorBlockId = null;
-    this.formErrors = {};
+  /** Clear a single field error (called on input change for real-time feedback) */
+  clearFieldError(field: string): void {
+    if (this.formErrors[field]) {
+      const { [field]: _, ...rest } = this.formErrors;
+      this.formErrors = rest;
+    }
+  }
 
-    // ── Patient selection ──
+  submit(): void {
+    try {
+      this.errorMessage = '';
+      this.errorBlockId = null;
+      this.formErrors = {};
+
+    // ── 1. Patient selection ──
     if (!this.selectedPatient) {
-      this.errorMessage = this.translate.instant('DOCTOR_REPORT_CREATE.SELECT_PATIENT_ERROR');
+      this.formErrors['patient'] = this.translate.instant('DOCTOR_REPORT_CREATE.SELECT_PATIENT_ERROR');
+      this.errorMessage = this.formErrors['patient'];
       this.errorBlockId = 'identity';
       this.scrollToBlock('block-identity');
       return;
     }
 
-    // ── Period validation ──
+    // ── 2. Period validation ──
     const vPeriod = new FormValidator()
       .required('dateDebut', this.dateDebut, 'La date de début est requise.')
       .required('dateFin', this.dateFin, 'La date de fin est requise.');
+
     if (this.dateDebut && this.dateFin) {
       const dateDeb = new Date(this.dateDebut);
       const dateFinR = new Date(this.dateFin);
+
+      // End date must be >= start date
       if (dateFinR < dateDeb) {
-        vPeriod.custom('dateFin', false, this.translate.instant('DOCTOR_REPORT_CREATE.DATE_END_ERROR'));
+        vPeriod.custom('dateFin', true, this.translate.instant('DOCTOR_REPORT_CREATE.DATE_END_ERROR'));
+      }
+
+      // Period cannot exceed 90 days
+      const daysDiff = Math.round((dateFinR.getTime() - dateDeb.getTime()) / (24 * 3600 * 1000)) + 1;
+      if (daysDiff > 90) {
+        vPeriod.custom('dateFin', true, 'La période ne peut pas dépasser 90 jours.');
+      }
+
+      // Dates cannot be more than 1 year in the future
+      const maxFuture = new Date();
+      maxFuture.setFullYear(maxFuture.getFullYear() + 1);
+      if (dateFinR > maxFuture) {
+        vPeriod.custom('dateFin', true, 'La date de fin ne peut pas dépasser un an dans le futur.');
+      }
+      if (dateDeb > maxFuture) {
+        vPeriod.custom('dateDebut', true, 'La date de début ne peut pas dépasser un an dans le futur.');
       }
     }
+
     if (vPeriod.hasErrors()) {
       this.formErrors = { ...this.formErrors, ...vPeriod.errors };
       this.errorMessage = Object.values(vPeriod.errors)[0];
@@ -214,31 +244,48 @@ export class DoctorReportCreateComponent implements OnInit {
       return;
     }
 
-    // ── Treatments validation ──
+    // ── 3. Treatments validation ──
     const vTreat = new FormValidator();
     this.traitements.forEach((t, i) => {
       if (t.nom?.trim()) {
         vTreat.maxLength(`nom_${i}`, t.nom!, 200, `Médicament ${i + 1} : nom trop long (max 200 car.).`);
-        vTreat.maxLength(`dosage_${i}`, t.dosage || '', 100, `Médicament ${i + 1} : dosage trop long (max 100 car.).`);
+        if (t.nom!.trim().length < 2) {
+          vTreat.custom(`nom_${i}`, true, `Médicament ${i + 1} : nom trop court (min 2 car.).`);
+        }
+        // Dosage obligatoire si nom renseigné
+        if (t.dosage === undefined || t.dosage === null || t.dosage === '' || (typeof t.dosage === 'string' && t.dosage.trim() === '')) {
+          vTreat.custom(`dosage_${i}`, true, `Médicament ${i + 1} : le dosage est requis.`);
+        } else {
+          // Check if dosage is integer and positive
+          const dosageValue = Number(t.dosage);
+          if (!Number.isInteger(dosageValue) || dosageValue < 1) {
+            vTreat.custom(`dosage_${i}`, true, `Médicament ${i + 1} : le dosage doit être un entier positif.`);
+          }
+        }
+        vTreat.maxLength(`dosage_${i}`, t.dosage ? t.dosage.toString() : '', 100, `Médicament ${i + 1} : dosage trop long (max 100 car.).`);
         vTreat.maxLength(`attentes_${i}`, t.attentesSuivi || '', 500, `Médicament ${i + 1} : attentes trop longues (max 500 car.).`);
       }
     });
+
     const traitementsValides = this.traitements
       .filter(t => t.nom?.trim())
       .map((t, i) => ({
         id: t.id || 't' + (i + 1),
         nom: sanitizeInput(t.nom!.trim()),
-        dosage: sanitizeInput((t.dosage || '').trim()),
+        dosage: sanitizeInput(String(t.dosage ?? '').trim()),
         momentPrise: t.momentPrise || 'matin',
         detail: (t as TraitementPrescrit).detail?.trim(),
         attentesSuivi: sanitizeInput((t.attentesSuivi || '').trim()) || this.translate.instant('DOCTOR_REPORT_CREATE.DEFAULT_MONITORING_EXPECTATION')
       }));
+
     if (traitementsValides.length === 0) {
-      this.errorMessage = this.translate.instant('DOCTOR_REPORT_CREATE.TREATMENT_REQUIRED_ERROR');
+      this.formErrors['traitements'] = this.translate.instant('DOCTOR_REPORT_CREATE.TREATMENT_REQUIRED_ERROR');
+      this.errorMessage = this.formErrors['traitements'];
       this.errorBlockId = 'observance';
       this.scrollToBlock('block-observance');
       return;
     }
+
     if (vTreat.hasErrors()) {
       this.formErrors = { ...this.formErrors, ...vTreat.errors };
       this.errorMessage = Object.values(vTreat.errors)[0];
@@ -247,7 +294,7 @@ export class DoctorReportCreateComponent implements OnInit {
       return;
     }
 
-    // ── Attentes générales ──
+    // ── 4. Attentes générales ──
     const vGen = new FormValidator()
       .maxLength('attentesGenerales', this.attentesGenerales, 2000, 'Attentes générales trop longues (max 2000 car.).');
     if (vGen.hasErrors()) {
@@ -258,7 +305,7 @@ export class DoctorReportCreateComponent implements OnInit {
       return;
     }
 
-    // ── Directives alimentation ──
+    // ── 5. Directives alimentation ──
     const vAlim = new FormValidator();
     this.directivesAlim.forEach((d, i) => {
       if (d.libelle.trim()) {
@@ -274,7 +321,7 @@ export class DoctorReportCreateComponent implements OnInit {
       return;
     }
 
-    // ── Directives vie sociale ──
+    // ── 6. Directives vie sociale ──
     const vVie = new FormValidator();
     this.directivesVieSociale.forEach((d, i) => {
       if (d.libelle.trim()) {
@@ -290,21 +337,20 @@ export class DoctorReportCreateComponent implements OnInit {
       return;
     }
 
-    // ── Signature ──
+    // ── 7. Signature ──
     if (!this.signatureValide) {
-      this.errorMessage = this.translate.instant('DOCTOR_REPORT_CREATE.VALIDATION_CHECKBOX_ERROR');
+      this.formErrors['signatureValide'] = this.translate.instant('DOCTOR_REPORT_CREATE.VALIDATION_CHECKBOX_ERROR');
+      this.errorMessage = this.formErrors['signatureValide'];
+      this.errorBlockId = 'validation';
       this.scrollToBlock('block-validation');
       return;
     }
 
-    const now = new Date();
-
-    // Construire le contenu texte à partir des traitements
+    // ── Build and send rapport ──
     const contenuTraitements = traitementsValides.map(t =>
       `${t.nom} (${t.dosage}) — ${t.momentPrise} : ${t.attentesSuivi}`
     ).join('\n');
 
-    // Construire les directives à partir des sections alimentation + vie sociale
     const directivesAlimTexte = this.directivesAlim
       .filter(d => d.libelle.trim())
       .map(d => `[Alimentation] ${sanitizeInput(d.libelle.trim())}${d.detail.trim() ? ' — ' + sanitizeInput(d.detail.trim()) : ''}`)
@@ -317,13 +363,13 @@ export class DoctorReportCreateComponent implements OnInit {
 
     const rapport: Rapport = {
       patient: { id: this.selectedPatient.id },
-      soignant: { id: 1 }, // Dr. Dupont (DOCTEUR) — logged-in doctor
+      soignant: { id: 1 },
       typeRapport: 'HEBDOMADAIRE',
       periodeDebut: this.dateDebut,
       periodeFin: this.dateFin,
-      titre: `Rapport de suivi — ${this.selectedPatient.name} (${this.dateDebut} à ${this.dateFin})`,
-      contenuTexte: contenuTraitements,
-      directives: directivesTexte || undefined,
+      titre: sanitizeInput(`Rapport de suivi — ${this.selectedPatient.name} (${this.dateDebut} à ${this.dateFin})`),
+      contenuTexte: sanitizeInput(contenuTraitements),
+      directives: directivesTexte ? sanitizeInput(directivesTexte) : undefined,
       recommandations: sanitizeInput(this.attentesGenerales.trim()) || undefined,
       statut: 'GENERE'
     };
@@ -331,15 +377,25 @@ export class DoctorReportCreateComponent implements OnInit {
     this.submitting = true;
     this.rapportService.create(rapport).subscribe({
       next: () => {
-        // === CRÉER LES TRAITEMENTS dans la base pour alimenter l'agenda ===
         this.creerTraitementsDepuisRapport(traitementsValides);
       },
       error: (err) => {
         this.submitting = false;
         console.error('Erreur création rapport:', err);
-        this.errorMessage = this.translate.instant('DOCTOR_REPORT_CREATE.SAVE_ERROR');
+        // Handle backend validation errors (400)
+        if (err.status === 400 && err.error && typeof err.error === 'object') {
+          this.formErrors = err.error;
+          this.errorMessage = Object.values(err.error)[0] as string || this.translate.instant('DOCTOR_REPORT_CREATE.SAVE_ERROR');
+        } else {
+          this.errorMessage = this.translate.instant('DOCTOR_REPORT_CREATE.SAVE_ERROR');
+        }
       }
     });
+    } catch (e: any) {
+      this.submitting = false;
+      console.error('Erreur submit doctor-report-create:', e);
+      this.errorMessage = (e && e.message) ? String(e.message) : 'Erreur inattendue lors de la soumission.';
+    }
   }
 
   /**

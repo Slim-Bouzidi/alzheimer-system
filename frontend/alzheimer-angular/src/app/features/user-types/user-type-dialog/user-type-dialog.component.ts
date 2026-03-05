@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { SliderModule } from 'primeng/slider';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -23,7 +22,6 @@ import { UserTypeService } from '../../../core/services/user-type.service';
     DialogModule,
     ButtonModule,
     InputTextModule,
-    InputTextareaModule,
     InputSwitchModule,
     SliderModule,
     MessageModule,

@@ -12,6 +12,7 @@ import { RapportSuiviStructure } from '../models/rapport-suivi-structure.model';
 import { NotificationApiService, NotificationApi } from '../services/notification-api.service';
 import { RapportHebdomadaireApiService } from '../services/rapport-hebdomadaire-api.service';
 import { FicheTransmissionApiService } from '../services/fiche-transmission-api.service';
+import { DoctorNotificationWsService, DoctorNotificationMessage } from '../services/doctor-notification-ws.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import keycloak from '../keycloak';
@@ -36,11 +37,36 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
     fichesRecues: any[] = [];
     selectedFicheRecue: any | null = null;
 
+    // Pagination for Fiches de Transmission
+    fichesPagination = {
+        currentPage: 1,
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 20],
+        get totalPages(): number {
+            return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+        },
+        totalItems: 0
+    };
+    pagedFiches: any[] = [];
+
+    // Pagination for Medical Reports (rapports)
+    rapportsPagination = {
+        currentPage: 1,
+        pageSize: 5,
+        pageSizeOptions: [5, 10, 20],
+        get totalPages(): number {
+            return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+        },
+        totalItems: 0
+    };
+    pagedRapports: Rapport[] = [];
+
     // Notifications
     notifications: NotificationApi[] = [];
     unreadCount = 0;
     showNotifPanel = false;
     private notifPoll$?: Subscription;
+    private notifWs$?: Subscription;
     readonly DOCTOR_USER_ID = 1; // TODO: get from auth
 
     // Search & filter
@@ -66,6 +92,7 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
         private notificationService: NotificationApiService,
         private rapportHebdoApi: RapportHebdomadaireApiService,
         private ficheApi: FicheTransmissionApiService,
+        private doctorWs: DoctorNotificationWsService,
         private http: HttpClient,
         private translate: TranslateService
     ) { }
@@ -78,10 +105,30 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
         this.loadFichesRecues();
         // Poll for new notifications every 30s
         this.notifPoll$ = interval(30000).subscribe(() => this.loadNotifications());
+
+        // Realtime notifications (WebSocket)
+        this.doctorWs.connect();
+        this.notifWs$ = this.doctorWs.notifications$.subscribe((msg: DoctorNotificationMessage) => {
+            // If a different doctor is logged-in, you can filter by destinataireId later
+            const incoming: NotificationApi = {
+                id: msg.notificationId,
+                type: msg.type,
+                titre: msg.titre,
+                message: msg.message,
+                lu: false,
+                referenceType: msg.referenceType,
+                referenceId: msg.referenceId,
+                dateCreation: msg.dateCreation
+            };
+            this.notifications = [incoming, ...this.notifications];
+            this.unreadCount = this.unreadCount + 1;
+        });
     }
 
     ngOnDestroy(): void {
         this.notifPoll$?.unsubscribe();
+        this.notifWs$?.unsubscribe();
+        this.doctorWs.disconnect();
     }
 
     // === Notifications ===
@@ -232,6 +279,9 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
         }
 
         this.filteredRapports = result;
+        this.rapportsPagination.totalItems = result.length;
+        this.rapportsPagination.currentPage = 1;
+        this.applyRapportsPagination();
     }
 
     setFilter(filter: string): void {
@@ -543,9 +593,92 @@ export class DoctorReportsComponent implements OnInit, OnDestroy {
                 this.fichesRecues = data
                     .filter((f: any) => f.statut === 'envoye')
                     .sort((a: any, b: any) => new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime());
+                this.fichesPagination.totalItems = this.fichesRecues.length;
+                this.fichesPagination.currentPage = 1;
+                this.applyFichesPagination();
             },
             error: () => {}
         });
+    }
+
+    applyFichesPagination(): void {
+        const startIdx = (this.fichesPagination.currentPage - 1) * this.fichesPagination.pageSize;
+        const endIdx = startIdx + this.fichesPagination.pageSize;
+        this.pagedFiches = this.fichesRecues.slice(startIdx, endIdx);
+    }
+
+    goToFichePage(page: number): void {
+        if (page < 1 || page > this.fichesPagination.totalPages) return;
+        this.fichesPagination.currentPage = page;
+        this.applyFichesPagination();
+    }
+
+    nextFichePage(): void {
+        if (this.fichesPagination.currentPage < this.fichesPagination.totalPages) {
+            this.fichesPagination.currentPage++;
+            this.applyFichesPagination();
+        }
+    }
+
+    prevFichePage(): void {
+        if (this.fichesPagination.currentPage > 1) {
+            this.fichesPagination.currentPage--;
+            this.applyFichesPagination();
+        }
+    }
+
+    onFichePageSizeChange(): void {
+        this.fichesPagination.currentPage = 1;
+        this.applyFichesPagination();
+    }
+
+    get ficheRangeStart(): number {
+        if (this.fichesPagination.totalItems === 0) return 0;
+        return (this.fichesPagination.currentPage - 1) * this.fichesPagination.pageSize + 1;
+    }
+
+    get ficheRangeEnd(): number {
+        return Math.min(this.fichesPagination.totalItems, this.fichesPagination.currentPage * this.fichesPagination.pageSize);
+    }
+
+    applyRapportsPagination(): void {
+        const startIdx = (this.rapportsPagination.currentPage - 1) * this.rapportsPagination.pageSize;
+        const endIdx = startIdx + this.rapportsPagination.pageSize;
+        this.pagedRapports = this.filteredRapports.slice(startIdx, endIdx);
+    }
+
+    goToRapportPage(page: number): void {
+        if (page < 1 || page > this.rapportsPagination.totalPages) return;
+        this.rapportsPagination.currentPage = page;
+        this.applyRapportsPagination();
+    }
+
+    nextRapportPage(): void {
+        if (this.rapportsPagination.currentPage < this.rapportsPagination.totalPages) {
+            this.rapportsPagination.currentPage++;
+            this.applyRapportsPagination();
+        }
+    }
+
+    prevRapportPage(): void {
+        if (this.rapportsPagination.currentPage > 1) {
+            this.rapportsPagination.currentPage--;
+            this.applyRapportsPagination();
+        }
+    }
+
+    onRapportPageSizeChange(): void {
+        this.rapportsPagination.currentPage = 1;
+        this.applyRapportsPagination();
+    }
+
+    get rapportRangeStart(): number {
+        if (this.rapportsPagination.totalItems === 0) return 0;
+        return (this.rapportsPagination.currentPage - 1) * this.rapportsPagination.pageSize + 1;
+    }
+
+    get rapportRangeEnd(): number {
+        return Math.min(this.rapportsPagination.totalItems, this.rapportsPagination.currentPage * this.rapportsPagination.pageSize);
     }
 
     consulterFicheRecue(fiche: any): void {
