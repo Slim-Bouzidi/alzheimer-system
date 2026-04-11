@@ -8,7 +8,7 @@
   top: 0;
   background: var(--surface-card);
   border-right: 1px solid var(--surface-border);
-  z-index: 1001;
+  z-index: 1000;
   transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
 
@@ -16,8 +16,7 @@
     width: var(--sidebar-collapsed-width);
 
     .brand-text,
-    .user-info,
-    .profile-menu-btn {
+    .user-info {
       display: none;
     }
 
@@ -57,11 +56,17 @@
     .user-profile {
       justify-content: center;
       padding: 0.5rem;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
     .profile-avatar {
       width: 2.5rem !important;
       height: 2.5rem !important;
+    }
+
+    .profile-menu-btn--collapsed {
+      display: flex !important;
     }
   }
 }
@@ -285,4 +290,10 @@
   img {
     border-radius: 50%;
   }
+}
+
+.profile-menu-btn--collapsed {
+  margin: 0 !important;
+  width: 2rem;
+  height: 2rem;
 }

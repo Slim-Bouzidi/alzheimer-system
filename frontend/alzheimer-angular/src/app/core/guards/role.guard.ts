@@ -4,21 +4,78 @@ import keycloak from '../../keycloak';
 
 export const roleGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const requiredRole = route.data['role'] as string;
+  const requiredRoles = route.data['roles'] as string[] | undefined;
+  const excludedRoles = route.data['excludeRoles'] as string[] | undefined;
 
-  if (!requiredRole) return true;
+  // Keycloak default roles to ignore
+  const defaultRoles = ['offline_access', 'uma_authorization', 'default-roles-alzheimer'];
 
-  const hasRole = (role: string) => 
-    keycloak.hasRealmRole(role) || 
-    keycloak.hasResourceRole(role) || 
-    keycloak.hasRealmRole(role.toUpperCase()) || 
-    keycloak.hasResourceRole(role.toUpperCase());
+  const hasRole = (role: string): boolean => {
+    const hasRealmRole = keycloak.hasRealmRole(role) || 
+                         keycloak.hasRealmRole(role.toUpperCase()) ||
+                         keycloak.hasRealmRole(role.toLowerCase());
+    
+    const hasResourceRole = keycloak.hasResourceRole(role) || 
+                            keycloak.hasResourceRole(role.toUpperCase()) ||
+                            keycloak.hasResourceRole(role.toLowerCase());
+    
+    return hasRealmRole || hasResourceRole;
+  };
 
-  if (hasRole(requiredRole)) {
-    return true;
+  // Get user's actual roles (excluding default Keycloak roles)
+  const userRoles: string[] = [];
+  if (keycloak.realmAccess?.roles) {
+    userRoles.push(...keycloak.realmAccess.roles.filter(role => !defaultRoles.includes(role)));
+  }
+  if (keycloak.resourceAccess) {
+    Object.values(keycloak.resourceAccess).forEach((resource: any) => {
+      if (resource.roles) {
+        userRoles.push(...resource.roles);
+      }
+    });
   }
 
-  // Redirect to home if unauthorized
-  router.navigate(['/']);
-  return false;
+  // Debug logging
+  console.log('=== Role Guard Debug ===');
+  console.log('Route:', state.url);
+  console.log('Required roles:', requiredRoles);
+  console.log('Excluded roles:', excludedRoles);
+  console.log('User roles (filtered):', userRoles);
+  console.log('Keycloak realm roles:', keycloak.realmAccess?.roles);
+  console.log('Keycloak resource access:', keycloak.resourceAccess);
+
+  // Check if user has any excluded roles
+  if (excludedRoles && excludedRoles.length > 0) {
+    const hasExcludedRole = excludedRoles.some(role => {
+      const result = hasRole(role);
+      console.log(`Checking excluded role '${role}':`, result);
+      return result;
+    });
+    
+    if (hasExcludedRole) {
+      console.log(`❌ Access denied: User has excluded role from [${excludedRoles.join(', ')}]`);
+      // Redirect to dashboard - a safe route with no role restrictions
+      router.navigate(['/dashboard']);
+      return false;
+    }
+  }
+
+  // Check if user has required roles (if specified)
+  if (requiredRoles && requiredRoles.length > 0) {
+    const hasRequiredRole = requiredRoles.some(role => {
+      const result = hasRole(role);
+      console.log(`Checking required role '${role}':`, result);
+      return result;
+    });
+    
+    if (!hasRequiredRole) {
+      console.log(`❌ Access denied: User doesn't have required role from [${requiredRoles.join(', ')}]`);
+      // Redirect to dashboard - a safe route with no role restrictions
+      router.navigate(['/dashboard']);
+      return false;
+    }
+  }
+
+  console.log('✅ Access granted');
+  return true;
 };

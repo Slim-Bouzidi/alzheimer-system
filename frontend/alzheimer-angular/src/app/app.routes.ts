@@ -7,11 +7,18 @@ export const routes: Routes = [
     path: '',
     component: AppShellComponent,
     children: [
-      { path: '', redirectTo: 'manage-users', pathMatch: 'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./shared/components/placeholder/placeholder.component').then(m => m.PlaceholderComponent),
+        data: { title: 'Dashboard', icon: 'pi-th-large' }
+      },
       {
         path: 'manage-users',
         loadComponent: () =>
           import('./features/manage-users/manage-users.component').then(m => m.ManageUsersComponent),
+        canActivate: [roleGuard],
+        data: { excludeRoles: ['patient'] }
       },
       {
         path: 'user-types',
@@ -19,6 +26,8 @@ export const routes: Routes = [
           import('./features/user-types/user-type-list/user-type-list.component').then(
             m => m.UserTypeListComponent
           ),
+        canActivate: [roleGuard],
+        data: { excludeRoles: ['patient'] }
       },
       {
         path: 'patients',
@@ -26,6 +35,8 @@ export const routes: Routes = [
           import('./features/patients/patient-list/patient-list.component').then(
             m => m.PatientListComponent
           ),
+        canActivate: [roleGuard],
+        data: { excludeRoles: ['patient'] }
       },
       {
         path: 'appointments',
@@ -39,26 +50,30 @@ export const routes: Routes = [
             path: 'new',
             loadComponent: () =>
               import('./features/clinical-reports/clinical-form/clinical-form.component').then(m => m.ClinicalFormComponent),
-            data: { title: 'New Report', icon: 'pi-plus' }
+            canActivate: [roleGuard],
+            data: { title: 'New Report', icon: 'pi-plus', excludeRoles: ['admin'] }
           },
           {
             path: 'history',
             loadComponent: () =>
               import('./features/clinical-reports/report-list/report-list.component').then(m => m.ReportListComponent),
-            data: { title: 'Report History', icon: 'pi-list' }
+            canActivate: [roleGuard],
+            data: { title: 'Report History', icon: 'pi-list', excludeRoles: ['admin'] }
           }
         ]
       },
       {
         path: 'settings',
         loadComponent: () => import('./shared/components/placeholder/placeholder.component').then(m => m.PlaceholderComponent),
-        data: { title: 'System Settings', icon: 'pi-cog' }
+        canActivate: [roleGuard],
+        data: { title: 'System Settings', icon: 'pi-cog', excludeRoles: ['patient'] }
       },
       {
         path: 'patient/dashboard',
         loadComponent: () =>
           import('./features/patient-dashboard/patient-dashboard.component').then(m => m.PatientDashboardComponent),
-        data: { title: 'My Workspace', icon: 'pi-home' }
+        canActivate: [roleGuard],
+        data: { title: 'My Workspace', icon: 'pi-home', roles: ['patient'] }
       },
       {
         path: 'profile',

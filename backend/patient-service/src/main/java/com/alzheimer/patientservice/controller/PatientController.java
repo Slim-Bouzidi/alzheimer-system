@@ -28,7 +28,11 @@ public class PatientController {
     }
 
     @PostMapping
-    public ResponseEntity<PatientResponse> create(@Valid @RequestBody PatientRequest request) {
+    public ResponseEntity<PatientResponse> create(@Valid @RequestBody PatientRequest request, @RequestHeader(value = "X-User-Id", required = false) String keycloakId) {
+        // If keycloakId is provided in header, use it; otherwise use the one from request body
+        if (keycloakId != null && !keycloakId.isEmpty()) {
+            request.setKeycloakId(keycloakId);
+        }
         return ResponseEntity.ok(service.create(request));
     }
 

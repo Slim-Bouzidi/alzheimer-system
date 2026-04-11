@@ -21,6 +21,12 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientResponse create(PatientRequest request) {
         Patient patient = PatientMapper.toEntity(request);
+        
+        // If keycloakId is not provided, generate a unique one
+        if (patient.getKeycloakId() == null || patient.getKeycloakId().isEmpty()) {
+            patient.setKeycloakId(java.util.UUID.randomUUID().toString());
+        }
+        
         return PatientMapper.toResponse(repository.save(patient));
     }
 
