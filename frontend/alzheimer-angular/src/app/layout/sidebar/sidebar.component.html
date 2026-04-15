@@ -26,7 +26,11 @@
   <!-- Navigation -->
   <div class="nav-content">
     <ul class="nav-list">
+<<<<<<< HEAD
       @for (item of navItems; track item.route) {
+=======
+      @for (item of navItems(); track item.route) {
+>>>>>>> cb099be (user ui update)
         <li class="nav-item">
           <a
             class="nav-link"
@@ -60,10 +64,23 @@
           <span class="user-name">Dr. Sarah Chen</span>
           <span class="user-role">Super Admin</span>
         </div>
+<<<<<<< HEAD
         <button type="button" class="profile-menu-btn" (click)="profileMenu.toggle($event)" aria-label="Profile menu">
           <i class="pi pi-ellipsis-v"></i>
         </button>
       }
+=======
+      }
+      <button 
+        type="button" 
+        class="profile-menu-btn" 
+        [class.profile-menu-btn--collapsed]="collapsed()"
+        (click)="profileMenu.toggle($event)" 
+        aria-label="Profile menu"
+      >
+        <i class="pi pi-ellipsis-v"></i>
+      </button>
+>>>>>>> cb099be (user ui update)
       <p-menu #profileMenu [model]="profileMenuItems" [popup]="true" appendTo="body" />
     </div>
   </div>

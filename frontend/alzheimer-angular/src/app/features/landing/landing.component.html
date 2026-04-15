@@ -1,0 +1,149 @@
+<div class="landing-page">
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-content">
+      <div class="logo-group">
+        <div class="logo-box">
+          <i class="pi pi-heart-fill"></i>
+        </div>
+        <span class="app-name">Alzheimer<span class="light">Support</span></span>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it Works</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn-text" (click)="login()">Sign In</button>
+        <button class="btn-primary" (click)="register()">Get Started</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Centered Stack) -->
+  <main class="hero centered-hero">
+    <div class="hero-bg-glow"></div>
+    <div class="container">
+      <div class="hero-content-stack">
+        <div class="badge fade-in">Intelligent Patient Monitoring</div>
+        <h1 class="hero-title slide-up">
+          Advanced detection <br />
+          <span class="text-blue">for compassionate care.</span>
+        </h1>
+        <p class="hero-subtitle slide-up-delay">
+          An intelligent platform designed to detect risks, monitor behavior, and improve the safety of Alzheimer patients through real-time analysis and smart alerts.
+        </p>
+        
+        <div class="hero-cta slide-up-delay-2">
+          <button class="btn-primary-large" (click)="register()">
+            Start Monitoring Now
+            <i class="pi pi-arrow-right"></i>
+          </button>
+          <button class="btn-secondary-large" (click)="login()">
+            Access Portal
+          </button>
+        </div>
+
+        <!-- Floating Mockup centered below -->
+        <div class="hero-preview-below reveal">
+          <div class="glass-panel wide">
+            <div class="panel-header">
+              <span class="status-indicator">
+                <span class="dot pulse"></span> Live Monitoring
+              </span>
+              <span class="timestamp">19:24:12</span>
+            </div>
+            <div class="panel-content grid-layout">
+              <div class="data-group">
+                <div class="mock-data-line" style="width: 100%"></div>
+                <div class="mock-data-line" style="width: 80%"></div>
+              </div>
+              <div class="data-group">
+                <div class="mock-data-line" style="width: 60%"></div>
+                <div class="mock-data-line" style="width: 90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- How it Works Section (Restored) -->
+  <section id="how-it-works" class="how-it-works-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">THE PROCESS</div>
+        <h2>Connect. Detect. Protect.</h2>
+        <p>Three simple steps to a safer environment for your loved ones.</p>
+      </div>
+
+      <div class="process-steps">
+        <div class="step reveal">
+          <div class="step-number">01</div>
+          <div class="step-img-box">
+            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&auto=format&fit=crop" alt="Connect sensors" />
+          </div>
+          <h3>Deploy Sensors</h3>
+          <p>Sync cameras or medical wearables to our secure gateway using simple one-touch pairing.</p>
+        </div>
+        <div class="step reveal-delayed-1">
+          <div class="step-number">02</div>
+          <div class="step-img-box">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop" alt="AI Analysis" />
+            <div class="scanner-line"></div>
+          </div>
+          <h3>Deep Analysis</h3>
+          <p>Our backend applies state-of-the-art behavioral logic to understand movement patterns.</p>
+        </div>
+        <div class="step reveal-delayed-2">
+          <div class="step-number">03</div>
+          <div class="step-img-box">
+            <img src="https://images.unsplash.com/photo-1542884748-2b87b36c6b90?w=600&auto=format&fit=crop" alt="Response" />
+          </div>
+          <h3>Receive Protection</h3>
+          <p>Get immediate, life-critical notifications on any device, anywhere in the world.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Grid -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label">FEATURES</div>
+        <h2>Built for every role in the care circle.</h2>
+        <p>A unified system connecting patients, caregivers, and medical staff.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card reveal">
+          <div class="feat-icon blue"><i class="pi pi-eye"></i></div>
+          <h3>Risk Detection</h3>
+          <p>Automated rules to detect falls, wandering (fugues), and abnormal behavioral patterns.</p>
+        </div>
+        <div class="feature-card reveal-delayed-1">
+          <div class="feat-icon purple"><i class="pi pi-bell"></i></div>
+          <h3>Smart Alerts</h3>
+          <p>Instant notifications sent to caregivers and medical staff the moment a risk is identified.</p>
+        </div>
+        <div class="feature-card reveal-delayed-2">
+          <div class="feat-icon green"><i class="pi pi-shield"></i></div>
+          <h3>Secure Tracking</h3>
+          <p>Encrypted data handling ensuring patient privacy while maintaining 24/7 visibility.</p>
+        </div>
+        <div class="feature-card reveal-delayed-3">
+          <div class="feat-icon orange"><i class="pi pi-users"></i></div>
+          <h3>Multi-Role Access</h3>
+          <p>Dedicated workspaces for Administrators, Doctors, Caregivers, and Patients.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <p>&copy; 2026 Alzheimer Support System. Precision monitoring for peace of mind.</p>
+    </div>
+  </footer>
+</div>

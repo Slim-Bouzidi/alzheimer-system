@@ -54,8 +54,13 @@
                 },
                 {
                   "type": "anyComponentStyle",
+<<<<<<< HEAD
                   "maximumWarning": "2kB",
                   "maximumError": "4kB"
+=======
+                  "maximumWarning": "10kB",
+                  "maximumError": "50kB"
+>>>>>>> cb099be (user ui update)
                 }
               ],
               "outputHashing": "all"
@@ -101,6 +106,14 @@
             "styles": [
               "src/styles.scss"
             ],
+<<<<<<< HEAD
+=======
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles"
+              ]
+            },
+>>>>>>> cb099be (user ui update)
             "scripts": []
           }
         }

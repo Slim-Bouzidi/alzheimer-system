@@ -6,6 +6,10 @@ import com.alzheimer.patientservice.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+<<<<<<< HEAD
+=======
+import javax.validation.Valid;
+>>>>>>> cb099be (user ui update)
 
 import java.util.List;
 
@@ -16,8 +20,27 @@ public class PatientController {
 
     private final PatientService service;
 
+<<<<<<< HEAD
     @PostMapping
     public ResponseEntity<PatientResponse> create(@RequestBody PatientRequest request) {
+=======
+    @GetMapping("/me")
+    public ResponseEntity<PatientResponse> findMe(@RequestHeader("X-User-Id") String keycloakId) {
+        return ResponseEntity.ok(service.findByKeycloakId(keycloakId));
+    }
+
+    @PostMapping("/me")
+    public ResponseEntity<PatientResponse> updateMe(@RequestHeader("X-User-Id") String keycloakId, @Valid @RequestBody PatientRequest request) {
+        return ResponseEntity.ok(service.saveOrUpdateByKeycloakId(keycloakId, request));
+    }
+
+    @PostMapping
+    public ResponseEntity<PatientResponse> create(@Valid @RequestBody PatientRequest request, @RequestHeader(value = "X-User-Id", required = false) String keycloakId) {
+        // If keycloakId is provided in header, use it; otherwise use the one from request body
+        if (keycloakId != null && !keycloakId.isEmpty()) {
+            request.setKeycloakId(keycloakId);
+        }
+>>>>>>> cb099be (user ui update)
         return ResponseEntity.ok(service.create(request));
     }
 
@@ -30,9 +53,20 @@ public class PatientController {
     public ResponseEntity<PatientResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
+<<<<<<< HEAD
 
     @PutMapping("/{id}")
     public ResponseEntity<PatientResponse> update(@PathVariable Long id, @RequestBody PatientRequest request) {
+=======
+    
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<PatientResponse> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.findByUserId(userId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponse> update(@PathVariable Long id, @Valid @RequestBody PatientRequest request) {
+>>>>>>> cb099be (user ui update)
         return ResponseEntity.ok(service.update(id, request));
     }
 

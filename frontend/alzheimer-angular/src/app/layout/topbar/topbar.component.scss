@@ -15,15 +15,30 @@
   border-bottom: 1px solid var(--surface-border);
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   justify-content: space-between;
+=======
+  justify-content: stretch;
+>>>>>>> cb099be (user ui update)
   padding: 0 1.5rem;
   gap: 1rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
+<<<<<<< HEAD
 .topbar-search {
   flex: 1;
   max-width: 480px;
+=======
+.topbar-spacer {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.topbar-search {
+  flex: 0 1 520px;
+  max-width: 520px;
+>>>>>>> cb099be (user ui update)
   position: relative;
 
   .search-icon {
@@ -58,11 +73,27 @@
 }
 
 .topbar-actions {
+<<<<<<< HEAD
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+=======
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+::ng-deep .topbar-search .p-inputtext:hover,
+::ng-deep .topbar-search .p-inputtext:enabled:hover {
+  border-color: rgba(148, 163, 184, 0.75) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+
+>>>>>>> cb099be (user ui update)
 .icon-btn {
   width: 2.5rem !important;
   height: 2.5rem !important;

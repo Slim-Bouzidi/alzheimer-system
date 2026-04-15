@@ -8,7 +8,11 @@
   top: 0;
   background: var(--surface-card);
   border-right: 1px solid var(--surface-border);
+<<<<<<< HEAD
   z-index: 100;
+=======
+  z-index: 1000;
+>>>>>>> cb099be (user ui update)
   transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
 
@@ -16,8 +20,12 @@
     width: var(--sidebar-collapsed-width);
 
     .brand-text,
+<<<<<<< HEAD
     .user-info,
     .profile-menu-btn {
+=======
+    .user-info {
+>>>>>>> cb099be (user ui update)
       display: none;
     }
 
@@ -37,8 +45,12 @@
     }
 
     .toggle-btn {
+<<<<<<< HEAD
       flex: 0 0 auto;
       order: 1;
+=======
+      // No longer need flex overrides as it's absolutely positioned
+>>>>>>> cb099be (user ui update)
     }
 
     .nav-link {
@@ -58,12 +70,24 @@
     .user-profile {
       justify-content: center;
       padding: 0.5rem;
+<<<<<<< HEAD
+=======
+      flex-direction: column;
+      gap: 0.5rem;
+>>>>>>> cb099be (user ui update)
     }
 
     .profile-avatar {
       width: 2.5rem !important;
       height: 2.5rem !important;
     }
+<<<<<<< HEAD
+=======
+
+    .profile-menu-btn--collapsed {
+      display: flex !important;
+    }
+>>>>>>> cb099be (user ui update)
   }
 }
 
@@ -124,6 +148,7 @@
 }
 
 .toggle-btn {
+<<<<<<< HEAD
   flex-shrink: 0;
   width: 2.25rem;
   height: 2.25rem;
@@ -141,19 +166,52 @@
 
   .pi {
     font-size: 0.875rem;
+=======
+  position: absolute;
+  right: -13px; // Center on the border
+  top: 60px;
+  z-index: 10;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .pi {
+    font-size: 0.75rem;
+>>>>>>> cb099be (user ui update)
     font-weight: 700;
   }
 
   &:hover {
+<<<<<<< HEAD
     background: var(--surface-hover);
     border-color: var(--surface-hover);
     color: var(--text-color);
+=======
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+>>>>>>> cb099be (user ui update)
   }
 
   &:focus {
     outline: none;
+<<<<<<< HEAD
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(30, 41, 59, 0.15);
+=======
+    box-shadow: 0 0 0 2px var(--primary-light-bg);
+>>>>>>> cb099be (user ui update)
   }
 }
 
@@ -284,3 +342,12 @@
     border-radius: 50%;
   }
 }
+<<<<<<< HEAD
+=======
+
+.profile-menu-btn--collapsed {
+  margin: 0 !important;
+  width: 2rem;
+  height: 2rem;
+}
+>>>>>>> cb099be (user ui update)

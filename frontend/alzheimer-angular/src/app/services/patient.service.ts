@@ -5,7 +5,11 @@ import { Subject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class PatientService {
 
+<<<<<<< HEAD
   private api = 'http://localhost:8080/patient-service/api/patients';
+=======
+  private api = 'http://localhost:8080/api/patients';
+>>>>>>> cb099be (user ui update)
 
   private refreshSubject = new Subject<void>();
   refresh$ = this.refreshSubject.asObservable();
