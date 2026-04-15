@@ -1,0 +1,230 @@
+<div class="page-header">
+  <div class="page-header__left">
+    <h1 class="page-title">User Types</h1>
+    <p class="page-subtitle">Manage role-based access levels for platform users</p>
+  </div>
+  <div class="page-header__right">
+    <p-button
+      label="New User Type"
+      icon="pi pi-plus"
+      (onClick)="openCreate()"
+    />
+  </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-card__icon stat-card__icon--primary">
+      <i class="pi pi-id-card"></i>
+    </div>
+    <div class="stat-card__info">
+      <span class="stat-card__label">Total Types</span>
+      <span class="stat-card__value">{{ userTypes().length }}</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__icon stat-card__icon--success">
+      <i class="pi pi-check-circle"></i>
+    </div>
+    <div class="stat-card__info">
+      <span class="stat-card__label">Active</span>
+      <span class="stat-card__value">{{ getActiveCount() }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Table Card -->
+<p-card styleClass="table-card">
+  <!-- Toolbar -->
+  <ng-template pTemplate="header">
+    <div class="table-toolbar">
+      <div class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Search user types..."
+          (input)="onGlobalFilter($event)"
+          class="global-filter-input"
+        />
+      </div>
+      <div class="toolbar-actions">
+        <p-button
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="loadData()"
+          pTooltip="Refresh"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Skeleton Loader -->
+  @if (loading()) {
+    <div class="skeleton-table">
+      @for (row of skeletonRows; track $index) {
+        <div class="skeleton-row">
+          <p-skeleton height="1rem" width="12rem" />
+          <p-skeleton height="1rem" width="18rem" />
+          <p-skeleton height="1.5rem" width="3rem" borderRadius="12px" />
+          <p-skeleton height="1.5rem" width="5rem" borderRadius="12px" />
+          <p-skeleton height="1rem" width="7rem" />
+          <p-skeleton height="1.5rem" width="6rem" />
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Data Table -->
+  @if (!loading()) {
+    <p-table
+      #dt
+      [value]="userTypes()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[5, 10, 25]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [globalFilterFields]="['name', 'description', 'level']"
+      sortField="level"
+      [sortOrder]="-1"
+      dataKey="id"
+      styleClass="p-datatable-sm"
+      [tableStyle]="{ 'min-width': '60rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name" style="min-width: 12rem">
+            Name <p-sortIcon field="name" />
+          </th>
+          <th pSortableColumn="description" style="min-width: 18rem">
+            Description <p-sortIcon field="description" />
+          </th>
+          <th pSortableColumn="level" style="width: 8rem">
+            Level <p-sortIcon field="level" />
+          </th>
+          <th style="width: 9rem">Status</th>
+          <th pSortableColumn="createdAt" style="width: 10rem">
+            Created <p-sortIcon field="createdAt" />
+          </th>
+          <th style="width: 12rem; text-align: center">Actions</th>
+        </tr>
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="name" placeholder="Filter name" ariaLabel="Filter Name" />
+          </th>
+          <th>
+            <p-columnFilter type="text" field="description" placeholder="Filter description" ariaLabel="Filter Description" />
+          </th>
+          <th>
+            <p-columnFilter type="numeric" field="level" placeholder="Level" ariaLabel="Filter Level" />
+          </th>
+          <th>
+            <p-columnFilter field="isActive" matchMode="equals" [showMenu]="false">
+              <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-dropdown
+                  [ngModel]="value"
+                  (ngModelChange)="filter($event)"
+                  [options]="statusOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="All"
+                  styleClass="status-filter"
+                />
+              </ng-template>
+            </p-columnFilter>
+          </th>
+          <th></th>
+          <th></th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-userType>
+        <tr class="table-row">
+          <td>
+            <span class="name-cell">{{ userType.name }}</span>
+          </td>
+          <td>
+            <span class="desc-cell" [title]="userType.description">{{ userType.description }}</span>
+          </td>
+          <td>
+            <p-badge
+              [value]="userType.level"
+              [severity]="getLevelSeverity(userType.level)"
+            />
+          </td>
+          <td>
+            <p-tag
+              [value]="userType.isActive ? 'Active' : 'Inactive'"
+              [severity]="userType.isActive ? 'success' : 'secondary'"
+              [icon]="userType.isActive ? 'pi pi-check' : 'pi pi-times'"
+            />
+          </td>
+          <td>
+            <span class="date-cell">{{ userType.createdAt | date:'MMM d, y' }}</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <p-inputSwitch
+                [ngModel]="userType.isActive"
+                (ngModelChange)="onToggleActive(userType)"
+                pTooltip="Toggle active status"
+                tooltipPosition="top"
+              />
+              <button
+                type="button"
+                class="action-btn action-btn--edit"
+                (click)="openEdit(userType)"
+                pTooltip="Edit"
+                tooltipPosition="top"
+                aria-label="Edit"
+              >
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button
+                type="button"
+                class="action-btn action-btn--delete"
+                (click)="confirmDelete(userType)"
+                pTooltip="Delete"
+                tooltipPosition="top"
+                aria-label="Delete"
+              >
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <!-- Empty State -->
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <div class="empty-state__icon">
+                <i class="pi pi-inbox"></i>
+              </div>
+              <h3 class="empty-state__title">No User Types Found</h3>
+              <p class="empty-state__text">
+                Get started by creating your first user type to manage access levels.
+              </p>
+              <p-button label="Create First User Type" icon="pi pi-plus" (onClick)="openCreate()" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</p-card>
+
+<!-- Dialog -->
+<app-user-type-dialog
+  [visible]="dialogVisible()"
+  [mode]="dialogMode()"
+  [userType]="selectedUserType()"
+  [initialData]="initialCreateData()"
+  (saved)="onDialogSaved($event)"
+  (closed)="onDialogClosed()"
+/>

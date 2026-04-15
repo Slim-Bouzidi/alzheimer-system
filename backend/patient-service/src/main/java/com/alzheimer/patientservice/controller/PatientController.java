@@ -1,0 +1,64 @@
+package com.alzheimer.patientservice.controller;
+
+import com.alzheimer.patientservice.dto.PatientRequest;
+import com.alzheimer.patientservice.dto.PatientResponse;
+import com.alzheimer.patientservice.service.PatientService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/patients")
+@RequiredArgsConstructor
+public class PatientController {
+
+    private final PatientService service;
+
+    @GetMapping("/me")
+    public ResponseEntity<PatientResponse> findMe(@RequestHeader("X-User-Id") String keycloakId) {
+        return ResponseEntity.ok(service.findByKeycloakId(keycloakId));
+    }
+
+    @PostMapping("/me")
+    public ResponseEntity<PatientResponse> updateMe(@RequestHeader("X-User-Id") String keycloakId, @Valid @RequestBody PatientRequest request) {
+        return ResponseEntity.ok(service.saveOrUpdateByKeycloakId(keycloakId, request));
+    }
+
+    @PostMapping
+    public ResponseEntity<PatientResponse> create(@Valid @RequestBody PatientRequest request, @RequestHeader(value = "X-User-Id", required = false) String keycloakId) {
+        // If keycloakId is provided in header, use it; otherwise use the one from request body
+        if (keycloakId != null && !keycloakId.isEmpty()) {
+            request.setKeycloakId(keycloakId);
+        }
+        return ResponseEntity.ok(service.create(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PatientResponse>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+    
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<PatientResponse> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.findByUserId(userId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientResponse> update(@PathVariable Long id, @Valid @RequestBody PatientRequest request) {
+        return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

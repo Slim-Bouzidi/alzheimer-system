@@ -1,0 +1,72 @@
+# Example Docker Compose configuration for Keycloak with realm import
+# This file shows how to configure Keycloak to automatically import the realm configuration
+
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: alzheimer-keycloak
+    environment:
+      # Admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      
+      # Database configuration (optional - uses H2 by default in dev mode)
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: rootpassword
+      
+      # Hostname configuration
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      
+      # Proxy configuration (if behind reverse proxy)
+      KC_PROXY: edge
+    ports:
+      - "8081:8080"
+    volumes:
+      # Mount realm configuration for import
+      - ./keycloak/realm-config:/opt/keycloak/data/import
+      
+      # Mount custom themes
+      - ./themes:/opt/keycloak/themes
+      
+      # Persistent data storage
+      - keycloak-data:/opt/keycloak/data
+    command:
+      - start-dev
+      - --import-realm  # This flag enables automatic realm import on startup
+    networks:
+      - alzheimer-network
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: alzheimer-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: keycloak
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - alzheimer-network
+
+networks:
+  alzheimer-network:
+    driver: bridge
+
+volumes:
+  keycloak-data:
+  mysql-data:
+
+# Notes:
+# 1. The --import-realm flag tells Keycloak to import all JSON files from /opt/keycloak/data/import
+# 2. Import only happens if the realm doesn't already exist
+# 3. After first import, you need to manually configure the admin-cli client secret
+# 4. Run the configure-admin-cli.sh or configure-admin-cli.ps1 script after first startup

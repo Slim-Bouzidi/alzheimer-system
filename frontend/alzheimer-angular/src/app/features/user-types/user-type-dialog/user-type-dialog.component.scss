@@ -1,0 +1,130 @@
+:host ::ng-deep .user-type-dialog {
+  .p-dialog-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--p-surface-border);
+  }
+
+  .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .p-dialog-footer {
+    padding: 0;
+    border-top: 1px solid var(--p-surface-border);
+  }
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &--inline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .w-full {
+    width: 100%;
+  }
+}
+
+.field-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--p-text-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.required {
+  color: var(--p-red-500);
+  margin-left: 2px;
+}
+
+:host ::ng-deep .field-error {
+  .p-message {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+
+.char-count {
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
+  text-align: right;
+}
+
+.level-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.level-display {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.level-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--primary-color);
+  color: var(--primary-color-text);
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.level-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--p-text-muted-color);
+}
+
+:host ::ng-deep .level-slider {
+  .p-slider {
+    height: 6px;
+  }
+}
+
+.level-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
+  margin-top: 0.5rem;
+}
+
+.toggle-info {
+  flex: 1;
+}
+
+.toggle-hint {
+  font-size: 0.8125rem;
+  color: var(--p-text-muted-color);
+  margin: 0.2rem 0 0;
+  line-height: 1.5;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+}
