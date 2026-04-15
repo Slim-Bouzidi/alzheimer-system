@@ -1,0 +1,102 @@
+<div class="split-view">
+  <!-- Left Side: Custom Login Form -->
+  <main class="form-section">
+    <div class="form-container">
+      <header class="form-header">
+        <div class="logo-box">
+          <i class="pi pi-heart-fill"></i>
+        </div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to continue to your secure monitoring portal.</p>
+      </header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+
+        <!-- Success Message (after registration) -->
+        <div class="alert alert-success" *ngIf="successMessage">
+          <i class="pi pi-check-circle"></i>
+          <span>{{ successMessage }}</span>
+        </div>
+
+        <!-- Error Message -->
+        <div class="alert alert-error" *ngIf="errorMessage">
+          <i class="pi pi-times-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input pInputText id="email" formControlName="email" type="email" placeholder="john@example.com"
+            class="w-full custom-input" [class.ng-invalid]="isFieldInvalid('email')" />
+          <small class="field-error" *ngIf="isFieldInvalid('email')">
+            Please enter a valid email address
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <p-password id="password" formControlName="password" placeholder="••••••••" [toggleMask]="true"
+            [feedback]="false" styleClass="w-full" inputStyleClass="w-full custom-input"
+            [class.ng-invalid]="isFieldInvalid('password')">
+          </p-password>
+          <small class="field-error" *ngIf="isFieldInvalid('password')">
+            Password is required
+          </small>
+        </div>
+
+        <button type="submit" class="btn-primary-full" [disabled]="isSubmitting">
+          <i class="pi pi-sign-in mr-2" *ngIf="!isSubmitting"></i>
+          {{ isSubmitting ? 'Signing in...' : 'Sign In' }}
+        </button>
+
+        <footer class="form-footer">
+          <p>Don't have an account? <a routerLink="/register">Create Account</a></p>
+        </footer>
+      </form>
+    </div>
+    <div class="footer-legal">
+      &copy; 2026 Alzheimer Support. Precision care infrastructure.
+    </div>
+  </main>
+
+  <!-- Right Side: Immersive Promo -->
+  <aside class="promo-section">
+    <div class="promo-content">
+      <h2 class="promo-title">
+        Secure <span class="italic">Access</span> <br />
+        to Patient <br />
+        <span class="highlight">Monitoring.</span>
+      </h2>
+
+      <div class="glass-hud">
+        <div class="hud-item">
+          <div class="hud-icon"><i class="pi pi-lock"></i></div>
+          <div class="hud-data">
+            <span class="val">HIPAA</span>
+            <span class="lbl">Compliant Security</span>
+          </div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item">
+          <div class="hud-icon"><i class="pi pi-shield"></i></div>
+          <div class="hud-data">
+            <span class="val">256-bit</span>
+            <span class="lbl">End-to-End Encryption</span>
+          </div>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-item emergency">
+          <div class="hud-icon"><i class="pi pi-bolt"></i></div>
+          <div class="hud-data">
+            <span class="val">24/7</span>
+            <span class="lbl">Always Monitoring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="promo-bg-layers">
+      <div class="gradient-layer"></div>
+      <div class="texture-layer"></div>
+    </div>
+  </aside>
+</div>

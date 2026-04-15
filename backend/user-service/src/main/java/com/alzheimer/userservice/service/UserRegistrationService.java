@@ -4,18 +4,13 @@ import com.alzheimer.userservice.dto.UserRegistrationRequest;
 import com.alzheimer.userservice.dto.UserResponse;
 import com.alzheimer.userservice.entity.Role;
 import com.alzheimer.userservice.entity.User;
+import com.alzheimer.userservice.event.UserCreatedEvent;
 import com.alzheimer.userservice.exception.KeycloakServiceException;
 import com.alzheimer.userservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,19 +24,16 @@ public class UserRegistrationService {
 
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
-    private final RestTemplate restTemplate;
-
-    @Value("${patient.service.url:http://localhost:8082}")
-    private String patientServiceUrl;
+    private final UserEventPublisher eventPublisher;
 
     @Autowired
     public UserRegistrationService(
             UserRepository userRepository,
             KeycloakAdminService keycloakAdminService,
-            RestTemplate restTemplate) {
+            UserEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.keycloakAdminService = keycloakAdminService;
-        this.restTemplate = restTemplate;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -67,9 +59,17 @@ public class UserRegistrationService {
             // 3. Create application user record
             User user = createUserRecord(keycloakId, request);
 
-            // 4. If role is PATIENT, create patient record
+            // 4. If role is PATIENT, publish event to create patient record
             if (request.getRole() == Role.PATIENT) {
-                createPatientRecord(user.getId(), request);
+                UserCreatedEvent event = UserCreatedEvent.builder()
+                        .userId(user.getId())
+                        .keycloakId(user.getKeycloakId())
+                        .email(user.getEmail())
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .role(user.getRole())
+                        .build();
+                eventPublisher.publishUserCreatedEvent(event);
             }
 
             log.info("Successfully registered user with ID: {} and Keycloak ID: {}", user.getId(), keycloakId);
@@ -164,38 +164,6 @@ public class UserRegistrationService {
         return user;
     }
 
-    /**
-     * Creates patient record by calling Patient Service
-     * 
-     * @param userId Application user ID
-     * @param request User registration request
-     */
-    void createPatientRecord(Long userId, UserRegistrationRequest request) {
-        log.debug("Creating patient record for user ID: {}", userId);
-
-        try {
-            String url = patientServiceUrl + "/api/patients";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            Map<String, Object> patientRequest = new HashMap<>();
-            patientRequest.put("userId", userId);
-            patientRequest.put("firstName", request.getFirstName());
-            patientRequest.put("lastName", request.getLastName());
-
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(patientRequest, headers);
-
-            restTemplate.postForEntity(url, entity, Object.class);
-            log.info("Successfully created patient record for user ID: {}", userId);
-
-        } catch (RestClientException e) {
-            // Handle Patient Service unavailability gracefully
-            log.warn("Patient Service unavailable during registration for user ID: {}. Patient record not created: {}",
-                    userId, e.getMessage());
-            // Return success for user creation even if patient creation fails
-        }
-    }
 
     /**
      * Maps User entity to UserResponse DTO
