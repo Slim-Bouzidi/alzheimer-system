@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Maventarget/*.log# IntelliJ.idea/*.iml# Nodenode_modules/dist/.angular/# OS.DS_StoreThumbs.db# Docker*.pid
-=======
 ############################
 # Maven / Java
 ############################
@@ -43,4 +40,3 @@ Thumbs.db
 # Docker
 ############################
 *.pid
->>>>>>> cb099be (user ui update)
