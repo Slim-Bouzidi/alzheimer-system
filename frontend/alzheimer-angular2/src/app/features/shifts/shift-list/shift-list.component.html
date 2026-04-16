@@ -1,0 +1,91 @@
+<div class="card shift-card">
+    <div class="page-header">
+        <div>
+            <h2>🕐 Shifts Planning</h2>
+            <p>Define working schedules for each driver.</p>
+        </div>
+        <p-button label="New Shift" (onClick)="openCreate()" styleClass="header-cta" />
+    </div>
+
+    <div class="table-wrap">
+        <p-table [value]="shifts()" [loading]="loading()" responsiveLayout="scroll" [paginator]="true" [rows]="5"
+            styleClass="datatable-modern p-datatable-striped p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Staff</th>
+                    <th>Day</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                    <th class="actions-col">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-s>
+                <tr>
+                    <td>
+                        <div class="font-bold">{{ displayStaffName(s) }}</div>
+                        <code>{{ displayStaffUsername(s) }}</code>
+                    </td>
+                    <td><span class="day-badge">{{ dayEn[s.dayOfWeek] || s.dayOfWeek }}</span></td>
+                    <td>{{ s.startTime }}</td>
+                    <td>{{ s.endTime }}</td>
+                    <td>
+                        <span class="status-pill" [class.active]="s.active" [class.inactive]="!s.active">
+                            {{ s.active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="action-btn btn-edit" (click)="openEdit(s)" title="Edit">
+                            <span class="btn-label">Edit</span>
+                        </button>
+                        <button class="action-btn btn-delete" (click)="delete(s)" title="Delete">
+                            <span class="btn-label">Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="empty-state">No shifts found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-toast />
+    <p-confirmDialog />
+</div>
+
+<p-dialog [header]="dialogMode() === 'create' ? 'New Shift' : 'Edit Shift'" [visible]="dialogVisible()"
+    (visibleChange)="dialogVisible.set($event)" [modal]="true" [style]="{width:'440px'}" [draggable]="false"
+    [appendTo]="'body'" styleClass="handsome-dialog" [dismissableMask]="true">
+    <div class="dialog-form">
+        <div class="field">
+            <label>Staff *</label>
+            <p-dropdown [options]="staffOptions()" [(ngModel)]="formModel.staffId" optionLabel="label"
+                optionValue="value" placeholder="Select staff" [filter]="true" filterBy="label"
+                (ngModelChange)="clearFieldError('staffId')" />
+            <small class="field-error" *ngIf="fieldErrors()['staffId']">{{ fieldErrors()['staffId'] }}</small>
+        </div>
+        <div class="field">
+            <label>Day *</label>
+            <p-dropdown [options]="dayOptions" [(ngModel)]="formModel.dayOfWeek" optionLabel="label" optionValue="value"
+                placeholder="Choose a day" (ngModelChange)="clearFieldError('dayOfWeek')" />
+            <small class="field-error" *ngIf="fieldErrors()['dayOfWeek']">{{ fieldErrors()['dayOfWeek'] }}</small>
+        </div>
+        <div class="field">
+            <label>Start Time (HH:mm)</label>
+            <input pInputText type="time" [(ngModel)]="formModel.startTime" (ngModelChange)="clearFieldError('startTime')" />
+            <small class="field-error" *ngIf="fieldErrors()['startTime']">{{ fieldErrors()['startTime'] }}</small>
+        </div>
+        <div class="field">
+            <label>End Time (HH:mm)</label>
+            <input pInputText type="time" [(ngModel)]="formModel.endTime" (ngModelChange)="clearFieldError('endTime')" />
+            <small class="field-error" *ngIf="fieldErrors()['endTime']">{{ fieldErrors()['endTime'] }}</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="dialogVisible.set(false)" />
+        <p-button label="Save" (onClick)="save()" />
+    </ng-template>
+</p-dialog>

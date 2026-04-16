@@ -1,0 +1,163 @@
+<div class="dashboard-container" *ngIf="currentUser">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="user-info">
+        <h1>{{ 'DASHBOARD.WELCOME' | translate }} {{ currentUser.firstName }} {{ currentUser.lastName }}</h1>
+        <p class="role-badge">{{ getRoleDisplayName(currentUser.role) }}</p>
+      </div>
+      <div class="header-actions">
+        <button (click)="navigateToProfile()" class="btn btn-secondary">
+          👤 Profil
+        </button>
+        <button (click)="navigateToSettings()" class="btn btn-secondary">
+          ⚙️ Paramètres
+        </button>
+        <button (click)="logout()" class="btn btn-danger">
+          {{ 'COMMON.LOGOUT' | translate }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <!-- Section Agenda -->
+    <section class="agenda-section">
+      <div class="section-header">
+        <h2>{{ 'DASHBOARD.AGENDA_TITLE' | translate }}</h2>
+        <p>{{ 'DASHBOARD.AGENDA_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="agenda-content">
+        <!-- Affichage Date/Heure simplifié -->
+        <div class="date-time-card">
+          <div class="date-info">
+            <div class="day-number">{{ day }}</div>
+            <div class="date-details">
+              <div class="month-year">{{ monthYear }}</div>
+              <div class="weekday">{{ weekday }}</div>
+            </div>
+          </div>
+          <div class="time-info">
+            <div class="current-time">{{ time }}</div>
+            <div class="greeting">{{ greeting }}!</div>
+          </div>
+        </div>
+
+        <!-- Programme Journalier simplifié -->
+        <div class="schedule-card">
+          <h3>{{ 'DASHBOARD.DAY_SCHEDULE' | translate }}</h3>
+          <div class="events-list">
+            <div class="event-item">
+              <div class="event-time">08:00</div>
+              <div class="event-content">
+                <h4>{{ 'DASHBOARD.MEDICATION_INTAKE' | translate }}</h4>
+                <p>{{ 'DASHBOARD.MORNING_MEDICATION' | translate }}</p>
+                <span class="priority high">Élevé</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-time">08:30</div>
+              <div class="event-content">
+                <h4>{{ 'DASHBOARD.BREAKFAST' | translate }}</h4>
+                <p>{{ 'DASHBOARD.BALANCED_MEAL' | translate }}</p>
+                <span class="priority medium">Moyen</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-time">10:00</div>
+              <div class="event-content">
+                <h4>{{ 'DASHBOARD.PHYSIOTHERAPY' | translate }}</h4>
+                <p>{{ 'DASHBOARD.REHAB_SESSION' | translate }}</p>
+                <span class="priority medium">Moyen</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-time">12:00</div>
+              <div class="event-content">
+                <h4>{{ 'DASHBOARD.LUNCH' | translate }}</h4>
+                <p>{{ 'DASHBOARD.MAIN_MEAL' | translate }}</p>
+                <span class="priority medium">Moyen</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <div class="event-time">14:30</div>
+              <div class="event-content">
+                <h4>{{ 'DASHBOARD.COGNITIVE_STIMULATION' | translate }}</h4>
+                <p>{{ 'DASHBOARD.MEMORY_GAMES' | translate }}</p>
+                <span class="priority low">Faible</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Statistiques -->
+    <section class="stats-section">
+      <div class="welcome-card">
+        <h2>{{ 'DASHBOARD.DASHBOARD_TITLE' | translate }}</h2>
+        <p>{{ 'DASHBOARD.DASHBOARD_DESCRIPTION' | translate }}</p>
+
+        <div class="quick-stats">
+          <div class="stat-item">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+              <h3>{{ 'DASHBOARD.PATIENTS_MONITORED' | translate }}</h3>
+              <p class="stat-number">12</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-content">
+              <h3>{{ 'DASHBOARD.ACTIVE_ALERTS' | translate }}</h3>
+              <p class="stat-number">3</p>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-icon">📅</div>
+            <div class="stat-content">
+              <h3>{{ 'DASHBOARD.APPOINTMENTS_TODAY' | translate }}</h3>
+              <p class="stat-number">2</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-section">
+        <h3>{{ 'DASHBOARD.QUICK_ACTIONS' | translate }}</h3>
+        <div class="action-cards">
+          <div class="action-card" *ngIf="currentUser.role === UserRole.ADMIN">
+            <div class="action-icon">⚙️</div>
+            <h4>{{ 'DASHBOARD.USER_MANAGEMENT' | translate }}</h4>
+            <p>{{ 'DASHBOARD.USER_MANAGEMENT_DESC' | translate }}</p>
+            <button class="btn btn-primary">{{ 'COMMON.MANAGE' | translate }}</button>
+          </div>
+
+          <div class="action-card"
+            *ngIf="currentUser.role === UserRole.AIDANT || currentUser.role === UserRole.SOIGNANT">
+            <div class="action-icon">❤️</div>
+            <h4>{{ 'DASHBOARD.PATIENT_MONITORING' | translate }}</h4>
+            <p>{{ 'DASHBOARD.PATIENT_MONITORING_DESC' | translate }}</p>
+            <button class="btn btn-primary">{{ 'COMMON.MONITOR' | translate }}</button>
+          </div>
+
+          <div class="action-card" *ngIf="currentUser.role === UserRole.SOIGNANT">
+            <div class="action-icon">⚕️</div>
+            <h4>{{ 'DASHBOARD.MEDICAL_REPORTS' | translate }}</h4>
+            <p>{{ 'DASHBOARD.MEDICAL_REPORTS_DESC' | translate }}</p>
+            <button class="btn btn-primary">{{ 'COMMON.VIEW' | translate }}</button>
+          </div>
+
+          <div class="action-card" *ngIf="currentUser.role === UserRole.DOCTEUR">
+            <div class="action-icon">📋</div>
+            <h4>{{ 'DASHBOARD.MEDICAL_REPORTS' | translate }}</h4>
+            <p>{{ 'DASHBOARD.MEDICAL_REPORTS_DESC' | translate }}</p>
+            <button class="btn btn-primary">{{ 'COMMON.VIEW' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

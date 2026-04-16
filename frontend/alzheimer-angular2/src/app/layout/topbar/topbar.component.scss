@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: var(--topbar-height);
+  z-index: 1000;
+  transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.topbar {
+  height: 100%;
+  width: 100%;
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  gap: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.topbar-search {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color-secondary);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    border-radius: 999px;
+    background: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    padding: 0.5rem 1rem 0.5rem 2.75rem;
+    font-size: 0.9375rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: var(--text-color-secondary);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.12);
+    }
+  }
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+
+  i {
+    font-size: 1.25rem;
+  }
+}
+
+::ng-deep .add-user-btn.p-button {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}

@@ -1,0 +1,28 @@
+<header class="topbar-page">
+  <h1>{{ 'SOIGNANT_NOTIFICATIONS.TITLE' | translate }}</h1>
+  <button class="btn-outline" (click)="logout()">Déconnexion</button>
+</header>
+<main class="content-area">
+  <section class="card">
+    <div class="card-header">
+      <h2>{{ 'SOIGNANT_NOTIFICATIONS.CENTER' | translate }}</h2>
+    </div>
+    <p class="section-intro">{{ 'SOIGNANT_NOTIFICATIONS.INTRO' | translate }}</p>
+    <div class="list-simple">
+      <div *ngFor="let n of notifications" class="list-item" [class.notif-fait]="n.statut === 'fait'" [class.notif-probleme]="n.statut === 'probleme_rencontre'">
+        <div class="notif-line">
+          <strong>{{ n.heure }}</strong> {{ n.titre }} · {{ n.message }}
+        </div>
+        <div *ngIf="n.statut === 'a_faire'" class="notif-buttons">
+          <button type="button" class="btn-primary" (click)="marquerFait(n.id)">{{ 'SOIGNANT.DONE' | translate }}</button>
+          <button type="button" class="btn-outline" (click)="marquerReporter(n.id)">{{ 'SOIGNANT.REPORT' | translate }}</button>
+          <button type="button" class="btn-probleme" (click)="marquerProbleme(n.id)">{{ 'SOIGNANT.PROBLEM_ENCOUNTERED' | translate }}</button>
+        </div>
+        <span *ngIf="n.statut === 'fait'" class="status-badge done">{{ 'SOIGNANT.DONE' | translate }}</span>
+        <span *ngIf="n.statut === 'reporter'" class="status-badge reporter">{{ 'SOIGNANT.REPORT' | translate }}</span>
+        <span *ngIf="n.statut === 'probleme_rencontre'" class="status-badge probleme">{{ 'SOIGNANT.PROBLEM_ENCOUNTERED' | translate }}</span>
+      </div>
+    </div>
+    <p *ngIf="notifications.length === 0" class="empty-msg">{{ 'SOIGNANT_NOTIFICATIONS.NO_NOTIFICATION' | translate }}</p>
+  </section>
+</main>

@@ -1,0 +1,688 @@
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1 class="page-title-small">{{ 'DOCTOR.PATIENT_MANAGEMENT' | translate }}</h1>
+
+            <div class="topbar-actions">
+                <button class="icon-btn notice-btn">
+                    <span class="icon">🔔</span>
+                    <span class="badge-dot"></span>
+                </button>
+                <button class="btn btn-logout" (click)="logout()">
+                    <span>Déconnexion</span>
+                    <span class="icon">🚪</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Patients Content -->
+        <main class="content-area patients-content">
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" [placeholder]="'DOCTOR.SEARCH_BY_NAME' | translate" class="search-input"
+                        (input)="filterPatients($event)">
+                </div>
+
+                <div class="sort-container" style="margin-left: auto; margin-right: 15px;">
+                    <label for="sortSelect" style="margin-right: 5px; font-weight: bold;">Trier par : </label>
+                    <select id="sortSelect" class="sort-select" (change)="onSortChange($event)"
+                        style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="default">Défaut</option>
+                        <option value="status">Statut</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" (click)="addPatient()">
+                    <span>+</span> {{ 'DOCTOR.NEW_PATIENT' | translate }}
+                </button>
+            </div>
+
+            <!-- Add Patient Dialog -->
+            <div class="modal-overlay" *ngIf="showAddPatientDialog" (click)="addPatient()"></div>
+            <div class="modal-dialog" *ngIf="showAddPatientDialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>{{ 'DOCTOR.NEW_PATIENT' | translate }}</h2>
+                        <button class="modal-close" (click)="addPatient()">✕</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" [(ngModel)]="newPatient.firstName" placeholder="First name">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" [(ngModel)]="newPatient.lastName" placeholder="Last name">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" [(ngModel)]="newPatient.dateOfBirth">
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select [(ngModel)]="newPatient.gender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" [(ngModel)]="newPatient.phone" placeholder="Phone number">
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" [(ngModel)]="newPatient.address" placeholder="Address">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" [(ngModel)]="newPatient.familyHistoryAlzheimer">
+                                    Family History of Alzheimer
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select [(ngModel)]="newPatient.status">
+                                    <option value="stable">Stable</option>
+                                    <option value="surveillance">Surveillance</option>
+                                    <option value="high-risk">High Risk</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" (click)="addPatient()">
+                            {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                        <button class="btn btn-primary" (click)="submitNewPatient()">
+                            {{ 'COMMON.SAVE' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state" *ngIf="isLoading">
+                <div class="loading-spinner">⏳</div>
+                <h3>{{ 'DOCTOR.LOADING_PATIENTS' | translate }}</h3>
+                <p>{{ 'DOCTOR.LOADING_BACKEND' | translate }}</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-state" *ngIf="error && !isLoading">
+                <span class="error-icon">❌</span>
+                <h3>{{ 'DOCTOR.CONNECTION_ERROR' | translate }}</h3>
+                <p>{{ error }}</p>
+                <button class="btn btn-primary" (click)="loadPatientsFromDatabase()">
+                    🔄 {{ 'COMMON.RETRY' | translate }}
+                </button>
+            </div>
+
+            <!-- Patients Grid -->
+            <div class="patients-grid" *ngIf="!isLoading && !error">
+                <div class="patient-card" *ngFor="let patient of filteredPatients">
+                    <div class="patient-header">
+                        <div class="patient-avatar-lg" [ngClass]="getStatusClass(patient.status)">
+                            {{ getPatientInitials(patient) }}
+                        </div>
+                        <div class="patient-status-dropdown">
+                            <button class="patient-status-badge" [ngClass]="getStatusClass(patient.status)"
+                                (click)="toggleStatusDropdown(patient)">
+                                {{ getStatusLabel(patient.status) }} ▼
+                            </button>
+                            <div class="status-dropdown-menu" *ngIf="patient.showStatusDropdown">
+                                <button class="status-option" (click)="updatePatientStatus(patient, 'stable')">
+                                    Stable
+                                </button>
+                                <button class="status-option" (click)="updatePatientStatus(patient, 'attention')">
+                                    Surveillance
+                                </button>
+                                <button class="status-option" (click)="updatePatientStatus(patient, 'high-risk')">
+                                    High Risk
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="patient-info">
+                        <h3>{{ patient.prenom }} {{ patient.nom }}</h3>
+                        <p class="patient-meta" *ngIf="patient.dateNaissance">
+                            {{ patient.dateNaissance }}
+                        </p>
+                        <p class="patient-meta" *ngIf="patient.gender">
+                            {{ patient.gender === 'M' ? 'Male' : (patient.gender === 'F' ? 'Female' : patient.gender) }}
+                        </p>
+                        <p class="patient-phone" *ngIf="patient.numeroDeTelephone">
+                            📞 {{ patient.numeroDeTelephone }}
+                        </p>
+                    </div>
+
+                    <!-- AI Risk Score Display -->
+                    <div class="patient-risk" *ngIf="patient.riskScore !== undefined && patient.riskScore !== null">
+                        <span class="risk-label">AI Risk Score:</span>
+                        <span class="risk-score">{{ patient.riskScore }}</span>
+                        <span class="risk-badge" [ngClass]="patient.riskLevel?.toLowerCase() || ''">
+                            {{ patient.riskLevel || 'N/A' }}
+                        </span>
+                    </div>
+
+                    <!-- plus de stats spécifiques, seulement les infos demandées -->
+
+                    <!-- Assignation soignant -->
+                    <div class="soignant-assign">
+                        <label class="assign-label">👩‍⚕️ {{ 'DOCTOR.ASSIGNED_CAREGIVER' | translate }}</label>
+                        <select class="assign-select" [value]="patient.soignant?.id || ''"
+                            (change)="assignerSoignant(patient, $event)">
+                            <option value="">{{ 'DOCTOR.NOT_ASSIGNED_OPTION' | translate }}</option>
+                            <option *ngFor="let s of soignants" [value]="s.id">
+                                {{ s.nom }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="patient-actions">
+                        <!-- Treatment Button -->
+                        <button class="btn-icon treatment-btn"
+                            [title]="hasTreatment(patient) ? 'View treatment' : 'Add treatment'"
+                            (click)="openTreatmentDialog(patient)">
+                            {{ hasTreatment(patient) ? '💊' : '➕' }}
+                        </button>
+                        <!-- Medical Record Button -->
+                        <button class="btn-icon medical-btn"
+                            [title]="hasMedicalRecord(patient) ? 'View medical record' : 'Add medical record'"
+                            (click)="openMedicalRecordDialog(patient)">
+                            {{ hasMedicalRecord(patient) ? '📖' : '➕' }}
+                        </button>
+                        <!-- Emergency Contact Button -->
+                        <button class="btn-icon emergency-btn"
+                            [title]="hasEmergencyContact(patient) ? 'Voir contact urgence' : 'Ajouter contact urgence'"
+                            (click)="openEmergencyContactDialog(patient)">
+                            {{ hasEmergencyContact(patient) ? '🚨' : '➕' }}
+                        </button>
+                        <button class="btn-icon delete-btn" title="Supprimer patient"
+                            (click)="deletePatient(patient)">🗑️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State (Base de données vide) -->
+            <div class="empty-state"
+                *ngIf="!isLoading && !error && filteredPatients.length === 0 && patients.length === 0">
+                <span class="empty-icon">�️</span>
+                <h3>{{ 'DOCTOR.NO_PATIENTS_DB' | translate }}</h3>
+                <p>{{ 'DOCTOR.DB_EMPTY' | translate }}</p>
+                <p>{{ 'DOCTOR.ADD_PATIENTS_BACKEND' | translate }}</p>
+            </div>
+
+            <!-- No Results State -->
+            <div class="empty-state"
+                *ngIf="!isLoading && !error && filteredPatients.length === 0 && patients.length > 0">
+                <span class="empty-icon">🔍</span>
+                <h3>{{ 'DOCTOR.NO_PATIENT_FOUND' | translate }}</h3>
+                <p>{{ 'DOCTOR.NO_PATIENT_MATCH' | translate }}</p>
+            </div>
+
+            <!-- Treatment Dialog -->
+            <div class="modal-overlay" *ngIf="showTreatmentDialog" (click)="closeTreatmentDialog()"></div>
+            <div class="modal-dialog" *ngIf="showTreatmentDialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>{{ hasTreatment(selectedPatient!) ? 'Treatment' : 'Add Treatment' }} - {{
+                            selectedPatient?.nomComplet }}</h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button *ngIf="hasTreatment(selectedPatient!)" class="btn btn-primary"
+                                style="padding: 6px 12px; font-size: 14px;"
+                                (click)="exportTreatmentsPdf(selectedPatient!)">
+                                📄 Export PDF
+                            </button>
+                            <button class="modal-close" (click)="closeTreatmentDialog()">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- View Mode - Show existing treatment -->
+                        <div *ngIf="hasTreatment(selectedPatient!)">
+                            <div *ngFor="let treatment of selectedPatient!.treatments" class="treatment-view">
+
+                                <!-- Affichage simple -->
+                                <div *ngIf="editingTreatmentId !== treatment.idTreatment">
+                                    <div class="treatment-field">
+                                        <label>Treatment Name:</label>
+                                        <p>{{ treatment.treatmentName }}</p>
+                                    </div>
+                                    <div class="treatment-field">
+                                        <label>Dosage:</label>
+                                        <p>{{ treatment.dosage }}</p>
+                                    </div>
+                                    <div class="treatment-field">
+                                        <label>Frequency:</label>
+                                        <p>{{ treatment.frequency }}</p>
+                                    </div>
+                                    <div class="treatment-field" *ngIf="treatment.startDate">
+                                        <label>Start Date:</label>
+                                        <p>{{ treatment.startDate }}</p>
+                                    </div>
+                                    <div class="treatment-field" *ngIf="treatment.endDate">
+                                        <label>End Date:</label>
+                                        <p>{{ treatment.endDate }}</p>
+                                    </div>
+                                    <div class="treatment-field" *ngIf="treatment.status">
+                                        <label>Status:</label>
+                                        <p>{{ treatment.status }}</p>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="startEditTreatment(treatment)">
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="btn btn-danger"
+                                            (click)="deleteTreatment(selectedPatient!, treatment)">
+                                            🗑️ Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Formulaire d'édition inline -->
+                                <div *ngIf="editingTreatmentId === treatment.idTreatment" class="edit-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Treatment Name *</label>
+                                            <input type="text" [(ngModel)]="editTreatmentModel.treatmentName">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Dosage</label>
+                                            <input type="text" [(ngModel)]="editTreatmentModel.dosage">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Frequency</label>
+                                            <input type="text" [(ngModel)]="editTreatmentModel.frequency">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Start Date</label>
+                                            <input type="date" [(ngModel)]="editTreatmentModel.startDate">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>End Date</label>
+                                            <input type="date" [(ngModel)]="editTreatmentModel.endDate">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Status</label>
+                                            <select [(ngModel)]="editTreatmentModel.status">
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                                <option value="Paused">Paused</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="cancelEditTreatment()">
+                                            ✖️ Cancel
+                                        </button>
+                                        <button class="btn btn-primary" (click)="saveEditTreatment(selectedPatient!)">
+                                            💾 Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Mode - Show form to create new treatment -->
+                        <div *ngIf="!hasTreatment(selectedPatient!)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Treatment Name *</label>
+                                    <input type="text" [(ngModel)]="newTreatment.treatmentName"
+                                        placeholder="Treatment name">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Dosage</label>
+                                    <input type="text" [(ngModel)]="newTreatment.dosage" placeholder="Ex: 10mg, 500ml">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Frequency</label>
+                                    <input type="text" [(ngModel)]="newTreatment.frequency"
+                                        placeholder="Ex: Once daily, Twice daily">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Start Date</label>
+                                    <input type="date" [(ngModel)]="newTreatment.startDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>End Date</label>
+                                    <input type="date" [(ngModel)]="newTreatment.endDate">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select [(ngModel)]="newTreatment.status">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Paused">Paused</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" (click)="closeTreatmentDialog()">
+                            {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                        <button class="btn btn-primary" *ngIf="!hasTreatment(selectedPatient!)"
+                            (click)="submitTreatment()">
+                            {{ 'COMMON.SAVE' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Record Dialog -->
+            <div class="modal-overlay" *ngIf="showMedicalRecordDialog" (click)="closeMedicalRecordDialog()"></div>
+            <div class="modal-dialog" *ngIf="showMedicalRecordDialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>{{ hasMedicalRecord(selectedPatient!) ? 'Medical Record' : 'Add Medical Record' }} - {{
+                            selectedPatient?.nomComplet }}</h2>
+                        <button class="modal-close" (click)="closeMedicalRecordDialog()">✕</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- View Mode - Show existing medical record -->
+                        <div *ngIf="hasMedicalRecord(selectedPatient!)">
+                            <div *ngFor="let record of selectedPatient!.medicalRecords" class="medical-record-view">
+
+                                <!-- Affichage simple -->
+                                <div *ngIf="editingRecordId !== record.idRecord">
+                                    <div class="record-field">
+                                        <label>Diagnosis:</label>
+                                        <p>{{ record.diagnosis }}</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label>Disease Stage:</label>
+                                        <p>{{ record.diseaseStage }}</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label>Medical History:</label>
+                                        <p>{{ record.medicalHistory }}</p>
+                                    </div>
+                                    <div class="record-field">
+                                        <label>Allergies:</label>
+                                        <p>{{ record.allergies }}</p>
+                                    </div>
+                                    <div class="record-field" *ngIf="record.recordDate">
+                                        <label>Record Date:</label>
+                                        <p>{{ record.recordDate }}</p>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="startEditMedicalRecord(record)">
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="btn btn-danger"
+                                            (click)="deleteMedicalRecord(selectedPatient!, record)">
+                                            🗑️ Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Formulaire d'édition inline -->
+                                <div *ngIf="editingRecordId === record.idRecord" class="edit-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Diagnosis *</label>
+                                            <input type="text" [(ngModel)]="editMedicalRecordModel.diagnosis">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Disease Stage</label>
+                                            <input type="text" [(ngModel)]="editMedicalRecordModel.diseaseStage">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Medical History</label>
+                                            <textarea [(ngModel)]="editMedicalRecordModel.medicalHistory"
+                                                rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Allergies</label>
+                                            <textarea [(ngModel)]="editMedicalRecordModel.allergies"
+                                                rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="cancelEditMedicalRecord()">
+                                            ✖️ Cancel
+                                        </button>
+                                        <button class="btn btn-primary"
+                                            (click)="saveEditMedicalRecord(selectedPatient!)">
+                                            💾 Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Mode - Show form to create new medical record -->
+                        <div *ngIf="!hasMedicalRecord(selectedPatient!)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Diagnosis *</label>
+                                    <input type="text" [(ngModel)]="newMedicalRecord.diagnosis" placeholder="Diagnosis">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Disease Stage</label>
+                                    <input type="text" [(ngModel)]="newMedicalRecord.diseaseStage"
+                                        placeholder="Ex: Mild, Moderate, Severe">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Medical History</label>
+                                    <textarea [(ngModel)]="newMedicalRecord.medicalHistory"
+                                        placeholder="Medical history" rows="4"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Allergies</label>
+                                    <textarea [(ngModel)]="newMedicalRecord.allergies" placeholder="Known allergies"
+                                        rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" (click)="closeMedicalRecordDialog()">
+                            {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                        <button class="btn btn-primary" *ngIf="!hasMedicalRecord(selectedPatient!)"
+                            (click)="submitMedicalRecord()">
+                            {{ 'COMMON.SAVE' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Contact Dialog -->
+            <div class="modal-overlay" *ngIf="showEmergencyContactDialog" (click)="closeEmergencyContactDialog()"></div>
+            <div class="modal-dialog" *ngIf="showEmergencyContactDialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>{{ hasEmergencyContact(selectedPatient!) ? 'Contact Urgence' : 'Ajouter Contact Urgence' }}
+                            - {{ selectedPatient?.nomComplet }}</h2>
+                        <button class="modal-close" (click)="closeEmergencyContactDialog()">✕</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- View Mode - Show existing emergency contact -->
+                        <div *ngIf="hasEmergencyContact(selectedPatient!)">
+                            <div *ngFor="let contact of selectedPatient!.emergencyContacts"
+                                class="emergency-contact-view">
+
+                                <!-- Affichage simple -->
+                                <div *ngIf="editingContactId !== contact.idContact">
+                                    <div class="contact-field">
+                                        <label>Nom Complet:</label>
+                                        <p>{{ contact.fullName }}</p>
+                                    </div>
+                                    <div class="contact-field">
+                                        <label>Relation:</label>
+                                        <p>{{ contact.relationship }}</p>
+                                    </div>
+                                    <div class="contact-field">
+                                        <label>Téléphone:</label>
+                                        <p>{{ contact.phone }}</p>
+                                    </div>
+                                    <div class="contact-field">
+                                        <label>Email:</label>
+                                        <p>{{ contact.email }}</p>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="startEditEmergencyContact(contact)">
+                                            ✏️ Edit
+                                        </button>
+                                        <button class="btn btn-danger"
+                                            (click)="deleteEmergencyContact(selectedPatient!, contact)">
+                                            🗑️ Supprimer
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Formulaire d'édition inline -->
+                                <div *ngIf="editingContactId === contact.idContact" class="edit-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Nom Complet *</label>
+                                            <input type="text" [(ngModel)]="editContactModel.fullName">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Relation</label>
+                                            <input type="text" [(ngModel)]="editContactModel.relationship">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Téléphone</label>
+                                            <input type="tel" [(ngModel)]="editContactModel.phone">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" [(ngModel)]="editContactModel.email">
+                                        </div>
+                                    </div>
+                                    <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <button class="btn btn-secondary" (click)="cancelEditEmergencyContact()">
+                                            ✖️ Annuler
+                                        </button>
+                                        <button class="btn btn-primary"
+                                            (click)="saveEditEmergencyContact(selectedPatient!)">
+                                            💾 Enregistrer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Mode - Show form to create new emergency contact -->
+                        <div *ngIf="!hasEmergencyContact(selectedPatient!)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nom Complet *</label>
+                                    <input type="text" [(ngModel)]="newEmergencyContact.fullName"
+                                        placeholder="Nom complet">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Relation *</label>
+                                    <input type="text" [(ngModel)]="newEmergencyContact.relationship"
+                                        placeholder="Ex: Famille, Ami, etc.">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" [(ngModel)]="newEmergencyContact.phone"
+                                        placeholder="Numéro de téléphone">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" [(ngModel)]="newEmergencyContact.email"
+                                        placeholder="Adresse email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" (click)="closeEmergencyContactDialog()">
+                            {{ 'COMMON.CANCEL' | translate }}
+                        </button>
+                        <button class="btn btn-primary" *ngIf="!hasEmergencyContact(selectedPatient!)"
+                            (click)="submitEmergencyContact()">
+                            {{ 'COMMON.SAVE' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

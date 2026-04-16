@@ -1,0 +1,99 @@
+<div class="card assignment-card">
+    <div class="page-header">
+        <div>
+            <h2>📋 Assignments</h2>
+            <p>Manage who delivers to whom — link between staff and patients.</p>
+        </div>
+        <p-button label="New Assignment" (onClick)="openCreate()" styleClass="header-cta" />
+    </div>
+
+    <div class="table-wrap">
+        <p-table [value]="assignments()" [loading]="loading()" responsiveLayout="scroll" [paginator]="true" [rows]="5"
+            styleClass="datatable-modern p-datatable-striped p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Staff</th>
+                    <th>Patient</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th class="actions-col">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-a>
+                <tr>
+                    <td>
+                        <div class="font-bold">{{ a.staffFullName || '-' }}</div>
+                        <code>{{ a.username }}</code>
+                    </td>
+                    <td>
+                        <div class="font-bold">{{ a.patientFullName || '-' }}</div>
+                        <small class="text-secondary">{{ a.patientCode }}</small>
+                    </td>
+                    <td>{{ a.startDate }}</td>
+                    <td>{{ a.endDate || '—' }}</td>
+                    <td>
+                        <span class="status-pill" [class.active]="a.active" [class.inactive]="!a.active">
+                            {{ a.active ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="action-btn btn-edit" (click)="openEdit(a)" title="Edit">
+                            <span class="btn-label">Edit</span>
+                        </button>
+                        <button class="action-btn btn-deactivate" (click)="deactivate(a)" [disabled]="!a.active"
+                            title="Deactivate">
+                            <span class="btn-label">Off</span>
+                        </button>
+                        <button class="action-btn btn-delete" (click)="delete(a)" title="Delete">
+                            <span class="btn-label">Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="empty-state">No assignments found.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-toast />
+    <p-confirmDialog />
+</div>
+
+<p-dialog [header]="dialogMode() === 'create' ? 'New Assignment' : 'Edit Assignment'" [visible]="dialogVisible()"
+    (visibleChange)="dialogVisible.set($event)" [modal]="true" [style]="{width:'440px'}" [draggable]="false"
+    [appendTo]="'body'" styleClass="handsome-dialog" [dismissableMask]="true">
+    <div class="dialog-form">
+        <div class="field">
+            <label>Staff Username *</label>
+            <input pInputText [(ngModel)]="formModel.username" placeholder="ex: staffmorning"
+                (ngModelChange)="clearFieldError('username')" />
+            <small class="field-error" *ngIf="fieldErrors()['username']">{{ fieldErrors()['username'] }}</small>
+        </div>
+        <div class="field">
+            <label>Patient Code *</label>
+            <input pInputText [(ngModel)]="formModel.patientCode" placeholder="ex: PAT-001"
+                (ngModelChange)="clearFieldError('patientCode')" />
+            <small class="field-error" *ngIf="fieldErrors()['patientCode']">{{ fieldErrors()['patientCode'] }}</small>
+        </div>
+        <div class="field">
+            <label>Start Date</label>
+            <p-calendar [(ngModel)]="formModel.startDateObj" dateFormat="yy-mm-dd" [showIcon]="true"
+                (ngModelChange)="clearFieldError('startDateObj')" />
+            <small class="field-error" *ngIf="fieldErrors()['startDateObj']">{{ fieldErrors()['startDateObj'] }}</small>
+        </div>
+        <div class="field">
+            <label>End Date (optional)</label>
+            <p-calendar [(ngModel)]="formModel.endDateObj" dateFormat="yy-mm-dd" [showIcon]="true"
+                (ngModelChange)="clearFieldError('endDateObj')" />
+            <small class="field-error" *ngIf="fieldErrors()['endDateObj']">{{ fieldErrors()['endDateObj'] }}</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="dialogVisible.set(false)" />
+        <p-button label="Save" (onClick)="save()" />
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,199 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- Top Navbar -->
+    <header class="topbar">
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" [placeholder]="'DOCTOR.SEARCH_PATIENT' | translate" class="search-input">
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-btn notice-btn">
+          <span class="icon">🔔</span>
+          <span class="badge-dot"></span>
+        </button>
+        <button class="icon-btn">
+          <span class="icon">📩</span>
+        </button>
+        <button class="btn btn-logout" (click)="logout()">
+          <span>{{ 'COMMON.LOGOUT' | translate }}</span>
+          <span class="icon">🚪</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="content-area">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">{{ 'DOCTOR.OVERVIEW' | translate }}</h1>
+          <p class="page-subtitle">{{ currentDate | date:'fullDate' }}</p>
+        </div>
+        <button class="btn btn-primary">
+          <span>+</span> {{ 'DOCTOR.NEW_PATIENT' | translate }}
+        </button>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon primary-bg">👥</div>
+          <div class="stat-details">
+            <span class="stat-label">{{ 'DOCTOR.TOTAL_PATIENTS' | translate }}</span>
+            <span class="stat-value">{{ medicalStats.totalPatients }}</span>
+            <span class="stat-trend positive">↗ {{ 'DOCTOR.THIS_MONTH' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon success-bg">📅</div>
+          <div class="stat-details">
+            <span class="stat-label">{{ 'DOCTOR.APPOINTMENTS' | translate }}</span>
+            <span class="stat-value">{{ medicalStats.upcomingAppointments }}</span>
+            <span class="stat-trend neutral">{{ 'COMMON.TODAY' | translate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-row">
+        <!-- Activity Bar Chart -->
+        <div class="chart-card flex-2">
+          <div class="card-header">
+            <h3>{{ 'DOCTOR.WEEKLY_ACTIVITY' | translate }}</h3>
+            <div class="card-actions">
+              <select class="chart-select">
+                <option>{{ 'DOCTOR.THIS_WEEK' | translate }}</option>
+                <option>{{ 'DOCTOR.LAST_MONTH' | translate }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-container monitor-chart">
+            <div class="bar-chart-area">
+              <div class="chart-bar-column" *ngFor="let item of activityChart">
+                <div class="bar-track">
+                  <div class="bar-fill" [style.height]="item.height">
+                    <div class="bar-tooltip">{{ item.value }} {{ 'DOCTOR.VISITS' | translate }}</div>
+                  </div>
+                </div>
+                <span class="bar-label">{{ item.label }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demographics / Risk Distribution -->
+        <div class="chart-card flex-1">
+          <div class="card-header">
+            <h3>{{ 'DOCTOR.AGE_DISTRIBUTION' | translate }}</h3>
+          </div>
+          <div class="chart-container doughnut-chart-placeholder">
+            <div class="demographics-list">
+              <div class="demo-item" *ngFor="let item of demographicsChart">
+                <div class="demo-info">
+                  <span class="demo-label">{{ item.label }} {{ 'COMMON.YEARS_OLD' | translate }}</span>
+                  <span class="demo-value">{{ item.value }}%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" [style.width]="item.width" [style.background-color]="item.color"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Patients Table & Alerts -->
+      <div class="two-col-grid">
+        <!-- Table -->
+        <div class="table-section card">
+          <div class="card-header">
+            <h3>{{ 'DOCTOR.RECENT_PATIENTS' | translate }}</h3>
+            <button class="btn-link">{{ 'COMMON.VIEW_ALL' | translate }}</button>
+          </div>
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>{{ 'DOCTOR.PATIENT' | translate }}</th>
+                  <th>{{ 'DOCTOR.LAST_VISIT' | translate }}</th>
+                  <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let patient of recentPatients">
+                  <td>
+                    <div class="patient-cell">
+                      <div class="patient-avatar">{{ patient.nomComplet ? patient.nomComplet.charAt(0) : '?' }}</div>
+                      <div>
+                        <div class="patient-name">{{ patient.nomComplet }}</div>
+                        <div class="patient-age">{{ patient.age }} {{ 'COMMON.YEARS_OLD' | translate }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ patient.derniereVisite || 'N/A' }}</td>
+                  <td>
+                    <div class="table-actions">
+                      <select class="action-select" (change)="onAssignSoignant(patient.id, $any($event.target).value)">
+                        <option value="">{{ 'DOCTOR.ASSIGN' | translate }}</option>
+                        <option *ngFor="let s of availableCaregivers" [value]="s.id">{{ s.firstName }} {{ s.lastName }}</option>
+                      </select>
+                      <button class="icon-btn-sm" (click)="onSendInstructions(patient.id)" [title]="'DOCTOR.SEND_INSTRUCTIONS' | translate">📝</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Alerts List -->
+        <div class="alerts-section card">
+          <div class="card-header">
+            <div class="header-title">
+              <h3>{{ 'DOCTOR.RECENT_ALERTS' | translate }}</h3>
+              <span class="badge-count">{{ medicalAlerts.length }}</span>
+            </div>
+            <button class="btn-link">{{ 'DOCTOR.MARK_ALL_READ' | translate }}</button>
+          </div>
+          <div class="alerts-list">
+            <div class="alert-item" *ngFor="let alert of medicalAlerts" [class]="'alert-' + alert.type">
+              <div class="alert-status-indicator"></div>
+              <div class="alert-icon-wrapper">
+                {{ getAlertIcon(alert.type) }}
+              </div>
+              <div class="alert-content">
+                <div class="alert-top-row">
+                  <span class="alert-type-badge">{{ (alert.type === 'urgent' ? 'DOCTOR.ALERT_URGENT' : alert.type === 'warning' ? 'DOCTOR.ALERT_WARNING' : 'DOCTOR.ALERT_INFO') | translate }}</span>
+                  <span class="alert-time">{{ alert.time }}</span>
+                </div>
+                <p class="alert-message">{{ alert.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions-section">
+        <div class="action-card">
+          <div class="action-icon">🔔</div>
+          <h4>{{ 'DOCTOR.CUSTOM_ALERTS' | translate }}</h4>
+          <p>{{ 'DOCTOR.CUSTOM_ALERTS_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'COMMON.CONFIGURE' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📚</div>
+          <h4>{{ 'DOCTOR.KNOWLEDGE_BASE' | translate }}</h4>
+          <p>{{ 'DOCTOR.KNOWLEDGE_BASE_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'COMMON.CONSULT' | translate }}</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

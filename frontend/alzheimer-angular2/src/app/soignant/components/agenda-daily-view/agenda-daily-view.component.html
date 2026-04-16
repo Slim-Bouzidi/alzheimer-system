@@ -1,0 +1,15 @@
+<div class="daily-view-container">
+    <div *ngIf="events.length === 0" class="empty-state">
+        <p>{{ 'SOIGNANT_AGENDA.NO_EVENT_FOR_DAY' | translate }}</p>
+    </div>
+
+    <div class="timeline">
+        <div *ngFor="let event of sortedEvents" class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content" [class.selected]="selectedEventId === event.id" (click)="onEventClick(event)">
+                <app-agenda-event-card [event]="event" (statusChange)="onStatusChange(event.id, $event)">
+                </app-agenda-event-card>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,257 @@
+/* Agenda Page Layout */
+.agenda-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.agenda-header {
+    background: white;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.agenda-title h1 {
+    margin: 0 0 4px 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.agenda-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.view-switcher {
+    display: flex;
+    gap: 8px;
+}
+
+.view-switcher button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.view-switcher button.active {
+    background: #2196f3;
+    color: white;
+    border-color: #2196f3;
+}
+
+.view-switcher button:hover:not(.active) {
+    border-color: #2196f3;
+    color: #2196f3;
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-controls button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.nav-controls button:hover {
+    background: #f5f5f5;
+    border-color: #2196f3;
+}
+
+.current-period {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    min-width: 200px;
+    text-align: center;
+}
+
+/* Patient Selector */
+.patient-selector-bar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 1px solid #eee;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Hide scrollbar for cleaner look */
+}
+
+.patient-selector-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.patient-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 2rem;
+    color: #64748b;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.patient-chip:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.patient-chip.active {
+    background: #e0f2fe;
+    border-color: #0ea5e9;
+    color: #0369a1;
+    box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1);
+}
+
+.patient-avatar {
+    width: 24px;
+    height: 24px;
+    background: #cbd5e1;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.patient-chip.active .patient-avatar {
+    background: #0ea5e9;
+}
+
+/* 60/40 Layout */
+.agenda-layout {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.agenda-section {
+    flex: 0 0 60%;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.patient-panel {
+    flex: 0 0 40%;
+    position: sticky;
+    top: 0;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Event Card Styles (for click interaction) */
+:host ::ng-deep .event-card,
+:host ::ng-deep .mini-event {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+:host ::ng-deep .event-card:hover,
+:host ::ng-deep .mini-event:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+:host ::ng-deep .event-card.selected,
+:host ::ng-deep .mini-event.selected {
+    border: 2px solid #2196f3;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .agenda-layout {
+        flex-direction: column;
+    }
+
+    .agenda-section {
+        flex: 1 1 auto;
+    }
+
+    .patient-panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 400px;
+        height: 100vh;
+        max-height: 100vh;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+        border-radius: 0;
+    }
+
+    .patient-panel.open {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .agenda-header {
+        padding: 16px;
+    }
+
+    .agenda-title h1 {
+        font-size: 20px;
+    }
+
+    .agenda-controls {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .nav-controls {
+        justify-content: center;
+    }
+
+    .agenda-layout {
+        padding: 8px;
+    }
+
+    .agenda-section {
+        padding: 12px;
+    }
+
+    .patient-panel {
+        display: none;
+        /* Navigate to separate page on mobile */
+    }
+}

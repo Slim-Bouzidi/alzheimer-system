@@ -1,0 +1,149 @@
+<div class="card delivery-tasks-card">
+  <div class="page-header">
+    <div>
+      <h2>{{ isMyTasksMode() ? 'My Delivery Tasks' : 'Delivery Tasks' }}</h2>
+      <p>Plan, confirm and track meal deliveries for patients.</p>
+    </div>
+    <p-button label="New Task" (onClick)="openCreate()" styleClass="header-cta" />
+  </div>
+
+  <div class="filters">
+    <div class="filters-row">
+      <div class="filter-item">
+        <label>Date</label>
+        <p-calendar [(ngModel)]="filterDate" (ngModelChange)="loadTasks()" dateFormat="yy-mm-dd"
+          [showIcon]="true"></p-calendar>
+      </div>
+
+      <div class="filter-item">
+        <label>Status</label>
+        <p-dropdown [options]="statusOptions" [(ngModel)]="filterStatus" (ngModelChange)="loadTasks()"
+          optionLabel="label" optionValue="value"></p-dropdown>
+      </div>
+
+      <div class="filter-item">
+        <label>Patient Code</label>
+        <input pInputText [(ngModel)]="filterPatientCode" (ngModelChange)="loadTasks()" placeholder="e.g. PAT-001" />
+      </div>
+
+      <div class="filter-item" *ngIf="!isMyTasksMode()">
+        <label>Staff Username</label>
+        <input pInputText [(ngModel)]="filterStaffUsername" (ngModelChange)="loadTasks()" placeholder="e.g. jdoe" />
+      </div>
+    </div>
+
+    <div class="filters-actions">
+      <p-button label="Reset" [text]="true" (onClick)="resetFilters()"
+        [disabled]="!hasFilters" />
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <p-table [value]="tasks()" [loading]="loading()" responsiveLayout="scroll" [paginator]="true" [rows]="5"
+      styleClass="datatable-modern p-datatable-striped p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Patient</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Staff</th>
+          <th>Notes</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-task>
+        <tr>
+          <td>{{ task.id }}</td>
+          <td>
+            <div class="font-bold">{{ task.patientFullName || '-' }}</div>
+            <small class="text-secondary">{{ task.patientCode }}</small>
+          </td>
+          <td>{{ task.deliveryDate }}</td>
+          <td>{{ task.plannedTime }}</td>
+          <td>
+            <span class="status-pill" [ngClass]="'status-' + (task.status || 'NONE').toLowerCase()">
+              {{ task.status || 'N/A' }}
+            </span>
+          </td>
+          <td>
+            <div *ngIf="task.assignedStaffUsername">
+              <div>{{ task.assignedStaffFullName || '-' }}</div>
+              <small class="text-secondary">{{ task.assignedStaffUsername }}</small>
+            </div>
+            <span *ngIf="!task.assignedStaffUsername">-</span>
+          </td>
+          <td class="notes-cell">{{ task.notes || '-' }}</td>
+          <td class="actions-cell">
+            <button class="action-btn btn-edit" (click)="openEdit(task)" title="Edit">
+              <span class="btn-label">Edit</span>
+            </button>
+            <button class="action-btn btn-confirm" [disabled]="!canConfirm(task)" (click)="confirm(task)" title="Confirm">
+              <span class="btn-label">Confirm</span>
+            </button>
+            <button class="action-btn btn-deliver" [disabled]="!canMarkDelivered(task)" (click)="markDelivered(task)"
+              title="Mark Delivered">
+              <span class="btn-label">Deliver</span>
+            </button>
+            <button class="action-btn btn-delete" (click)="delete(task)" title="Delete">
+              <span class="btn-label">Delete</span>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8" class="empty-state">No delivery tasks found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>
+
+<p-dialog header="{{ dialogMode() === 'create' ? 'New Delivery Task' : 'Edit Delivery Task' }}"
+  [visible]="dialogVisible()" (visibleChange)="dialogVisible.set($event)" [modal]="true" [style]="{ width: '450px' }"
+  [draggable]="false" [resizable]="false" [appendTo]="'body'" styleClass="handsome-dialog" [dismissableMask]="true">
+  <div class="dialog-form">
+    <div class="field">
+      <label>Patient Code</label>
+      <input pInputText [(ngModel)]="formModel.patientCode" placeholder="PAT-XXXX"
+        (ngModelChange)="clearFieldError('patientCode')" />
+      <small class="field-error" *ngIf="fieldErrors()['patientCode']">{{ fieldErrors()['patientCode'] }}</small>
+    </div>
+
+    <div class="field">
+      <label>Delivery Date</label>
+      <p-calendar [(ngModel)]="formModel.deliveryDate" dateFormat="yy-mm-dd" [showIcon]="true"
+        (ngModelChange)="clearFieldError('deliveryDate')"></p-calendar>
+      <small class="field-error" *ngIf="fieldErrors()['deliveryDate']">{{ fieldErrors()['deliveryDate'] }}</small>
+    </div>
+
+    <div class="field">
+      <label>Planned Time (HH:mm)</label>
+      <input pInputText type="time" [(ngModel)]="formModel.plannedTime"
+        (ngModelChange)="clearFieldError('plannedTime')" />
+      <small class="field-error" *ngIf="fieldErrors()['plannedTime']">{{ fieldErrors()['plannedTime'] }}</small>
+    </div>
+
+    <div class="field">
+      <label>Assigned Staff Username</label>
+      <input pInputText [(ngModel)]="formModel.assignedStaffUsername" placeholder="username" />
+    </div>
+
+    <div class="field">
+      <label>Notes</label>
+      <textarea pTextarea rows="3" [(ngModel)]="formModel.notes" placeholder="Optional notes..."></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="dialogVisible.set(false)"></p-button>
+    <p-button label="Save" (onClick)="save()"></p-button>
+  </ng-template>
+</p-dialog>

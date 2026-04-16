@@ -1,0 +1,56 @@
+<div class="dashboard-layout">
+  <app-sidebar [role]="'LIVREUR'" [userName]="'Livreur'" [userRole]="'Service Livraison'"></app-sidebar>
+
+  <div class="main-wrapper">
+    <header class="topbar">
+      <h1>Dashboard Livreur</h1>
+      <button class="logout-btn" (click)="logout()">Retour</button>
+    </header>
+
+    <main class="content-area">
+      <section class="welcome-card">
+        <h2>Bienvenue sur l'espace livreur</h2>
+        <p>Le chatbot operationnel est disponible en bas a droite pour consulter l'etat des patients, staffs et tournees.</p>
+        <p class="date">{{ currentDate | date:'fullDate' }}</p>
+      </section>
+    </main>
+  </div>
+
+  <button class="chatbot-fab" type="button" (click)="toggleChatbot()" aria-label="Ouvrir chatbot">
+    <span>Bot</span>
+  </button>
+
+  <section class="chatbot-panel" *ngIf="chatbotOpen">
+    <header class="chatbot-header">
+      <h3>Assistant Livreur</h3>
+      <button type="button" class="close-btn" (click)="toggleChatbot()">x</button>
+    </header>
+
+    <div class="chatbot-messages">
+      <article
+        class="chat-message"
+        *ngFor="let msg of messages"
+        [class.user]="msg.from === 'user'"
+        [class.bot]="msg.from === 'bot'"
+      >
+        <p>{{ msg.text }}</p>
+      </article>
+
+      <p class="status" *ngIf="isLoading">Analyse en cours...</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+
+    <div class="question-list">
+      <p class="question-title">Questions predefinies</p>
+      <button
+        type="button"
+        class="question-btn"
+        *ngFor="let question of questions"
+        [disabled]="isLoading"
+        (click)="askPredefinedQuestion(question)"
+      >
+        {{ question.label }}
+      </button>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,9 @@
+<div class="soignant-layout">
+  <app-sidebar role="SOIGNANT" [userName]="soignantName" userRole="Soignant" [alertesCount]="alertesNonTraiteesCount"
+    [rapportsNonLusCount]="rapportsNonLusCount" [rapportHebdoNonEnvoye]="rapportHebdoNonEnvoye"
+    [notificationsCount]="notificationsCount" [suiviRempliAujourdhui]="suiviRempliAujourdhui">
+  </app-sidebar>
+  <div class="soignant-main">
+    <router-outlet></router-outlet>
+  </div>
+</div>

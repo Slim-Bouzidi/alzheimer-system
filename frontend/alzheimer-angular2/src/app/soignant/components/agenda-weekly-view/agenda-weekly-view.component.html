@@ -1,0 +1,22 @@
+<div class="weekly-grid">
+    <div class="day-column" *ngFor="let day of weekDays" [class.is-today]="isToday(day)">
+        <div class="day-header">
+            <div class="day-name">{{ day | date:'EEEE' }}</div>
+            <div class="day-number">{{ day | date:'d MMM' }}</div>
+        </div>
+        <div class="day-content">
+            <div *ngFor="let event of getEventsForDay(day)" class="week-event-card-wrapper">
+                <div class="mini-event"
+                    [ngClass]="['type-' + event.type, 'status-' + event.statut, selectedEventId === event.id ? 'selected' : '']"
+                    [title]="event.titre + ' - ' + event.patientNom" (click)="onEventClick(event)">
+                    <span class="mini-time">{{ event.heure }}</span>
+                    <span class="mini-title">{{ event.titre }}</span>
+                    <!-- Simple done action for week view -->
+                    <button *ngIf="event.statut !== 'fait'" class="mini-btn-done"
+                        (click)="$event.stopPropagation(); onStatusChange(event.id, 'fait')">✓</button>
+                </div>
+            </div>
+            <div *ngIf="getEventsForDay(day).length === 0" class="no-events">{{ 'SOIGNANT_AGENDA.NO_EVENT_FOR_DAY' | translate }}</div>
+        </div>
+    </div>
+</div>

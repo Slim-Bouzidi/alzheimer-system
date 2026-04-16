@@ -1,0 +1,389 @@
+<div class="soignant-dashboard">
+  <!-- Barre supérieure : date/heure + actions principales (toujours visibles) -->
+  <header class="soignant-topbar">
+    <div class="topbar-date-heure">
+      <span class="topbar-date">{{ currentDate | date:'EEEE d MMMM yyyy' }}</span>
+      <span class="topbar-heure">{{ currentTime }}</span>
+    </div>
+    <div class="topbar-actions">
+
+
+      <button type="button" class="btn btn-suivi" (click)="openSuiviQuotidien()">
+        <span class="btn-icon">📋</span>
+        <span class="btn-label">{{ 'SOIGNANT.DAILY_MONITORING' | translate }}</span>
+      </button>
+      <button type="button" class="btn btn-ghost" (click)="refresh()" title="Actualiser">🔄</button>
+      <button type="button" class="btn btn-logout" (click)="logout()">{{ 'COMMON.LOGOUT' | translate }}</button>
+    </div>
+  </header>
+
+  <main class="soignant-content">
+    <!-- Bloc : Résumé du jour (état en un coup d'œil) -->
+    <section class="resume-jour card-resume">
+      <h2 class="section-title">{{ 'SOIGNANT.DAY_OVERVIEW' | translate }}</h2>
+      <div class="resume-stats">
+
+
+        <div class="resume-stat" [class.pending]="!suiviRempliAujourdhui && patients.length > 0">
+          <span class="resume-stat-value">{{ suiviRempliAujourdhui ? ('COMMON.YES' | translate) : (patients.length ? ('COMMON.PENDING' | translate) : '—')
+            }}</span>
+          <span class="resume-stat-label">{{ 'SOIGNANT.DAILY_TRACKING' | translate }}</span>
+        </div>
+        <div class="resume-stat">
+          <span class="resume-stat-value">{{ notificationsCount }}</span>
+          <span class="resume-stat-label">{{ 'SOIGNANT.NOTIFICATIONS_TODO' | translate }}</span>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- Programme du jour (agenda visuel) -->
+    <section class="card section-agenda">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">📅</span>
+          {{ 'SOIGNANT.DAY_SCHEDULE' | translate }}
+        </h2>
+        <div class="legende">
+          <span><span class="dot done"></span> {{ 'SOIGNANT.DONE' | translate }}</span>
+          <span><span class="dot attente"></span> {{ 'SOIGNANT.PENDING' | translate }}</span>
+          <span><span class="dot retard"></span> {{ 'SOIGNANT.LATE' | translate }}</span>
+        </div>
+      </div>
+      <p class="section-intro">{{ 'SOIGNANT.SCHEDULE_INTRO' | translate }}</p>
+      <div class="agenda-timeline">
+        <div *ngFor="let ev of agendaDuJour" class="agenda-event" [ngClass]="statutAgendaClass(ev.statut)">
+          <div class="agenda-time">{{ ev.heure }}</div>
+          <div class="agenda-content">
+            <span class="agenda-titre">{{ ev.titre }}</span>
+            <span class="agenda-patient">{{ ev.patientNom }}</span>
+            <div *ngIf="ev.statut !== 'fait'" class="agenda-actions">
+              <button type="button" class="btn btn-sm btn-done"
+                (click)="marquerEvenementStatut(ev, 'fait')">{{ 'SOIGNANT.DONE' | translate }}</button>
+              <button type="button" class="btn btn-sm btn-outline" (click)="marquerEvenementStatut(ev, 'en_retard')">{{ 'SOIGNANT.LATE' | translate }}</button>
+            </div>
+          </div>
+        </div>
+        <p *ngIf="agendaDuJour.length === 0" class="empty">{{ 'SOIGNANT.NO_EVENT_TODAY' | translate }}</p>
+      </div>
+    </section>
+
+    <!-- Rapports médicaux reçus -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">📄</span>
+          {{ 'SOIGNANT.POST_CONSULTATION_REPORTS' | translate }}
+          <span *ngIf="rapportsNonLusCount > 0" class="badge badge-info">{{ rapportsNonLusCount }}</span>
+        </h2>
+      </div>
+      <p class="section-intro">{{ 'SOIGNANT.REPORTS_INTRO' | translate }}</p>
+      <div class="rapports-list">
+        <article *ngFor="let r of rapports" class="rapport-item" [class.non-lu]="!r.lu">
+          <div class="rapport-meta">
+            <span class="rapport-patient">{{ r.patientNom }}</span>
+            <span class="rapport-medecin">{{ r.medecinNom }}</span>
+            <span class="rapport-date">{{ r.dateConsultation | date:'dd/MM/yyyy' }}</span>
+            <button *ngIf="!r.lu" type="button" class="btn btn-sm btn-done" (click)="marquerRapportLu(r.id)">{{ 'SOIGNANT.MARK_READ' | translate }}</button>
+          </div>
+          <p class="rapport-resume">{{ r.resume }}</p>
+          <div class="directives-list">
+            <div *ngFor="let d of r.directives" class="directive-item">
+              <span class="directive-type">{{ d.type === 'rappel_medicament' ? '💊' : d.type === 'rappel_repas' ? '🍽️'
+                : '📅' }} {{ d.libelle }}</span>
+              <span class="directive-detail">{{ d.detail }}</span>
+              <span class="directive-statut" [class.execute]="d.statut === 'execute'">{{ statutDirectiveLabel(d.statut)
+                }}</span>
+              <button *ngIf="d.statut !== 'execute'" type="button" class="btn btn-sm btn-done"
+                (click)="marquerDirectiveStatut(d.id, 'execute')">{{ 'COMMON.DONE' | translate }}</button>
+            </div>
+          </div>
+        </article>
+        <p *ngIf="rapports.length === 0" class="empty">{{ 'SOIGNANT.NO_REPORT_RECEIVED' | translate }}</p>
+      </div>
+    </section>
+
+    <!-- Gestion des rappels -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">⏰</span>
+          {{ 'SOIGNANT.DAY_REMINDERS' | translate }}
+        </h2>
+      </div>
+      <div class="rappels-list">
+        <div *ngFor="let r of rappels" class="rappel-item">
+          <ng-container *ngIf="isRappelMedicament(r)">
+            <span class="rappel-icon">💊</span>
+            <span class="rappel-titre">{{ r.nom }} {{ r.dosage }}</span>
+            <span class="rappel-detail">{{ r.horaires.join(', ') }} · {{ r.frequence }}</span>
+            <span class="rappel-patient">{{ r.patientNom }}</span>
+          </ng-container>
+          <ng-container *ngIf="isRappelRepas(r)">
+            <span class="rappel-icon">🍽️</span>
+            <span class="rappel-titre">{{ 'SOIGNANT.MEALS' | translate }} {{ r.heure }}</span>
+            <span class="rappel-detail">{{ r.regimeAlimentaire || '—' }}</span>
+            <span class="rappel-patient">{{ r.patientNom }}</span>
+          </ng-container>
+          <ng-container *ngIf="isRappelRendezVous(r)">
+            <span class="rappel-icon">📅</span>
+            <span class="rappel-titre">{{ r.typeConsultation }}</span>
+            <span class="rappel-detail">{{ r.date }} {{ r.heure }} · {{ r.lieu }}</span>
+            <span class="rappel-patient">{{ r.patientNom }}</span>
+          </ng-container>
+          <span class="rappel-actif" *ngIf="r.actif">{{ 'COMMON.ACTIVE' | translate }}</span>
+        </div>
+        <p *ngIf="rappels.length === 0" class="empty">{{ 'SOIGNANT.NO_REMINDER_CONFIGURED' | translate }}</p>
+      </div>
+    </section>
+
+    <!-- Notifications (Fait / Reporter / Problème rencontré) -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">🔔</span>
+          {{ 'SOIGNANT.REALTIME_NOTIFICATIONS' | translate }}
+          <span *ngIf="notificationsCount > 0" class="badge badge-info">{{ notificationsCount }}</span>
+        </h2>
+      </div>
+      <p class="section-intro">{{ 'SOIGNANT.NOTIFICATIONS_INTRO' | translate }}</p>
+      <div class="notifications-list">
+        <div *ngFor="let n of notifications" class="notif-item" [class.fait]="n.statut === 'fait'"
+          [class.probleme]="n.statut === 'probleme_rencontre'">
+          <div class="notif-heure">{{ n.heure }}</div>
+          <div class="notif-content">
+            <strong>{{ n.titre }}</strong>
+            <p>{{ n.message }}</p>
+            <div *ngIf="n.statut === 'a_faire'" class="notif-actions">
+              <button type="button" class="btn btn-sm btn-done" (click)="marquerNotificationFait(n)">{{ 'SOIGNANT.DONE' | translate }}</button>
+              <button type="button" class="btn btn-sm btn-outline"
+                (click)="marquerNotificationReporter(n)">{{ 'SOIGNANT.REPORT' | translate }}</button>
+              <button type="button" class="btn btn-sm btn-probleme" (click)="marquerNotificationProbleme(n)">{{ 'SOIGNANT.PROBLEM_ENCOUNTERED' | translate }}</button>
+            </div>
+            <span *ngIf="n.statut === 'fait'" class="status-badge done">{{ 'SOIGNANT.DONE' | translate }}</span>
+            <span *ngIf="n.statut === 'reporter'" class="status-badge reporter">{{ 'SOIGNANT.REPORT' | translate }}</span>
+            <span *ngIf="n.statut === 'probleme_rencontre'" class="status-badge probleme">{{ 'SOIGNANT.PROBLEM_ENCOUNTERED' | translate }}</span>
+          </div>
+        </div>
+        <p *ngIf="notifications.length === 0" class="empty">{{ 'SOIGNANT.NO_NOTIFICATION' | translate }}</p>
+      </div>
+    </section>
+
+    <!-- Patients assignés + Interventions du jour (côte à côte) -->
+    <section class="card section-patients">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">👥</span>
+          {{ 'SOIGNANT.ASSIGNED_PATIENTS' | translate }}
+        </h2>
+      </div>
+      <div class="patients-grid">
+        <article *ngFor="let p of patients" class="patient-card" [ngClass]="risqueClass(p.niveauRisque)">
+          <div class="patient-head">
+            <span class="patient-name">{{ p.prenom }} {{ p.nom }}</span>
+          </div>
+          <div class="patient-meta">
+            <span>{{ 'SOIGNANT.RISK' | translate }} <strong>{{ p.niveauRisque }}</strong></span>
+            <span>{{ 'SOIGNANT.ALERTS' | translate }} <strong>{{ p.nbAlertesAujourdhui }}</strong></span>
+            <span *ngIf="p.medecinReferent">{{ p.medecinReferent }}</span>
+          </div>
+          <div class="patient-actions">
+            <button type="button" class="btn btn-sm btn-outline" (click)="openSuiviQuotidien(p)">{{ 'SOIGNANT.FOLLOW_UP' | translate }}</button>
+
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Rapport hebdomadaire -->
+    <section class="card">
+      <div class="card-head">
+        <h2 class="section-title">
+          <span class="section-icon">📊</span>
+          {{ 'SOIGNANT.WEEKLY_REPORT' | translate }}
+          <span *ngIf="rapportHebdoNonEnvoye" class="badge badge-warning">{{ 'SOIGNANT.WEEKLY_REPORT_TO_SEND' | translate }}</span>
+        </h2>
+      </div>
+      <p class="section-intro">{{ 'SOIGNANT.WEEKLY_REPORT_INTRO' | translate }}</p>
+      <div class="rapports-hebdo-list">
+        <div *ngFor="let rh of rapportsHebdo" class="rapport-hebdo-item">
+          <div class="rh-patient">{{ rh.patientNom }}</div>
+          <div class="rh-periode">{{ rh.dateDebut }} → {{ rh.dateFin }}</div>
+          <div class="rh-taux">{{ 'SOIGNANT.OBSERVANCE' | translate }} {{ 'SOIGNANT.MEDIC' | translate }} {{ rh.tauxObservanceMedicaments }}% · {{ 'SOIGNANT.MEALS' | translate }} {{ rh.tauxObservanceRepas
+            }}% · {{ 'SOIGNANT.APPOINTMENTS' | translate }} {{ rh.tauxObservanceRendezVous }}%</div>
+          <p class="rh-observations">{{ rh.observationsGenerales }}</p>
+          <button *ngIf="!rh.envoyeAuMedecin" type="button" class="btn btn-primary-action"
+            (click)="envoyerRapportHebdo(rh.id)">{{ 'SOIGNANT.SEND_TO_DOCTOR' | translate }}</button>
+          <span *ngIf="rh.envoyeAuMedecin" class="status-badge done">{{ 'SOIGNANT.SENT' | translate }}</span>
+        </div>
+        <p *ngIf="rapportsHebdo.length === 0" class="empty">{{ 'SOIGNANT.NO_WEEKLY_REPORT' | translate }}</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal Suivi quotidien détaillé -->
+<div class="modal-overlay soignant-modal-overlay" *ngIf="showSuiviModal" (click)="closeSuiviModal()">
+  <div class="modal soignant-modal modal-suivi" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <h3>📋 {{ 'SOIGNANT.DAILY_MONITORING' | translate }} · {{ suiviForm.patientNom }}</h3>
+      <button type="button" class="modal-close" (click)="closeSuiviModal()" [attr.aria-label]="'COMMON.CLOSE' | translate">×</button>
+    </div>
+    <form (ngSubmit)="saveSuiviQuotidien()" class="modal-body form-suivi">
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.MEDICATION_ADHERENCE_TITLE' | translate }}</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Donépézil</label>
+            <input [(ngModel)]="suiviForm.donepezil" name="donepezil" />
+          </div>
+          <div class="form-group">
+            <label>Rivastigmine</label>
+            <input [(ngModel)]="suiviForm.rivastigmine" name="rivastigmine" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Galantamine</label>
+            <input [(ngModel)]="suiviForm.galantamine" name="galantamine" />
+          </div>
+          <div class="form-group">
+            <label>Mémantine</label>
+            <input [(ngModel)]="suiviForm.memantine" name="memantine" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.EFFECTS_OBSERVED' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.effetsMedicamentsObserves" name="effetsMedicamentsObserves" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.CARDIOVASCULAR_RISK' | translate }}</h4>
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.BLOOD_PRESSURE' | translate }}</label>
+            <input [(ngModel)]="suiviForm.tensionArterielle" name="tensionArterielle" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.BLOOD_SUGAR' | translate }}</label>
+            <input [(ngModel)]="suiviForm.glycemie" name="glycemie" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.CHOLESTEROL' | translate }}</label>
+            <input [(ngModel)]="suiviForm.cholesterol" name="cholesterol" />
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.STAGE_SYMPTOMS' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.STAGE_SYMPTOMS_HELP' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.symptomesStade" name="symptomesStade" rows="2"
+            [placeholder]="'SOIGNANT.STAGE_SYMPTOMS_PLACEHOLDER' | translate"></textarea>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.PSYCHOLOGICAL_STATE' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.PSYCHOLOGICAL_STATE_HELP' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.etatPsychologiqueHumeur" name="etatPsychologiqueHumeur" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.SOCIAL_LIFE' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.SOCIAL_LIFE_HELP' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.vieSociale" name="vieSociale" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.LIFESTYLE' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.LIFESTYLE_HELP' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.hygieneVie" name="hygieneVie" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.MEALS_MEDICATIONS_SUMMARY' | translate }}</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.MEDICATIONS_TAKEN' | translate }}</label>
+            <input [(ngModel)]="suiviForm.medicamentsPris" name="medicamentsPris" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.MEDICATIONS_REFUSED' | translate }}</label>
+            <input [(ngModel)]="suiviForm.medicamentsRefuses" name="medicamentsRefuses" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.MEALS_CONSUMED' | translate }}</label>
+            <input [(ngModel)]="suiviForm.repasConsommes" name="repasConsommes" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.MEAL_QUANTITY' | translate }}</label>
+            <input [(ngModel)]="suiviForm.quantiteRepas" name="quantiteRepas" />
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.BEHAVIOR_COGNITION' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.BEHAVIORS_OBSERVED' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.comportementsObserves" name="comportementsObserves" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.COGNITIVE_EXERCISE_REACTION' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.reactionExercicesCognitifs" name="reactionExercicesCognitifs"
+            rows="2"></textarea>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>{{ 'SOIGNANT.SYNTHESIS_EVOLUTION' | translate }}</h4>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.DOCTOR_ADVICE_RESPONSE' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.reponseConseilsMedecin" name="reponseConseilsMedecin" rows="2"
+            [placeholder]="'SOIGNANT.DOCTOR_ADVICE_PLACEHOLDER' | translate"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.TREATMENT_ADHERENCE' | translate }}</label>
+            <select [(ngModel)]="suiviForm.observanceTraitement" name="observanceTraitement">
+              <option value="oui">{{ 'COMMON.YES' | translate }}</option>
+              <option value="partiel">{{ 'SOIGNANT.PARTIAL' | translate }}</option>
+              <option value="non">{{ 'COMMON.NO' | translate }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.DOCTOR_RECOMMENDATIONS' | translate }}</label>
+            <select [(ngModel)]="suiviForm.suiviRecommandations" name="suiviRecommandations">
+              <option value="oui">{{ 'COMMON.YES' | translate }}</option>
+              <option value="partiel">{{ 'SOIGNANT.PARTIAL' | translate }}</option>
+              <option value="non">{{ 'COMMON.NO' | translate }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{ 'SOIGNANT.EVOLUTION' | translate }}</label>
+            <select [(ngModel)]="suiviForm.evolution" name="evolution">
+              <option value="amelioration">{{ 'SOIGNANT.EVOLUTION_IMPROVEMENT' | translate }}</option>
+              <option value="stabilite">{{ 'SOIGNANT.EVOLUTION_STABLE' | translate }}</option>
+              <option value="deterioration">{{ 'SOIGNANT.EVOLUTION_DETERIORATION' | translate }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{ 'SOIGNANT.COMMENTS' | translate }}</label>
+          <textarea [(ngModel)]="suiviForm.commentaires" name="commentaires" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="closeSuiviModal()">{{ 'COMMON.CANCEL' | translate }}</button>
+        <button type="submit" class="btn btn-primary-action">{{ 'SOIGNANT.SAVE_MONITORING' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Nouvelle intervention -->

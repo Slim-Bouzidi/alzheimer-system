@@ -1,0 +1,33 @@
+.daily-view-container {
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #888;
+    padding: 40px;
+    font-style: italic;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e0e0e0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+}

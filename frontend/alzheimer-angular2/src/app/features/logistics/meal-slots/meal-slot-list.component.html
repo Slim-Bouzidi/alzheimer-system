@@ -1,0 +1,78 @@
+<div class="card meal-slot-card">
+    <div class="page-header">
+        <div>
+            <h2>🥪 Meal Slots</h2>
+            <p>Define delivery times (Breakfast, Lunch, Dinner).</p>
+        </div>
+        <p-button label="New Slot" (onClick)="openCreate()" styleClass="header-cta" />
+    </div>
+
+    <div class="table-wrap">
+        <p-table [value]="slots()" [loading]="loading()" responsiveLayout="scroll" [paginator]="true" [rows]="5"
+            styleClass="datatable-modern p-datatable-striped p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Type</th>
+                    <th>Time</th>
+                    <th>Label</th>
+                    <th>Status</th>
+                    <th class="actions-col">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-s>
+                <tr>
+                    <td>
+                        <span class="meal-type-badge" [ngClass]="s.mealType.toLowerCase()">
+                            {{ s.mealType }}
+                        </span>
+                    </td>
+                    <td>{{ s.time }}</td>
+                    <td>{{ s.label || '—' }}</td>
+                    <td>
+                        <span class="status-pill" [class.active]="s.enabled" [class.inactive]="!s.enabled">
+                            {{ s.enabled ? 'Enabled' : 'Disabled' }}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="action-btn btn-edit" (click)="openEdit(s)" title="Edit">
+                            <span class="btn-label">Edit</span>
+                        </button>
+                        <button class="action-btn btn-delete" (click)="delete(s)" title="Delete">
+                            <span class="btn-label">Delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="empty-state">No slots configured.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <p-toast />
+    <p-confirmDialog />
+</div>
+
+<p-dialog [header]="dialogMode() === 'create' ? 'New Slot' : 'Edit Slot'" [visible]="dialogVisible()"
+    (visibleChange)="dialogVisible.set($event)" [modal]="true" [style]="{width:'630px', height:'450px'}" [draggable]="false"
+    [appendTo]="'body'" styleClass="handsome-dialog" [dismissableMask]="true">
+    <div class="dialog-form">
+        <div class="field">
+            <label class="form-label">Meal Type *</label>
+            <p-dropdown [options]="typeOptions" [(ngModel)]="formModel.mealType" optionLabel="label"
+                optionValue="value" placeholder="Select a type" (ngModelChange)="clearFieldError('mealType')" />
+            <small class="field-error" *ngIf="fieldErrors()['mealType']">{{ fieldErrors()['mealType'] }}</small>
+        </div>
+        <div class="field">
+            <label class="form-label">Time * (HH:mm)</label>
+            <input pInputText type="time" [(ngModel)]="formModel.time" (ngModelChange)="clearFieldError('time')" />
+            <small class="field-error" *ngIf="fieldErrors()['time']">{{ fieldErrors()['time'] }}</small>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="dialogVisible.set(false)" />
+        <p-button label="Save" (onClick)="save()" />
+    </ng-template>
+</p-dialog>

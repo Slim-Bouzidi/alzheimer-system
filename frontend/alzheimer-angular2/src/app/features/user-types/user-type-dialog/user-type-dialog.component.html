@@ -1,0 +1,106 @@
+<p-dialog
+  [header]="title"
+  [visible]="visible"
+  (visibleChange)="!$event && onClose()"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="user-type-dialog"
+  [style]="{ width: '540px' }"
+  appendTo="body"
+>
+  <form [formGroup]="form" class="dialog-form" (ngSubmit)="onSubmit()">
+
+    <!-- Name -->
+    <div class="form-field">
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="ut-name"
+          type="text"
+          formControlName="name"
+          class="w-full"
+        />
+        <label for="ut-name">Name <span class="required">*</span></label>
+      </span>
+      @if (hasError('name', 'required')) {
+        <small class="field-error">Name is required.</small>
+      }
+      @if (hasError('name', 'maxlength')) {
+        <small class="field-error">Name cannot exceed 50 characters.</small>
+      }
+    </div>
+
+    <!-- Description -->
+    <div class="form-field">
+      <span class="p-float-label">
+        <textarea
+          pInputTextarea
+          id="ut-description"
+          formControlName="description"
+          rows="3"
+          class="w-full"
+        ></textarea>
+        <label for="ut-description">Description</label>
+      </span>
+      @if (hasError('description', 'maxlength')) {
+        <small class="field-error">Description cannot exceed 200 characters.</small>
+      }
+      <span class="char-count">{{ descriptionControl.value?.length || 0 }}/200</span>
+    </div>
+
+    <!-- Level -->
+    <div class="form-field">
+      <div class="level-header">
+        <label class="field-label">Access Level <span class="required">*</span></label>
+        <div class="level-display">
+          <span class="level-number">{{ levelControl.value }}</span>
+          <span class="level-label">{{ getLevelLabel(levelControl.value) }}</span>
+        </div>
+      </div>
+      <p-slider
+        formControlName="level"
+        [min]="1"
+        [max]="10"
+        [step]="1"
+        styleClass="level-slider"
+      />
+      <div class="level-range-labels">
+        <span>1 – Observer</span>
+        <span>10 – Administrator</span>
+      </div>
+      @if (hasError('level', 'required')) {
+        <small class="field-error">Level is required.</small>
+      }
+    </div>
+
+    <!-- Is Active -->
+    <div class="form-field form-field--inline">
+      <div class="toggle-info">
+        <span class="field-label">Active Status</span>
+        <p class="toggle-hint">Inactive user types cannot be assigned to new users.</p>
+      </div>
+      <p-inputSwitch formControlName="isActive" />
+    </div>
+
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onClose()"
+        [disabled]="saving"
+      />
+      <p-button
+        [label]="mode === 'create' ? 'Create User Type' : 'Save Changes'"
+        icon="pi pi-check"
+        [loading]="saving"
+        (onClick)="onSubmit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

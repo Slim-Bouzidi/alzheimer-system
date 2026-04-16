@@ -1,0 +1,569 @@
+/* ============================================
+   FICHE DE TRANSMISSION HEBDOMADAIRE - STYLES
+   Design médical professionnel et accessible
+   ============================================ */
+
+/* Layout général */
+.fiche-transmission-form {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* En-tête */
+.entete-fiche {
+  background: linear-gradient(135deg, #2c7a7b 0%, #2d3748 100%);
+  color: white;
+  margin-bottom: 30px;
+}
+
+.entete-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.entete-fiche h2 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.info-item label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.info-item input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.info-item input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Section prioritaire - Observance médicamenteuse */
+.section-prioritaire {
+  border-left: 5px solid #e53e3e;
+  box-shadow: 0 4px 20px rgba(229, 62, 62, 0.1);
+  margin-bottom: 30px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.section-header h2 {
+  color: #2d3748;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.observance-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-badge {
+  background: #4a5568;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.taux-observance {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+/* Médicaments */
+.medicaments-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.medicament-item {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.medicament-item:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.medicament-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.medicament-nom {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.medicament-dosage {
+  background: #4299e1;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.medicament-moment {
+  background: #9f7aea;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.medicament-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Checkbox personnalisée */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-container input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkmark {
+  width: 20px;
+  height: 20px;
+  background: #e2e8f0;
+  border: 2px solid #cbd5e0;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.checkbox-container input:checked + .checkmark {
+  background: #48bb78;
+  border-color: #48bb78;
+}
+
+.checkbox-container input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.checkbox-label {
+  font-weight: 500;
+  color: #4a5568;
+}
+
+.commentaire-input {
+  flex: 1;
+  max-width: 400px;
+}
+
+/* Alimentation */
+.alimentation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.alimentation-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.repas-counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.repas-counter input {
+  width: 80px;
+  text-align: center;
+}
+
+.repas-counter span {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Vie sociale */
+.vie-sociale-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.vie-sociale-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.activites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.activite-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.activite-item input {
+  flex: 1;
+}
+
+/* Directives médicales */
+.periode-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.periode-badge {
+  background: #805ad5;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.medecin-info {
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.directives-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.directive-item {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.directive-item:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.directive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.directive-libelle {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.directive-statut {
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.statut-fait {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.statut-encours {
+  background: #feebc8;
+  color: #7c2d12;
+}
+
+.statut-nonfait {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.directive-actions {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Validation */
+.validation-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Form controls */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.form-control:invalid {
+  border-color: #e53e3e;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Boutons */
+.btn-primary {
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #3182ce;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.btn-secondary {
+  background: #718096;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #4a5568;
+}
+
+.btn-danger {
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background: #c53030;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #4299e1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Topbar */
+.topbar-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.topbar-left h1 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .entete-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .alimentation-grid,
+  .vie-sociale-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .directive-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .medicament-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .medicament-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .topbar-page {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .topbar-left {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

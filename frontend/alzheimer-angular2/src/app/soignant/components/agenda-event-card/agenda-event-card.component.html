@@ -1,0 +1,28 @@
+<div class="event-card" [ngClass]="['type-' + event.type, 'status-' + event.statut, isLate ? 'is-late' : '']">
+    <div class="event-time">
+        {{ event.heure }}
+    </div>
+    <div class="event-details">
+        <div class="event-header">
+            <span class="event-icon" [title]="event.type">{{ icon }}</span>
+            <span class="event-title">{{ event.titre }}</span>
+        </div>
+        <div class="event-meta" *ngIf="event.detail || event.patientNom">
+            <span class="patient-name">{{ event.patientNom }}</span>
+            <span class="separator" *ngIf="event.detail && event.patientNom">•</span>
+            <span class="event-info" *ngIf="event.detail">{{ event.detail }}</span>
+        </div>
+    </div>
+    <div class="event-actions">
+        <button *ngIf="event.statut !== 'fait'" class="btn-action btn-done" (click)="markAsDone($event)"
+            [title]="'COMMON.DONE' | translate">
+            <span class="material-icons">check</span>
+        </button>
+        <span *ngIf="event.statut === 'fait'" class="status-badge done">
+            <span class="material-icons">check_circle</span>
+        </span>
+        <span *ngIf="isLate && event.statut !== 'fait'" class="status-badge late" [title]="'COMMON.LATE' | translate">
+            <span class="material-icons">warning</span>
+        </span>
+    </div>
+</div>

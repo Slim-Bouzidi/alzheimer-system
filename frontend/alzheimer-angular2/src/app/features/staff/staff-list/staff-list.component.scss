@@ -1,0 +1,137 @@
+.staff-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--surface-border);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.search-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.search-wrap {
+    width: 100%;
+    max-width: 380px;
+}
+
+.search-wrap input {
+    width: 100%;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.4rem;
+    min-width: 8.5rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.9rem;
+    height: 2rem;
+    padding: 0 0.6rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 0.85rem;
+}
+
+.btn-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.btn-edit {
+    background: #ede9fe;
+    color: #7c3aed;
+
+    &:hover {
+        background: #7c3aed;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, .3);
+    }
+}
+
+.btn-delete {
+    background: #fee2e2;
+    color: #dc2626;
+
+    &:hover {
+        background: #dc2626;
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, .3);
+    }
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.inactive {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+}
+
+.field-error {
+    color: #dc2626;
+    font-size: 0.78rem;
+    line-height: 1.2;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #7c3aed;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

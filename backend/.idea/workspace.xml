@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/RabbitMQConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/config/RabbitMQConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/service/UserEventPublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/service/UserEventPublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/service/UserRegistrationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/service/UserRegistrationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +23,13 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4,
   &quot;fromUser&quot;: false
@@ -41,6 +48,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.AlzheimerAppApplication.executor": "Run",
     "Spring Boot.ApiGatewayApplication (1).executor": "Run",
     "Spring Boot.ApiGatewayApplication.executor": "Run",
     "Spring Boot.CognitiveServiceApplication.executor": "Run",
@@ -96,9 +104,16 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+  <component name="RunManager" selected="Spring Boot.ApiGatewayApplication">
+    <configuration name="AlzheimerAppApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="AlzheimerApp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.alzheimerapp.AlzheimerAppApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="api-gateway" />
+      <module name="api-gateway (1)" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.apigateway.ApiGatewayApplication" />
       <extension name="coverage">
         <pattern>
@@ -124,7 +139,7 @@
       </method>
     </configuration>
     <configuration name="DiscoveryServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="discovery-server" />
+      <module name="discovery-server (2)" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.discovery.DiscoveryServerApplication" />
       <extension name="coverage">
         <pattern>
@@ -157,6 +172,7 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Spring Boot.AlzheimerAppApplication" />
       <item itemvalue="Spring Boot.PatientServiceApplication" />
       <item itemvalue="Spring Boot.ApiGatewayApplication" />
       <item itemvalue="Spring Boot.UserServiceApplication" />
@@ -165,9 +181,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.ApiGatewayApplication" />
         <item itemvalue="Spring Boot.UserServiceApplication" />
         <item itemvalue="Spring Boot.DiscoveryServerApplication" />
-        <item itemvalue="Spring Boot.ApiGatewayApplication" />
         <item itemvalue="Spring Boot.CognitiveServiceApplication" />
       </list>
     </recent_temporary>
@@ -182,7 +198,7 @@
       <workItem from="1776270117662" duration="178000" />
       <workItem from="1776272778224" duration="4454000" />
       <workItem from="1776288263735" duration="4907000" />
-      <workItem from="1776295193072" duration="2125000" />
+      <workItem from="1776295193072" duration="4358000" />
     </task>
     <servers />
   </component>

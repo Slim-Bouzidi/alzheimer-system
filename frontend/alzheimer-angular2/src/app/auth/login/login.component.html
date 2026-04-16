@@ -1,0 +1,89 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>{{ 'AUTH.TITLE' | translate }}</h1>
+      <p>{{ 'AUTH.SUBTITLE' | translate }}</p>
+    </div>
+
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">{{ 'AUTH.EMAIL' | translate }}</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
+          class="form-input"
+          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">{{ 'AUTH.EMAIL_REQUIRED' | translate }}</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">{{ 'AUTH.EMAIL_INVALID' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">{{ 'AUTH.PASSWORD' | translate }}</label>
+        <div class="password-input-wrapper">
+          <input
+            id="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
+            class="form-input"
+            [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ hidePassword ? '👁️' : '🙈' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">{{ 'AUTH.PASSWORD_REQUIRED' | translate }}</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">{{ 'AUTH.PASSWORD_MIN_LENGTH' | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Login Error -->
+      <div class="login-error" *ngIf="loginError">
+        <span class="error-icon">⚠️</span>
+        {{ loginError }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">{{ 'AUTH.LOGIN_BUTTON' | translate }}</span>
+        <span *ngIf="isLoading" class="loading-spinner">{{ 'AUTH.LOGGING_IN' | translate }}</span>
+      </button>
+    </form>
+
+    <!-- Demo Accounts -->
+    <div class="demo-section">
+      <h3>{{ 'AUTH.DEMO_TITLE' | translate }}</h3>
+      <div class="demo-accounts">
+        <div
+          class="demo-account"
+          *ngFor="let account of demoAccounts"
+          (click)="fillDemoAccount(account)"
+        >
+          <div class="demo-info">
+            <span class="demo-role">{{ account.role }}</span>
+            <span class="demo-description">{{ account.description }}</span>
+          </div>
+          <div class="demo-credentials">
+            <small>{{ account.email }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

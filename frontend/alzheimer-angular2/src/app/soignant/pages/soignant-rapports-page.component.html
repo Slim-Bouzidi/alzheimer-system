@@ -1,0 +1,159 @@
+<header class="topbar-page">
+  <h1>{{ 'SOIGNANT_REPORTS.TITLE' | translate }}</h1>
+  <button class="btn-outline" (click)="logout()">{{ 'COMMON.LOGOUT' | translate }}</button>
+</header>
+<main class="content-area">
+  <!-- Rapports de suivi structurés (référence obligatoire pour la prise en charge) -->
+  <section class="card" *ngIf="rapportsSuivi.length > 0">
+    <div class="card-header">
+      <h2>{{ 'SOIGNANT_REPORTS.STRUCTURED_FOLLOW_UP' | translate }}</h2>
+    </div>
+    <p class="section-desc">{{ 'SOIGNANT_REPORTS.STRUCTURED_FOLLOW_UP_DESC' | translate }}</p>
+    <div class="rapports-grid">
+      <div *ngFor="let r of rapportsSuivi" class="rapport-card rapport-suivi-card" [class.non-lu]="!r.luParSoignant" (click)="openRapportSuivi(r)">
+        <div class="rapport-header">
+          <div class="doctor-info">
+            <span class="doctor-icon">👨‍⚕️</span> {{ r.medecinNom }}
+          </div>
+          <span class="rapport-date">{{ r.dateCreation | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="patient-name">{{ r.patientPrenom }} {{ r.patientNom }} — {{ r.patientAge }} {{ 'COMMON.YEARS_OLD' | translate }}</div>
+        <p class="rapport-period" *ngIf="r.dateDebut && r.dateFin">
+          <strong>Du {{ r.dateDebut | date:'dd/MM/yyyy' }} au {{ r.dateFin | date:'dd/MM/yyyy' }}</strong> — {{ 'SOIGNANT_REPORTS.MANDATORY_REF' | translate }}
+        </p>
+        <p class="rapport-preview">{{ 'SOIGNANT_REPORTS.REPORT_PREVIEW' | translate }}</p>
+        <div class="rapport-footer">
+          <span *ngIf="!r.luParSoignant" class="badge-new">{{ 'COMMON.NEW' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <h2>{{ 'SOIGNANT_REPORTS.RECEIVED_FROM_DOCTORS' | translate }}</h2>
+    </div>
+    <div class="rapports-grid">
+      <div *ngFor="let r of rapports" class="rapport-card" [class.non-lu]="!r.lu" (click)="openRapport(r)">
+        <div class="rapport-header">
+          <div class="doctor-info">
+            <span class="doctor-icon">👨‍⚕️</span> {{ r.medecinNom }}
+          </div>
+          <span class="rapport-date">{{ r.dateConsultation | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="patient-name">{{ r.patientNom }}</div>
+
+        <p class="rapport-preview">{{ r.resume }}</p>
+
+        <div class="rapport-footer">
+          <span *ngIf="!r.lu" class="badge-new">{{ 'COMMON.NEW' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p *ngIf="rapports.length === 0 && rapportsSuivi.length === 0" class="empty-msg">{{ 'SOIGNANT_REPORTS.NO_REPORT_RECEIVED' | translate }}</p>
+    <p *ngIf="rapports.length === 0 && rapportsSuivi.length > 0" class="empty-msg">{{ 'SOIGNANT_REPORTS.NO_OTHER_REPORT' | translate }}</p>
+  </section>
+</main>
+
+<!-- MODAL RAPPORT DE SUIVI STRUCTURÉ -->
+<div class="modal-overlay modal-suivi-overlay" *ngIf="selectedRapportSuivi" (click)="closeRapport()">
+  <div class="modal-content modal-suivi-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ 'SOIGNANT_REPORTS.FOLLOW_UP_REPORT_TITLE' | translate }} — {{ selectedRapportSuivi.patientPrenom }} {{ selectedRapportSuivi.patientNom }}</h3>
+      <button class="btn-close" (click)="closeRapport()">×</button>
+    </div>
+
+    <div class="modal-body modal-suivi-body">
+      <div class="rapport-meta">
+        <span><strong>{{ 'SOIGNANT_REPORTS.PATIENT_LABEL' | translate }}</strong> {{ selectedRapportSuivi.patientPrenom }} {{ selectedRapportSuivi.patientNom }}, {{ selectedRapportSuivi.patientAge }} {{ 'COMMON.YEARS_OLD' | translate }}</span>
+        <span *ngIf="selectedRapportSuivi.dateDebut && selectedRapportSuivi.dateFin"><strong>{{ 'SOIGNANT_REPORTS.PERIOD_LABEL' | translate }}</strong> Du {{ selectedRapportSuivi.dateDebut | date:'dd/MM/yyyy' }} au {{ selectedRapportSuivi.dateFin | date:'dd/MM/yyyy' }} — {{ 'SOIGNANT_REPORTS.MANDATORY_REF_PERIOD' | translate }}</span>
+        <span><strong>{{ 'SOIGNANT_REPORTS.DOCTOR_LABEL' | translate }}</strong> {{ selectedRapportSuivi.medecinNom }} — {{ 'SOIGNANT_REPORTS.CREATED_ON' | translate }} {{ selectedRapportSuivi.dateCreation | date:'dd/MM/yyyy à HH:mm' }}</span>
+      </div>
+
+      <section class="rapport-section">
+        <h4>{{ 'SOIGNANT_REPORTS.DAILY_DIRECTIVES' | translate }}</h4>
+        <p class="attentes-generales">{{ selectedRapportSuivi.observanceMedicamenteuse.attentesGenerales }}</p>
+        <div class="directives-suivi-list">
+          <div *ngFor="let dir of getDirectivesForRapportSuivi(selectedRapportSuivi)" class="directive-suivi-row" [class.medicament]="dir.type === 'medicament'">
+            <div class="directive-label">
+              <span class="dir-libelle">{{ dir.libelle }}</span>
+              <span *ngIf="dir.detail" class="dir-detail">{{ dir.detail }}</span>
+            </div>
+            <div class="directive-response">
+              <div class="radio-group-inline">
+                <label><input type="radio" [name]="'statut_'+dir.id" [value]="'fait'" [checked]="getReponseForDirective(selectedRapportSuivi, dir.id).statut === 'fait'" (change)="updateDirectiveStatut(selectedRapportSuivi!.id, dir.id, 'fait', getReponseForDirective(selectedRapportSuivi, dir.id).commentaireSoignant)"> {{ 'COMMON.DONE' | translate }}</label>
+                <label><input type="radio" [name]="'statut_'+dir.id" [value]="'en_cours'" [checked]="getReponseForDirective(selectedRapportSuivi, dir.id).statut === 'en_cours'" (change)="updateDirectiveStatut(selectedRapportSuivi!.id, dir.id, 'en_cours', getReponseForDirective(selectedRapportSuivi, dir.id).commentaireSoignant)"> {{ 'SOIGNANT_REPORTS.IN_PROGRESS' | translate }}</label>
+                <label><input type="radio" [name]="'statut_'+dir.id" [value]="'non_fait'" [checked]="getReponseForDirective(selectedRapportSuivi, dir.id).statut === 'non_fait'" (change)="updateDirectiveStatut(selectedRapportSuivi!.id, dir.id, 'non_fait', getReponseForDirective(selectedRapportSuivi, dir.id).commentaireSoignant)"> {{ 'SOIGNANT_REPORTS.NOT_DONE' | translate }}</label>
+              </div>
+              <input type="text" class="commentaire-input" [placeholder]="getReponseForDirective(selectedRapportSuivi, dir.id).statut === 'non_fait' ? ('SOIGNANT_REPORTS.COMMENT_REQUIRED_IF_NOT_DONE' | translate) : ('SOIGNANT_REPORTS.COMMENT_OPTIONAL' | translate)" [ngModel]="getReponseForDirective(selectedRapportSuivi, dir.id).commentaireSoignant" (ngModelChange)="updateDirectiveStatut(selectedRapportSuivi!.id, dir.id, getReponseForDirective(selectedRapportSuivi, dir.id).statut, $event)" [class.required-comment]="getReponseForDirective(selectedRapportSuivi, dir.id).statut === 'non_fait'">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rapport-section rapport-synthese">
+        <h4>{{ 'SOIGNANT_REPORTS.SYNTHESIS_TITLE' | translate }}</h4>
+        <p class="synthese-desc">{{ 'SOIGNANT_REPORTS.SYNTHESIS_DESC' | translate }}</p>
+        <div class="synthese-chiffres" *ngIf="getSynthese(selectedRapportSuivi).total > 0">
+          <span class="synthese-badge fait"><strong>{{ getSynthese(selectedRapportSuivi).fait }}</strong> {{ 'COMMON.DONE' | translate }}</span>
+          <span class="synthese-badge en-cours"><strong>{{ getSynthese(selectedRapportSuivi).en_cours }}</strong> {{ 'SOIGNANT_REPORTS.IN_PROGRESS' | translate }}</span>
+          <span class="synthese-badge non-fait"><strong>{{ getSynthese(selectedRapportSuivi).non_fait }}</strong> {{ 'SOIGNANT_REPORTS.NOT_DONE' | translate }}</span>
+          <span class="synthese-total">sur {{ getSynthese(selectedRapportSuivi).total }} {{ 'SOIGNANT_REPORTS.INSTRUCTIONS_COUNT' | translate }}</span>
+        </div>
+      </section>
+
+      <section class="rapport-section signature-readonly">
+        <h4>{{ 'SOIGNANT_REPORTS.SIGNATURE_TITLE' | translate }}</h4>
+        <p>{{ 'SOIGNANT_REPORTS.VALIDATED_BY' | translate }} {{ selectedRapportSuivi.signatureValidation.medecinNom }} {{ 'SOIGNANT_REPORTS.ON_DATE' | translate }} {{ selectedRapportSuivi.signatureValidation.dateValidation | date:'dd/MM/yyyy' }}</p>
+      </section>
+    </div>
+
+    <div class="modal-footer">
+      <p class="hint">{{ 'SOIGNANT_REPORTS.HINT' | translate }}</p>
+      <button class="btn-outline" (click)="closeRapport()">{{ 'COMMON.CLOSE' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DÉTAILS (rapport médical classique) -->
+<div class="modal-overlay" *ngIf="selectedRapport" (click)="closeRapport()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ 'SOIGNANT_REPORTS.REPORT_DETAILS' | translate }}</h3>
+      <button class="btn-close" (click)="closeRapport()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="detail-row">
+        <div class="detail-label">{{ 'SOIGNANT_REPORTS.PATIENT_LABEL' | translate }}</div>
+        <div class="detail-value">{{ selectedRapport.patientNom }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">{{ 'SOIGNANT_REPORTS.DOCTOR_LABEL' | translate }}</div>
+        <div class="detail-value">Dr. {{ selectedRapport.medecinNom }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">{{ 'SOIGNANT_REPORTS.CONSULTATION_DATE' | translate }}</div>
+        <div class="detail-value">{{ selectedRapport.dateConsultation | date:'dd MMMM yyyy' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <div class="detail-label">{{ 'SOIGNANT_REPORTS.SUMMARY' | translate }}</div>
+        <div class="detail-content">
+          {{ selectedRapport.resume }}
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button *ngIf="!selectedRapport.lu" class="btn-primary" (click)="marquerLu(selectedRapport.id)">
+        {{ 'SOIGNANT_REPORTS.MARK_AS_READ' | translate }}
+      </button>
+      <button class="btn-outline" (click)="closeRapport()">{{ 'COMMON.CLOSE' | translate }}</button>
+    </div>
+  </div>
+</div>

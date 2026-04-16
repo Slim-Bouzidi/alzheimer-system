@@ -1,0 +1,209 @@
+<div class="doctor-dashboard-container" *ngIf="currentUser">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="user-info">
+        <h1>🩺 {{ 'DOCTOR.DASHBOARD_TITLE' | translate }}</h1>
+        <p class="role-badge">Dr. {{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+      </div>
+      <div class="header-actions">
+        <button (click)="navigateToProfile()" class="btn btn-secondary">
+          👤 {{ 'COMMON.PROFILE' | translate }}
+        </button>
+        <button (click)="navigateToSettings()" class="btn btn-secondary">
+          ⚙️ {{ 'COMMON.SETTINGS' | translate }}
+        </button>
+        <button (click)="logout()" class="btn btn-danger">
+          🚪 {{ 'COMMON.LOGOUT' | translate }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <!-- Section Alertes Médicales -->
+    <section class="alerts-section">
+      <div class="section-header">
+        <h2>🚨 {{ 'DOCTOR.MEDICAL_ALERTS' | translate }}</h2>
+        <p>{{ 'DOCTOR.MEDICAL_ALERTS_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="alerts-grid">
+        <div class="alert-card" *ngFor="let alert of medicalAlerts"
+          [style.border-left-color]="getAlertTypeColor(alert.type)">
+          <div class="alert-header">
+            <span class="alert-icon">{{ getAlertIcon(alert.type) }}</span>
+            <span class="alert-time">{{ alert.time }}</span>
+          </div>
+          <div class="alert-content">
+            <p>{{ alert.message }}</p>
+            <button class="btn btn-sm btn-primary">{{ 'DOCTOR.VIEW_DETAILS' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Statistiques Médicales -->
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>📊 {{ 'DOCTOR.MEDICAL_STATS' | translate }}</h2>
+        <p>{{ 'DOCTOR.MEDICAL_STATS_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card primary">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <h3>{{ 'DOCTOR.PATIENTS_MONITORED' | translate }}</h3>
+            <p class="stat-number">{{ medicalStats.totalPatients }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card info">
+          <div class="stat-icon">📅</div>
+          <div class="stat-content">
+            <h3>{{ 'DOCTOR.APPOINTMENTS_TODAY' | translate }}</h3>
+            <p class="stat-number">{{ medicalStats.upcomingAppointments }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card warning">
+          <div class="stat-icon">📋</div>
+          <div class="stat-content">
+            <h3>{{ 'DOCTOR.PENDING_REPORTS' | translate }}</h3>
+            <p class="stat-number">{{ medicalStats.pendingReports }}</p>
+          </div>
+        </div>
+
+        <div class="stat-card info">
+          <div class="stat-icon">💊</div>
+          <div class="stat-content">
+            <h3>{{ 'DOCTOR.THERAPEUTIC_ADHERENCE' | translate }}</h3>
+            <p class="stat-number">{{ medicalStats.medicationAdherence }}%</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Rendez-vous du Jour -->
+    <section class="appointments-section">
+      <div class="section-header">
+        <h2>📅 {{ 'DOCTOR.TODAY_APPOINTMENTS' | translate }}</h2>
+        <p>{{ todayDateLabel }}</p>
+      </div>
+
+      <div class="appointments-list">
+        <div class="appointment-card" *ngFor="let appointment of todayAppointments">
+          <div class="appointment-time">
+            <span class="time-badge">{{ appointment.time }}</span>
+          </div>
+          <div class="appointment-content">
+            <h4>{{ appointment.patientName }}</h4>
+            <p>{{ appointment.type }}</p>
+            <span class="status-badge" [class.confirmed]="appointment.status === 'confirmed'">
+              {{ (appointment.status === 'confirmed' ? 'DOCTOR.CONFIRMED' : 'DOCTOR.PENDING') | translate }}
+            </span>
+          </div>
+          <div class="appointment-actions">
+            <button class="btn btn-sm btn-primary">{{ 'DOCTOR.START_CONSULTATION' | translate }}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Patients Récents -->
+    <section class="patients-section">
+      <div class="section-header">
+        <h2>👥 {{ 'DOCTOR.PATIENTS_FOLLOWED' | translate }}</h2>
+        <p>{{ 'DOCTOR.RECENT_PATIENTS_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="patients-table">
+        <table class="medical-table">
+          <thead>
+            <tr>
+              <th>{{ 'DOCTOR.PATIENT' | translate }}</th>
+              <th>{{ 'DOCTOR.AGE' | translate }}</th>
+              <th>{{ 'DOCTOR.LAST_VISIT' | translate }}</th>
+              <th>{{ 'DOCTOR.MEDICAL_HISTORY' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let patient of recentPatients">
+              <td class="patient-name">
+                <strong>{{ patient.nomComplet }}</strong>
+              </td>
+              <td>{{ patient.age }} {{ 'COMMON.YEARS' | translate }}</td>
+              <td>{{ patient.derniereVisite || 'N/A' }}</td>
+              <td>{{ patient.antecedents || '-' }}</td>
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <button class="btn btn-xs btn-primary" (click)="createMedicalReport(patient.id!)"
+                    [title]="'DOCTOR.NEW_REPORT' | translate">
+                    📝
+                  </button>
+                  <button class="btn btn-xs btn-info" (click)="scheduleAppointment(patient.id!)"
+                    [title]="'DOCTOR.SCHEDULE_APPOINTMENT' | translate">
+                    📅
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section Actions Rapides -->
+    <section class="quick-actions-section">
+      <div class="section-header">
+        <h2>⚡ {{ 'DOCTOR.QUICK_ACTIONS' | translate }}</h2>
+        <p>{{ 'DOCTOR.QUICK_ACTIONS_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="actions-grid">
+        <div class="action-card">
+          <div class="action-icon">🧪</div>
+          <h4>{{ 'DOCTOR.NEW_COGNITIVE_TEST' | translate }}</h4>
+          <p>{{ 'DOCTOR.NEW_COGNITIVE_TEST_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'DOCTOR.RUN_TEST' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📊</div>
+          <h4>{{ 'DOCTOR.GENERATE_REPORT' | translate }}</h4>
+          <p>{{ 'DOCTOR.GENERATE_REPORT_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'DOCTOR.NEW_REPORT' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">💊</div>
+          <h4>{{ 'DOCTOR.MEDICAL_PRESCRIPTION' | translate }}</h4>
+          <p>{{ 'DOCTOR.MEDICAL_PRESCRIPTION_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'DOCTOR.PRESCRIBE' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📈</div>
+          <h4>{{ 'DOCTOR.TREND_ANALYSIS' | translate }}</h4>
+          <p>{{ 'DOCTOR.TREND_ANALYSIS_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'DOCTOR.VIEW_TRENDS' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">🔔</div>
+          <h4>{{ 'DOCTOR.CUSTOM_ALERTS' | translate }}</h4>
+          <p>{{ 'DOCTOR.CUSTOM_ALERTS_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'COMMON.CONFIGURE' | translate }}</button>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📚</div>
+          <h4>{{ 'DOCTOR.KNOWLEDGE_BASE' | translate }}</h4>
+          <p>{{ 'DOCTOR.KNOWLEDGE_BASE_DESC' | translate }}</p>
+          <button class="btn btn-primary">{{ 'COMMON.CONSULT' | translate }}</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

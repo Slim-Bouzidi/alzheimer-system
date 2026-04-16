@@ -1,0 +1,150 @@
+/* ===== Variables Soignant (confort, clarté) ===== */
+:host {
+  --soignant-text: #1e293b;
+  --soignant-bg: #f1f5f9;
+}
+
+/* ===== Layout Soignant : confortable et rassurant ===== */
+:host {
+  display: block;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--soignant-text);
+  background: var(--soignant-bg);
+  min-height: 100vh;
+}
+
+.soignant-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.soignant-layout app-sidebar {
+  display: block;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.soignant-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--soignant-bg);
+}
+
+/* ===== Modal overlay : léger, pas anxiogène ===== */
+.soignant-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: soignant-fadeIn 0.2s ease;
+}
+
+@keyframes soignant-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== Modal SOS : rassurante, lisible, gros boutons ===== */
+.soignant-modal-sos {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e2e8f0;
+  animation: soignant-modalIn 0.25s ease;
+}
+
+@keyframes soignant-modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-sos-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1rem;
+  background: linear-gradient(180deg, #fef2f2 0%, #fff 100%);
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid #fecaca;
+}
+
+.modal-sos-icon {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.modal-sos-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #991b1b;
+}
+
+.modal-sos-header p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 0 0.25rem;
+  margin-left: auto;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.modal-close:hover {
+  color: #475569;
+  background: #f1f5f9;
+}
+
+.modal-sos-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+/* Styles pour les autres éléments */
+
+.contact-type {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.contact-libelle {
+  flex: 1;
+  font-weight: 600;
+  color: var(--soignant-text);
+}
+
+.contact-tel {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #dc2626;
+  letter-spacing: 0.02em;
+}
