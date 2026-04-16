@@ -60,7 +60,9 @@ public class UserRegistrationService {
             User user = createUserRecord(keycloakId, request);
 
             // 4. If role is PATIENT, publish event to create patient record
+            log.info("Checking if role '{}' requires event publishing. Expected: {}", request.getRole(), Role.PATIENT);
             if (request.getRole() == Role.PATIENT) {
+                log.info("Role matches PATIENT. Preparing to publish UserCreatedEvent for: {}", user.getEmail());
                 UserCreatedEvent event = UserCreatedEvent.builder()
                         .userId(user.getId())
                         .keycloakId(user.getKeycloakId())
@@ -70,6 +72,9 @@ public class UserRegistrationService {
                         .role(user.getRole())
                         .build();
                 eventPublisher.publishUserCreatedEvent(event);
+                log.info("Event publication triggered for patient: {}", user.getEmail());
+            } else {
+                log.info("Role '{}' does not require a patient record. Skipping event.", request.getRole());
             }
 
             log.info("Successfully registered user with ID: {} and Keycloak ID: {}", user.getId(), keycloakId);

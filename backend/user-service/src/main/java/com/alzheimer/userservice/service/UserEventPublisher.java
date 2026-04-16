@@ -26,6 +26,8 @@ public class UserEventPublisher {
             return;
         }
 
+        log.info("Sending message to exchange: '{}' with routing key: '{}'", RabbitMQConfig.EXCHANGE, routingKey);
         rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, routingKey, event);
+        log.info("Successfully sent message to RabbitMQ for user: {}", event.getEmail());
     }
 }
