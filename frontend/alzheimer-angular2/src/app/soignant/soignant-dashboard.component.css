@@ -1,5 +1,9 @@
 /* ===== Interface Soignant : complète, confortable, rassurante, efficace ===== */
 :host {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
   --soignant-bg: #f1f5f9;
   --soignant-text: #1e293b;
   --soignant-text-muted: #64748b;

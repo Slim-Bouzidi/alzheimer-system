@@ -1,16 +1,27 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
+import { firstValueFrom } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthService } from './auth/auth.service';
+import { SupportNetworkApiInterceptor } from './interceptors/support-network-api.interceptor';
+
+export function appInitTranslate(translate: TranslateService) {
+  return () => {
+    translate.addLangs(['en', 'fr']);
+    translate.setDefaultLang('en');
+    return firstValueFrom(translate.use('en')).catch(() => null);
+  };
+}
 
 @NgModule({
   declarations: [
@@ -23,9 +34,10 @@ import { AuthService } from './auth/auth.service';
     BrowserAnimationsModule,
     HttpClientModule,
     TranslateModule.forRoot({
-      defaultLanguage: 'fr',
-      ...provideTranslateHttpLoader({ prefix: './assets/i18n/' })
-    })
+      fallbackLang: 'en',
+      loader: { provide: TranslateLoader, useClass: TranslateHttpLoader },
+    }),
+    ToastrModule.forRoot()
   ],
   providers: [
     provideClientHydration(),
@@ -35,7 +47,13 @@ import { AuthService } from './auth/auth.service';
       },
       ripple: true
     }),
-    AuthService
+    AuthService,
+    {
+      provide: TRANSLATE_HTTP_LOADER_CONFIG,
+      useValue: { prefix: '/assets/i18n/', suffix: '.json' },
+    },
+    { provide: APP_INITIALIZER, useFactory: appInitTranslate, deps: [TranslateService], multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: SupportNetworkApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

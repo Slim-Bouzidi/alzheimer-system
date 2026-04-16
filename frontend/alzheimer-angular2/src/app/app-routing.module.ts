@@ -24,6 +24,11 @@ import { FicheTransmissionHebdoComponent } from './soignant/pages/fiche-transmis
 import { SoignantNotificationsPageComponent } from './soignant/pages/soignant-notifications-page.component';
 import { SoignantParametresPageComponent } from './soignant/pages/soignant-parametres-page.component';
 import { SoignantProfilPageComponent } from './soignant/pages/soignant-profil-page.component';
+import { NetworkMembersPageComponent } from './soignant/pages/network-members-page.component';
+import { PatientNetworkPageComponent } from './soignant/pages/patient-network-page.component';
+import { AvailabilitiesPageComponent } from './soignant/pages/availabilities-page.component';
+import { MyMissionsPageComponent } from './soignant/pages/my-missions-page.component';
+import { NetworkDashboardPageComponent } from './soignant/pages/network-dashboard-page.component';
 import { LivreurDashboardComponent } from './livreur/livreur-dashboard.component';
 import { LivreurLayoutComponent } from './livreur/livreur-layout.component';
 import { PlaceholderComponent } from './shared/placeholder/placeholder.component';
@@ -38,7 +43,14 @@ import { RouteMapComponent } from './features/logistics/route-map/route-map.comp
 const routes: Routes = [
   { path: '', redirectTo: '/test', pathMatch: 'full' },
   { path: 'test', component: TestPageComponent },
-  { path: 'soignant-dashboard', component: SoignantLayoutComponent, children: [{ path: '', component: SoignantDashboardComponent }] },
+  { path: 'soignant-dashboard', component: SoignantLayoutComponent, children: [
+    { path: '', component: SoignantDashboardComponent },
+    { path: 'network/members', component: NetworkMembersPageComponent },
+    { path: 'network/patient-network', component: PatientNetworkPageComponent },
+    { path: 'network/availabilities', component: AvailabilitiesPageComponent },
+    { path: 'network/missions', component: MyMissionsPageComponent },
+    { path: 'network/dashboard', component: NetworkDashboardPageComponent }
+  ] },
   { path: 'soignant-patients', component: SoignantLayoutComponent, children: [{ path: '', component: SoignantPatientsPageComponent }] },
   { path: 'soignant-rapports', component: SoignantLayoutComponent, children: [{ path: '', component: SoignantRapportsPageComponent }] },
   { path: 'soignant-rappels-medicaments', component: SoignantLayoutComponent, children: [{ path: '', component: SoignantRappelsMedicamentsPageComponent }] },

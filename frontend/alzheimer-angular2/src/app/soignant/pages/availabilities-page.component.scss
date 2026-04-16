@@ -1,0 +1,299 @@
+/* Availabilities page – design aligned with Patient Network / Members */
+:host {
+  display: block;
+}
+
+:host .page-container {
+  max-width: 960px;
+}
+
+/* ----- Breadcrumb ----- */
+.breadcrumb {
+  font-size: 0.875rem;
+  color: var(--soignant-text-muted);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.breadcrumb a {
+  color: var(--soignant-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.breadcrumb a:hover {
+  color: #0f766e;
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  margin: 0 0.15rem;
+  color: #94a3b8;
+  user-select: none;
+}
+
+.breadcrumb-current {
+  color: var(--soignant-text);
+  font-weight: 600;
+}
+
+/* ----- Form card ----- */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--soignant-border);
+}
+
+.form-card.card-editing {
+  border-color: #d97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.15);
+}
+
+.form-card .card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem 0;
+  color: var(--soignant-text);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.member-select-row {
+  margin-bottom: 1.25rem;
+}
+
+.member-select-row .form-input {
+  max-width: 320px;
+}
+
+.avail-form.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem 1.5rem;
+  max-width: 520px;
+}
+
+.form-row-full {
+  grid-column: 1 / -1;
+}
+
+.form-row-checkbox {
+  align-self: end;
+}
+
+.form-card .required-hint {
+  font-size: 0.8rem;
+  color: #b45309;
+  margin: 0 0 0.5rem 0;
+}
+
+.form-card .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.form-card .btn-add-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.form-card .btn-add-slot::before {
+  content: "+";
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .avail-form.form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row-checkbox {
+    align-self: start;
+  }
+}
+
+/* ----- Slots list card ----- */
+.slots-list-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--soignant-border);
+}
+
+.slots-list-card .card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem 0;
+  color: var(--soignant-text);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.slots-list-card .members-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.slots-list-card .members-table th,
+.slots-list-card .members-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.slots-list-card .members-table th {
+  font-weight: 600;
+  color: var(--soignant-text);
+  background: #f8fafc;
+  font-size: 0.8rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.slots-list-card .members-table tbody tr {
+  transition: background 0.15s;
+}
+
+.slots-list-card .members-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.slots-list-card .action-cell {
+  white-space: nowrap;
+}
+
+.day-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: #f0fdfa;
+  color: var(--soignant-primary);
+  border: 1px solid rgba(13, 148, 136, 0.2);
+}
+
+.time-cell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--soignant-text);
+}
+
+.active-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.active-badge.active-yes {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.active-badge.active-no {
+  background: #f1f5f9;
+  color: var(--soignant-text-muted);
+}
+
+/* ----- Icon buttons ----- */
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--soignant-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--soignant-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-icon:last-child {
+  margin-right: 0;
+}
+
+.btn-icon:hover {
+  background: #f8fafc;
+  color: var(--soignant-primary);
+  border-color: var(--soignant-primary);
+}
+
+.btn-icon.btn-edit-icon:hover {
+  color: #b45309;
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.btn-icon.btn-delete-icon:hover {
+  color: var(--soignant-danger);
+  border-color: var(--soignant-danger);
+  background: #fef2f2;
+}
+
+/* ----- Messages & empty state ----- */
+.msg-inline {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.empty-msg {
+  margin: 0.5rem 0;
+  color: var(--soignant-text-muted);
+}
+
+.empty-state {
+  padding: 1rem;
+  text-align: center;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px dashed var(--soignant-border);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .slots-list-card {
+    padding: 1.25rem;
+  }
+
+  .slots-list-card .members-table th,
+  .slots-list-card .members-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.83rem;
+  }
+
+  .slots-list-card .action-cell {
+    min-width: 6.2rem;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.35rem;
+  }
+}

@@ -1,0 +1,404 @@
+/* Network Members page – design aligned with Patient Network */
+:host {
+  display: block;
+}
+
+:host .page-container {
+  max-width: 960px;
+}
+
+/* ----- Breadcrumb ----- */
+.breadcrumb {
+  font-size: 0.875rem;
+  color: var(--soignant-text-muted);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.breadcrumb a {
+  color: var(--soignant-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.breadcrumb a:hover {
+  color: #0f766e;
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  margin: 0 0.15rem;
+  color: #94a3b8;
+  user-select: none;
+}
+
+.breadcrumb-current {
+  color: var(--soignant-text);
+  font-weight: 600;
+}
+
+/* ----- Form card ----- */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--soignant-border);
+}
+
+.form-card.card-editing {
+  border-color: #d97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.15);
+}
+
+.form-card .card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem 0;
+  color: var(--soignant-text);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  max-width: 640px;
+}
+
+.form-row-full {
+  grid-column: 1 / -1;
+}
+
+.form-card .required-hint {
+  font-size: 0.8rem;
+  color: #b45309;
+  margin: 0 0 0.5rem 0;
+}
+
+.form-card .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.form-card .btn-add-member {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.form-card .btn-add-member::before {
+  content: "+";
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----- Members list card ----- */
+.members-list-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--soignant-border);
+}
+
+.members-list-card .card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem 0;
+  color: var(--soignant-text);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.members-list-card .members-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.members-list-card .members-table th,
+.members-list-card .members-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--soignant-border);
+}
+
+.members-list-card .members-table th {
+  font-weight: 600;
+  color: var(--soignant-text);
+  background: #f8fafc;
+  font-size: 0.8rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.members-list-card .members-table tbody tr {
+  transition: background 0.15s;
+}
+
+.members-list-card .members-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.members-list-card .action-cell {
+  white-space: nowrap;
+}
+
+.member-name {
+  font-weight: 500;
+  color: var(--soignant-text);
+}
+
+.cell-muted {
+  color: var(--soignant-text-muted);
+  font-size: 0.9rem;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+/* ----- Icon buttons ----- */
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--soignant-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--soignant-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-icon:last-child {
+  margin-right: 0;
+}
+
+.btn-icon:hover {
+  background: #f8fafc;
+  color: var(--soignant-primary);
+  border-color: var(--soignant-primary);
+}
+
+.btn-icon.btn-edit-icon:hover {
+  color: #b45309;
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.btn-icon.btn-delete-icon:hover {
+  color: var(--soignant-danger);
+  border-color: var(--soignant-danger);
+  background: #fef2f2;
+}
+
+/* ----- Messages & empty state ----- */
+.msg-inline {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.empty-msg {
+  margin: 0.5rem 0;
+  color: var(--soignant-text-muted);
+}
+
+.empty-state {
+  padding: 1rem;
+  text-align: center;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px dashed var(--soignant-border);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.form-select-multiple {
+  min-height: 6.5rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.skills-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--soignant-text-muted, #64748b);
+}
+
+.skills-cell {
+  max-width: 14rem;
+}
+
+.skill-badge {
+  display: inline-block;
+  background: #e3f2fd;
+  padding: 3px 6px;
+  border-radius: 6px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.phone-input-group {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.phone-country-select {
+  width: 100%;
+}
+
+.country-dropdown {
+  position: relative;
+}
+
+.country-dropdown-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+  background: #fff;
+}
+
+.country-trigger-main {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 0.6rem;
+}
+
+.country-trigger-arrow {
+  color: var(--soignant-text-muted);
+  transition: transform 0.15s ease;
+}
+
+.country-trigger-arrow.open {
+  transform: rotate(180deg);
+}
+
+.country-dropdown-menu {
+  position: absolute;
+  z-index: 15;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--soignant-border);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.country-dropdown-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: #fff;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+}
+
+.country-dropdown-item:hover {
+  background: #f8fafc;
+}
+
+.country-dropdown-item.selected {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.phone-local-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--soignant-border);
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.phone-prefix {
+  padding: 0.5rem 0.65rem;
+  background: #f8fafc;
+  color: var(--soignant-text);
+  font-weight: 600;
+  border-right: 1px solid var(--soignant-border);
+  white-space: nowrap;
+}
+
+.phone-local-input {
+  border: 0;
+  border-radius: 0;
+}
+
+.phone-local-input:focus {
+  box-shadow: none;
+}
+
+.phone-preview {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--soignant-text-muted);
+}
+
+@media (max-width: 900px) {
+  .members-list-card {
+    padding: 1.25rem;
+  }
+
+  .members-list-card .members-table th,
+  .members-list-card .members-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.83rem;
+  }
+
+  .members-list-card .action-cell {
+    min-width: 6.4rem;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.35rem;
+  }
+
+  .phone-input-group {
+    grid-template-columns: 1fr;
+  }
+}

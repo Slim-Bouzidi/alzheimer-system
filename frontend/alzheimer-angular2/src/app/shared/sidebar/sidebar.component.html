@@ -44,6 +44,42 @@
         </div>
       </div>
 
+      <!-- Sous-menu Gestion du Réseau (accordion) -->
+      <div class="nav-group">
+        <button type="button" class="nav-item nav-item-toggle" (click)="toggleNetworkMenu()"
+          [class.open]="networkMenuOpen">
+          <span class="nav-icon">🔗</span>
+          <span class="nav-label">{{ 'SIDEBAR.NETWORK_MANAGEMENT' | translate }}</span>
+          <span class="nav-chevron">{{ networkMenuOpen ? '▲' : '▼' }}</span>
+        </button>
+        <div class="nav-submenu" *ngIf="networkMenuOpen">
+          <a routerLink="/soignant-dashboard/network/dashboard" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <span class="nav-icon">📊</span>
+            <span>{{ 'SIDEBAR.NETWORK_DASHBOARD' | translate }}</span>
+          </a>
+          <a routerLink="/soignant-dashboard/network/members" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <span class="nav-icon">👥</span>
+            <span>{{ 'SIDEBAR.NETWORK_MEMBERS' | translate }}</span>
+          </a>
+          <a routerLink="/soignant-dashboard/network/patient-network" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <span class="nav-icon">🧠</span>
+            <span>{{ 'SIDEBAR.NETWORK_PATIENT_NETWORK' | translate }}</span>
+          </a>
+          <a routerLink="/soignant-dashboard/network/availabilities" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <span class="nav-icon">📆</span>
+            <span>{{ 'SIDEBAR.NETWORK_AVAILABILITIES' | translate }}</span>
+          </a>
+          <a routerLink="/soignant-dashboard/network/missions" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <span class="nav-icon">🎯</span>
+            <span>{{ 'SIDEBAR.NETWORK_MISSIONS' | translate }}</span>
+          </a>
+        </div>
+      </div>
 
     </nav>
 
@@ -52,7 +88,7 @@
       <a routerLink="/soignant-notifications" routerLinkActive="active" class="nav-item nav-item-footer">
         <span class="nav-icon">💬</span>
         <span class="nav-label">{{ 'SIDEBAR.NOTIFICATIONS' | translate }}</span>
-        <span *ngIf="notificationsCount > 0" class="nav-badge nav-badge-default">{{ notificationsCount }}</span>
+        <span *ngIf="footerNotificationBadge > 0" class="nav-badge nav-badge-default">{{ footerNotificationBadge }}</span>
       </a>
       <a routerLink="/soignant-parametres" class="nav-item nav-item-footer">
         <span class="nav-icon">⚙️</span>

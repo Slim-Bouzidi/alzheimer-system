@@ -87,7 +87,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "src/test-global-shim.ts"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [

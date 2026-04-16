@@ -1,17 +1,20 @@
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { TranslateFallbackPipe } from '../pipes/translate-fallback.pipe';
+import { TranslateModule } from '@ngx-translate/core';
+import { WebSocketService } from '../../services/websocket.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateFallbackPipe],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent implements OnInit, OnChanges {
+export class SidebarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() role: string = 'SOIGNANT';
   @Input() userName: string = 'Dr. Marie Martin';
   @Input() userRole: string = 'Médecin Chef';
@@ -20,30 +23,102 @@ export class SidebarComponent implements OnInit, OnChanges {
   @Input() alertesCount: number = 0;
   @Input() rapportsNonLusCount: number = 0;
   @Input() rapportHebdoNonEnvoye: boolean = false;
+  /** Legacy mock badge from layout (soignant.service); do not mutate from child code. */
   @Input() notificationsCount: number = 0;
   @Input() suiviRempliAujourdhui: boolean = false;
 
+  /** Unread count from support-network API + live WS bumps (never overwrites @Input above). */
+  supportNetworkUnreadBadge = 0;
+
+  /** Footer notification badge; updated explicitly (not a template getter) to avoid dev-mode CD issues. */
+  footerNotificationBadge = 0;
+
   menuItems: { label: string; icon: string; route: string }[] = [];
   rappelsMenuOpen = false;
+  networkMenuOpen = false;
+  private wsSubscription: Subscription | null = null;
+  private routerSubscription: Subscription | null = null;
+  private deferredInitId: ReturnType<typeof setTimeout> | null = null;
+  private selectedMemberId = Number(localStorage.getItem('supportNetwork.selectedMemberId') ?? '2');
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private websocketService: WebSocketService,
+    private notificationService: NotificationService
+  ) { }
 
   ngOnInit() {
     this.updateMenu();
+    this.syncFooterBadge();
     this.rappelsMenuOpen = /\/soignant-rappels/.test(this.router.url);
-    this.router.events.pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd)).subscribe(() => {
-      this.rappelsMenuOpen = /\/soignant-rappels/.test(this.router.url);
-    });
+    this.networkMenuOpen = /\/soignant-dashboard\/network\//.test(this.router.url);
+    // Defer WS + HTTP so first paint / layout never blocks on backend or SockJS.
+    this.deferredInitId = setTimeout(() => {
+      this.deferredInitId = null;
+      this.refreshUnreadCount();
+      this.websocketService.watchNotifications(this.selectedMemberId);
+      this.wsSubscription = this.websocketService.onNotification().subscribe((event) => {
+        console.log('📩 WS message received:', event);
+        const memberId =
+          event && typeof event === 'object' && 'memberId' in (event as Record<string, unknown>)
+            ? Number((event as Record<string, unknown>)['memberId'])
+            : null;
+        if (memberId == null || memberId !== this.selectedMemberId) {
+          return;
+        }
+        this.supportNetworkUnreadBadge++;
+        this.syncFooterBadge();
+      });
+    }, 0);
+
+    this.routerSubscription = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(() => {
+        this.selectedMemberId = Number(localStorage.getItem('supportNetwork.selectedMemberId') ?? '2');
+        this.rappelsMenuOpen = /\/soignant-rappels/.test(this.router.url);
+        this.networkMenuOpen = /\/soignant-dashboard\/network\//.test(this.router.url);
+        if (/\/soignant-notifications(\/|$)/.test(this.router.url)) {
+          this.supportNetworkUnreadBadge = 0;
+        }
+        this.refreshUnreadCount();
+        this.syncFooterBadge();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['role']) {
       this.updateMenu();
     }
+    if (changes['notificationsCount']) {
+      this.syncFooterBadge();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.deferredInitId != null) {
+      clearTimeout(this.deferredInitId);
+      this.deferredInitId = null;
+    }
+    this.wsSubscription?.unsubscribe();
+    this.wsSubscription = null;
+    this.routerSubscription?.unsubscribe();
+    this.routerSubscription = null;
+  }
+
+  private syncFooterBadge(): void {
+    if (/\/soignant-notifications(\/|$)/.test(this.router.url)) {
+      this.footerNotificationBadge = 0;
+      return;
+    }
+    this.footerNotificationBadge = Math.max(this.supportNetworkUnreadBadge, this.notificationsCount);
   }
 
   toggleRappelsMenu(): void {
     this.rappelsMenuOpen = !this.rappelsMenuOpen;
+  }
+
+  toggleNetworkMenu(): void {
+    this.networkMenuOpen = !this.networkMenuOpen;
   }
 
   getBadgeCount(route: string): number {
@@ -102,24 +177,30 @@ export class SidebarComponent implements OnInit, OnChanges {
           { label: 'SIDEBAR.APPOINTMENTS', icon: '📅', route: '/doctor-appointments' },
           { label: 'SIDEBAR.REPORTS_ASSESSMENTS', icon: '📝', route: '/doctor-reports' },
           { label: 'SIDEBAR.CREATE_FOLLOW_UP_REPORT', icon: '📋', route: '/doctor-report-create' },
-          { label: 'SIDEBAR.ARTICLES', icon: '📚', route: '/doctor-articles' },
           { label: 'SIDEBAR.SETTINGS', icon: '⚙️', route: '/doctor-settings' }
-        ];
-        break;
-      case 'LIVREUR':
-        this.menuItems = [
-          { label: 'Delivery Tasks', icon: '🚚', route: '/delivery-tasks' },
-          { label: 'Staff', icon: '🪪', route: '/staff' },
-          { label: 'Assignments', icon: '🔗', route: '/assignments' },
-          { label: 'Shifts', icon: '🕒', route: '/shifts' },
-          { label: 'Meal Slots', icon: '🍽️', route: '/meal-slots' },
-          { label: 'Routes', icon: '🗺️', route: '/routes' },
-          { label: 'Appointments', icon: '📅', route: '/my-tasks' }
         ];
         break;
       default:
         this.menuItems = [];
         break;
     }
+  }
+
+  private refreshUnreadCount(): void {
+    if (!Number.isFinite(this.selectedMemberId) || this.selectedMemberId <= 0) {
+      this.supportNetworkUnreadBadge = 0;
+      this.syncFooterBadge();
+      return;
+    }
+    this.notificationService.getUnreadCount(this.selectedMemberId).subscribe({
+      next: (res) => {
+        this.supportNetworkUnreadBadge = Number(res.unreadCount ?? 0);
+        this.syncFooterBadge();
+      },
+      error: () => {
+        this.supportNetworkUnreadBadge = 0;
+        this.syncFooterBadge();
+      },
+    });
   }
 }
