@@ -1,0 +1,253 @@
+<header class="topbar-page topbar-page--hero">
+  <div class="topbar-page-inner">
+    <h1>{{ 'MISSIONS.PAGE_TITLE' | translate }}</h1>
+    <p class="topbar-subtitle">{{ 'MISSIONS.PAGE_SUBTITLE' | translate }}</p>
+  </div>
+</header>
+<main class="content-area">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/soignant-dashboard">{{ 'MISSIONS.BREADCRUMB_DASHBOARD' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a routerLink="/soignant-dashboard/network/missions">{{ 'MISSIONS.BREADCRUMB_NETWORK' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current">{{ 'MISSIONS.BREADCRUMB_PAGE' | translate }}</span>
+    </nav>
+
+    <section class="form-card missions-toolbar">
+      <div class="toolbar-row">
+        <label class="form-label" for="mission-member-select">{{ 'MISSIONS.MEMBER' | translate }}</label>
+        <select
+          id="mission-member-select"
+          class="form-input form-select"
+          [ngModel]="selectedMemberId"
+          (ngModelChange)="onMemberIdChange($event)"
+          [disabled]="loading"
+        >
+          <option [ngValue]="null">-- {{ 'MISSIONS.SELECT_MEMBER' | translate }} --</option>
+          <option *ngFor="let m of members" [ngValue]="m.id">{{ m.fullName }}</option>
+        </select>
+        <button type="button" class="btn-primary" (click)="loadMissions()" [disabled]="loading || listLoading || selectedMemberId == null">
+          {{ 'MISSIONS.LOAD_BTN' | translate }}
+        </button>
+        <button type="button" class="btn-outline" (click)="exportCsv()" [disabled]="listLoading || filteredMissions.length === 0">
+          Export CSV
+        </button>
+      </div>
+      <div class="toolbar-row toolbar-row-filters" *ngIf="missionsLoaded">
+        <div class="filter-group">
+          <label class="form-label" for="status-filter">Status</label>
+          <select id="status-filter" class="form-input form-select" [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange()">
+            <option value="ALL">ALL</option>
+            <option value="PENDING">PENDING</option>
+            <option value="ACCEPTED">ACCEPTED</option>
+            <option value="COMPLETED">COMPLETED</option>
+            <option value="ESCALATED">ESCALATED</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="form-label" for="title-search">Search by title</label>
+          <input id="title-search" class="form-input" type="text" [(ngModel)]="searchText" (ngModelChange)="onSearchTextChange()" placeholder="Search mission title" />
+        </div>
+      </div>
+      <p *ngIf="message" class="msg-inline" [class.msg-success]="message.type === 'success'" [class.msg-error]="message.type === 'error'">
+        {{ message.text }}
+      </p>
+      <p *ngIf="loading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p class="poll-hint muted" *ngIf="missionsLoaded && selectedMemberId != null">
+        {{ 'MISSIONS.POLL_HINT' | translate }}
+      </p>
+      <p class="poll-hint muted" *ngIf="missionsLoaded && selectedMemberId != null">
+        {{ 'MISSIONS.DECLINE_HELPER' | translate }}
+      </p>
+    </section>
+
+    <section class="members-list-card">
+      <div *ngIf="showNewMissionBanner" class="new-mission-banner" role="status">
+        <span class="new-mission-banner-text">{{ 'MISSIONS.NEW_MISSION_BANNER' | translate }}</span>
+        <button type="button" class="btn-outline btn-sm new-mission-banner-dismiss" (click)="dismissNewMissionBanner()">
+          {{ 'MISSIONS.BANNER_DISMISS' | translate }}
+        </button>
+      </div>
+      <h2 class="card-title missions-list-title">
+        <span class="missions-bell" aria-hidden="true">🔔</span>
+        {{ 'MISSIONS.LIST_TITLE' | translate }}
+        <span class="missions-pending-badge" [attr.aria-label]="'MISSIONS.PENDING_ARIA' | translate:{ count: pendingMissionCount }">
+          ({{ pendingMissionCount }})
+        </span>
+      </h2>
+      <p *ngIf="listLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="!listLoading && missionsLoaded && missions.length === 0 && selectedMemberId != null && !loading" class="empty-msg empty-state">
+        {{ 'MISSIONS.NO_MISSIONS' | translate }}
+      </p>
+      <p *ngIf="!listLoading && !missionsLoaded && !loading" class="empty-msg empty-state">
+        {{ 'MISSIONS.HINT_LOAD' | translate }}
+      </p>
+      <p *ngIf="!listLoading && selectedMemberId == null && !loading && members.length > 0" class="empty-msg empty-state">
+        {{ 'MISSIONS.HINT_SELECT' | translate }}
+      </p>
+      <p *ngIf="!listLoading && missions.length > 0 && filteredMissions.length === 0" class="empty-msg empty-state">
+        No missions match your filters
+      </p>
+      <div *ngIf="!listLoading && filteredMissions.length > 0" class="table-wrap">
+        <table class="members-table missions-table">
+          <thead>
+            <tr>
+              <th>{{ 'MISSIONS.COL_ID' | translate }}</th>
+              <th>{{ 'MISSIONS.COL_ALERT' | translate }}</th>
+              <th>{{ 'MISSIONS.COL_TITLE' | translate }}</th>
+              <th>{{ 'MISSIONS.COL_DESCRIPTION' | translate }}</th>
+              <th>{{ 'MISSIONS.COL_STATUS' | translate }}</th>
+              <th>{{ 'MISSIONS.COL_CREATED' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of pagedFilteredMissions" [class.new]="isNew(m.id)">
+              <td>{{ m.id }}</td>
+              <td><span class="type-badge">{{ m.alertType }}</span></td>
+              <td>{{ m.title }}</td>
+              <td class="cell-desc">{{ m.description || '—' }}</td>
+              <td>
+                <span class="status-badge" [attr.data-status]="m.status">{{ m.status }}</span>
+                <div class="mission-dates muted" *ngIf="m.acceptedAt || m.completedAt">
+                  <ng-container *ngIf="m.acceptedAt">
+                    <span>{{ 'MISSIONS.COL_ACCEPTED' | translate }}: {{ m.acceptedAt | date: 'short' }}</span>
+                  </ng-container>
+                  <ng-container *ngIf="m.completedAt">
+                    <span *ngIf="m.acceptedAt"> · </span>
+                    <span>{{ 'MISSIONS.COL_COMPLETED' | translate }}: {{ m.completedAt | date: 'short' }}</span>
+                  </ng-container>
+                </div>
+              </td>
+              <td class="cell-date">{{ m.createdAt | date: 'short' }}</td>
+              <td class="action-cell">
+                <button
+                  *ngIf="m.status === 'PENDING'"
+                  type="button"
+                  class="btn-primary btn-sm btn-with-icon"
+                  (click)="accept(m)"
+                  [disabled]="actionMissionId != null || reportSubmitting"
+                >
+                  <span class="btn-ico" aria-hidden="true">✔️</span>
+                  <span>{{ 'MISSIONS.ACCEPT' | translate }}</span>
+                </button>
+                <button
+                  *ngIf="m.status === 'ACCEPTED'"
+                  type="button"
+                  class="btn-success btn-sm btn-with-icon"
+                  (click)="complete(m)"
+                  [disabled]="actionMissionId != null || reportSubmitting"
+                >
+                  <span class="btn-ico" aria-hidden="true">✅</span>
+                  <span>{{ 'MISSIONS.COMPLETE' | translate }}</span>
+                </button>
+                <ng-container *ngIf="m.status === 'COMPLETED'">
+                  <button type="button" class="btn-primary btn-sm btn-with-icon" (click)="openReportForm(m)" [disabled]="actionMissionId != null || reportSubmitting">
+                    <span class="btn-ico" aria-hidden="true">➕</span>
+                    <span>{{ 'MISSIONS.ADD_REPORT' | translate }}</span>
+                  </button>
+                  <button type="button" class="btn-outline btn-sm report-secondary-btn" (click)="toggleReports(m)" [disabled]="actionMissionId != null || reportSubmitting">
+                    {{ 'MISSIONS.VIEW_REPORTS' | translate }}
+                  </button>
+                </ng-container>
+                <button type="button" class="btn-outline btn-sm report-secondary-btn" (click)="viewTimeline(m)" [disabled]="actionMissionId != null || reportSubmitting">
+                  {{ 'MISSIONS.VIEW_TIMELINE' | translate }}
+                </button>
+                <span *ngIf="m.status === 'CANCELLED'" class="muted">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="!listLoading && filteredMissions.length > 0"
+        [totalItems]="filteredMissions.length"
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (currentPageChange)="onMissionsPageChange($event)"
+        (pageSizeChange)="onMissionsPageSizeChange($event)"
+      />
+
+      <div *ngIf="reportFormMission" class="form-card report-form-block">
+        <h3 class="card-title">{{ 'MISSIONS.REPORT_FORM_TITLE' | translate }} #{{ reportFormMission.id }}</h3>
+        <div class="form-row">
+          <label class="form-label" for="report-notes">{{ 'MISSIONS.REPORT_NOTES' | translate }}</label>
+          <textarea
+            id="report-notes"
+            class="form-input report-notes"
+            rows="4"
+            [(ngModel)]="reportNotes"
+            [disabled]="reportSubmitting"
+            [placeholder]="'MISSIONS.REPORT_NOTES_PH' | translate"
+          ></textarea>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="report-rating">{{ 'MISSIONS.REPORT_RATING' | translate }}</label>
+          <select id="report-rating" class="form-input form-select report-rating-select" [(ngModel)]="reportRating" [disabled]="reportSubmitting">
+            <option *ngFor="let r of ratingOptions" [ngValue]="r">{{ r }}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-outline" (click)="cancelReportForm()" [disabled]="reportSubmitting">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button type="button" class="btn-primary" (click)="submitReport()" [disabled]="reportSubmitting">
+            {{ 'MISSIONS.REPORT_SUBMIT' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="reportsViewMissionId != null" class="members-list-card report-list-block">
+        <h3 class="card-title">{{ 'MISSIONS.REPORTS_FOR_MISSION' | translate }} #{{ reportsViewMissionId }}</h3>
+        <p *ngIf="reportsLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+        <p *ngIf="!reportsLoading && reportsList.length === 0" class="empty-msg empty-state">{{ 'MISSIONS.NO_REPORTS' | translate }}</p>
+        <div *ngIf="!reportsLoading && reportsList.length > 0" class="table-wrap">
+          <table class="members-table">
+            <thead>
+              <tr>
+                <th>{{ 'MISSIONS.REPORT_COL_ID' | translate }}</th>
+                <th>{{ 'MISSIONS.REPORT_COL_RATING' | translate }}</th>
+                <th>{{ 'MISSIONS.REPORT_COL_NOTES' | translate }}</th>
+                <th>{{ 'MISSIONS.REPORT_COL_CREATED' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rep of reportsList">
+                <td>{{ rep.id }}</td>
+                <td>{{ rep.rating }}</td>
+                <td class="cell-desc">{{ rep.notes || '—' }}</td>
+                <td class="cell-date">{{ rep.createdAt | date: 'short' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="timelineMissionId != null" class="members-list-card report-list-block">
+        <div class="timeline-header">
+          <h3 class="card-title">{{ 'MISSIONS.TIMELINE_TITLE' | translate }} #{{ timelineMissionId }}</h3>
+          <button type="button" class="btn-outline btn-sm" (click)="closeTimeline()">{{ 'COMMON.CLOSE' | translate }}</button>
+        </div>
+        <p *ngIf="timelineLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+        <p *ngIf="!timelineLoading && timelineEvents.length === 0" class="empty-msg empty-state">
+          {{ 'MISSIONS.NO_TIMELINE_EVENTS' | translate }}
+        </p>
+        <ul *ngIf="!timelineLoading && timelineEvents.length > 0" class="mission-timeline">
+          <li *ngFor="let e of timelineEvents" class="mission-timeline-item">
+            <span class="mission-timeline-icon">{{ timelineIcon(e.type) }}</span>
+            <div class="mission-timeline-content">
+              <div class="mission-timeline-title">{{ e.type }}</div>
+              <div class="mission-timeline-desc">{{ e.description }}</div>
+              <div class="mission-timeline-meta">
+                {{ e.timestamp | date: 'short' }}
+                <span *ngIf="e.memberName"> · {{ e.memberName }}</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>

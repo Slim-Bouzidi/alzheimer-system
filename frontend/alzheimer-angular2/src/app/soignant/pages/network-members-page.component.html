@@ -1,0 +1,330 @@
+<header class="topbar-page topbar-page--hero">
+  <div class="topbar-page-inner">
+    <h1>{{ 'NETWORK_MEMBERS.PAGE_TITLE' | translate }}</h1>
+    <p class="topbar-subtitle">{{ 'NETWORK_MEMBERS.PAGE_SUBTITLE' | translate }}</p>
+  </div>
+</header>
+<main class="content-area">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/soignant-dashboard">{{ 'NETWORK_MEMBERS.BREADCRUMB_DASHBOARD' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a routerLink="/soignant-dashboard/network/members">{{ 'NETWORK_MEMBERS.BREADCRUMB_NETWORK' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current">{{ 'NETWORK_MEMBERS.BREADCRUMB_PAGE' | translate }}</span>
+    </nav>
+
+    <!-- Form card -->
+    <section class="form-card" [class.card-editing]="editingMemberId != null">
+      <h2 class="card-title">{{ 'NETWORK_MEMBERS.ADD_SECTION' | translate }}</h2>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="members-form form-grid">
+        <div class="form-row">
+          <label class="form-label" for="fullName">{{ 'NETWORK_MEMBERS.FULL_NAME' | translate }}</label>
+          <input
+            id="fullName"
+            type="text"
+            formControlName="fullName"
+            class="form-input"
+            [class.invalid]="fullNameCtrl.invalid && fullNameCtrl.touched"
+            [disabled]="loading"
+          />
+          <div class="form-error" *ngIf="fullNameCtrl.invalid && fullNameCtrl.touched">
+            <span *ngIf="fullNameCtrl.hasError('required')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.REQUIRED' | translate }}
+            </span>
+            <span *ngIf="fullNameCtrl.hasError('minlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MIN_LENGTH' | translate:{ min: 3 } }}
+            </span>
+            <span *ngIf="fullNameCtrl.hasError('maxlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MAX_LENGTH' | translate:{ max: 60 } }}
+            </span>
+            <span *ngIf="fullNameCtrl.hasError('pattern')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.NAME_PATTERN' | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="phone">{{ 'NETWORK_MEMBERS.PHONE' | translate }}</label>
+          <div class="phone-input-group">
+            <div class="country-dropdown">
+              <button
+                id="phone-country"
+                type="button"
+                class="form-input country-dropdown-trigger"
+                [disabled]="loading"
+                (click)="toggleCountryDropdown()"
+              >
+                <span class="country-trigger-main">
+                  {{ selectedPhoneCountry().flag }} {{ selectedPhoneCountry().name }} ({{ selectedPhoneCountry().dialCode }})
+                </span>
+                <span class="country-trigger-arrow" [class.open]="countryDropdownOpen">▾</span>
+              </button>
+              <div *ngIf="countryDropdownOpen" class="country-dropdown-menu">
+                <button
+                  *ngFor="let c of phoneCountries"
+                  type="button"
+                  class="country-dropdown-item"
+                  [class.selected]="c.iso === selectedPhoneCountry().iso"
+                  (click)="selectPhoneCountry(c.iso)"
+                >
+                  {{ c.flag }} {{ c.name }} ({{ c.dialCode }})
+                </button>
+              </div>
+            </div>
+            <div class="phone-local-wrap">
+              <span class="phone-prefix">{{ selectedPhoneCountry().dialCode }}</span>
+              <input
+                id="phone"
+                type="text"
+                formControlName="phoneLocal"
+                class="form-input phone-local-input"
+                [class.invalid]="phoneLocalCtrl.invalid && phoneLocalCtrl.touched"
+                inputmode="numeric"
+                autocomplete="tel-national"
+                placeholder="Local number"
+                [attr.maxlength]="currentPhoneMaxLength()"
+                [disabled]="loading"
+                (input)="onPhoneLocalInput()"
+              />
+            </div>
+          </div>
+          <div class="form-error" *ngIf="phoneLocalCtrl.invalid && phoneLocalCtrl.touched">
+            <span *ngIf="phoneLocalCtrl.hasError('required')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.REQUIRED' | translate }}
+            </span>
+            <span *ngIf="phoneLocalCtrl.hasError('pattern')">
+              Digits only for local number.
+            </span>
+            <span *ngIf="phoneLocalCtrl.hasError('minlength') || phoneLocalCtrl.hasError('maxlength')">
+              {{ phoneLengthHint() }}
+            </span>
+          </div>
+          <p class="phone-preview" *ngIf="phoneCtrl.value">
+            Final phone: {{ phoneCtrl.value }}
+          </p>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="email">{{ 'NETWORK_MEMBERS.EMAIL' | translate }}</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            autocomplete="email"
+            [attr.placeholder]="'NETWORK_MEMBERS.EMAIL_PLACEHOLDER' | translate"
+            [class.invalid]="emailCtrl.invalid && emailCtrl.touched"
+            [disabled]="loading"
+          />
+          <div class="form-error" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+            <span *ngIf="emailCtrl.hasError('maxlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MAX_LENGTH' | translate:{ max: 320 } }}
+            </span>
+            <span *ngIf="emailCtrl.hasError('email')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.EMAIL_INVALID' | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="type">{{ 'NETWORK_MEMBERS.TYPE' | translate }}</label>
+          <select
+            id="type"
+            formControlName="type"
+            class="form-input form-select"
+            [class.invalid]="typeCtrl.invalid && typeCtrl.touched"
+            [disabled]="loading"
+          >
+            <option value="">-- {{ 'NETWORK_MEMBERS.SELECT_TYPE' | translate }} --</option>
+            <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+          </select>
+          <span class="form-error" *ngIf="typeCtrl.invalid && typeCtrl.touched">
+            {{ 'NETWORK_MEMBERS.VALIDATION.TYPE_REQUIRED' | translate }}
+          </span>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="zone">{{ 'NETWORK_MEMBERS.ZONE' | translate }}</label>
+          <input
+            id="zone"
+            type="text"
+            formControlName="locationZone"
+            class="form-input"
+            [class.invalid]="locationZoneCtrl.invalid && locationZoneCtrl.touched"
+            [disabled]="loading"
+          />
+          <div class="form-error" *ngIf="locationZoneCtrl.invalid && locationZoneCtrl.touched">
+            <span *ngIf="locationZoneCtrl.hasError('required')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.ZONE_REQUIRED' | translate }}
+            </span>
+            <span *ngIf="!locationZoneCtrl.hasError('required') && locationZoneCtrl.hasError('minlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MIN_LENGTH' | translate:{ min: 2 } }}
+            </span>
+            <span *ngIf="!locationZoneCtrl.hasError('required') && locationZoneCtrl.hasError('maxlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MAX_LENGTH' | translate:{ max: 30 } }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="latitude">{{ 'NETWORK_MEMBERS.LATITUDE' | translate }}</label>
+          <input
+            id="latitude"
+            type="number"
+            formControlName="latitude"
+            class="form-input"
+            step="0.0001"
+            [attr.placeholder]="'NETWORK_MEMBERS.PLACEHOLDER_LAT' | translate"
+            [class.invalid]="latitudeCtrl.invalid && latitudeCtrl.touched"
+            [disabled]="loading"
+          />
+          <div class="form-error" *ngIf="latitudeCtrl.invalid && latitudeCtrl.touched">
+            <span *ngIf="latitudeCtrl.hasError('latRange')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.LAT_RANGE' | translate }}
+            </span>
+            <span *ngIf="latitudeCtrl.hasError('geoNumber')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.GEO_NUMBER' | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="longitude">{{ 'NETWORK_MEMBERS.LONGITUDE' | translate }}</label>
+          <input
+            id="longitude"
+            type="number"
+            formControlName="longitude"
+            class="form-input"
+            step="0.0001"
+            [attr.placeholder]="'NETWORK_MEMBERS.PLACEHOLDER_LON' | translate"
+            [class.invalid]="longitudeCtrl.invalid && longitudeCtrl.touched"
+            [disabled]="loading"
+          />
+          <div class="form-error" *ngIf="longitudeCtrl.invalid && longitudeCtrl.touched">
+            <span *ngIf="longitudeCtrl.hasError('lonRange')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.LON_RANGE' | translate }}
+            </span>
+            <span *ngIf="longitudeCtrl.hasError('geoNumber')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.GEO_NUMBER' | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label" for="skills-select">{{ 'NETWORK_MEMBERS.SKILLS_LABEL' | translate }}</label>
+          <select
+            id="skills-select"
+            multiple
+            name="memberSkillsMulti"
+            class="form-input form-select form-select-multiple"
+            [(ngModel)]="selectedSkills"
+            [ngModelOptions]="{ standalone: true }"
+            [disabled]="loading"
+          >
+            <option *ngFor="let skill of allSkills" [value]="skill.name">{{ skill.name }}</option>
+          </select>
+          <p class="skills-hint">{{ 'NETWORK_MEMBERS.SKILLS_HINT' | translate }}</p>
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label" for="notes">{{ 'NETWORK_MEMBERS.NOTES' | translate }}</label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            class="form-input form-textarea"
+            rows="3"
+            [disabled]="loading"
+          ></textarea>
+          <span class="form-error" *ngIf="notesCtrl.invalid && notesCtrl.touched">
+            {{ 'NETWORK_MEMBERS.VALIDATION.MAX_LENGTH' | translate:{ max: 200 } }}
+          </span>
+        </div>
+        <p class="required-hint form-row-full">{{ 'NETWORK_MEMBERS.REQUIRED_FIELDS_HINT' | translate }}</p>
+        <div class="form-actions form-row-full">
+          <button *ngIf="editingMemberId != null" type="button" class="btn-outline" (click)="cancelEdit()" [disabled]="loading">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="btn-primary btn-add-member"
+            [disabled]="loading || form.invalid"
+          >
+            {{ editingMemberId == null ? ('NETWORK_MEMBERS.ADD_BTN' | translate) : ('NETWORK_MEMBERS.UPDATE_BTN' | translate) }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Members list card -->
+    <section class="members-list-card">
+      <h2 class="card-title">{{ 'NETWORK_MEMBERS.LIST_TITLE' | translate }}</h2>
+      <p *ngIf="message" class="msg-inline" [class.msg-success]="message.type === 'success'" [class.msg-error]="message.type === 'error'">{{ message.text }}</p>
+      <p *ngIf="loading && members.length === 0" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="!loading && members.length === 0" class="empty-msg empty-state">{{ 'NETWORK_MEMBERS.NO_MEMBERS' | translate }}</p>
+      <div *ngIf="members.length > 0" class="table-wrap">
+        <table class="members-table">
+          <thead>
+            <tr>
+              <th>{{ 'NETWORK_MEMBERS.COL_NAME' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_PHONE' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_EMAIL' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_TYPE' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_ZONE' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_COORDS' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.COL_SKILLS' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of pagedMembers">
+              <td><span class="member-name">{{ m.fullName }}</span></td>
+              <td><span class="cell-muted">{{ m.phone || '—' }}</span></td>
+              <td><span class="cell-muted">{{ m.email || '—' }}</span></td>
+              <td><span class="type-badge">{{ m.type }}</span></td>
+              <td><span class="cell-muted">{{ m.locationZone || '—' }}</span></td>
+              <td class="coords-cell">
+                <span class="cell-muted" *ngIf="m.latitude != null && m.longitude != null; else noCoords">
+                  {{ m.latitude }}, {{ m.longitude }}
+                </span>
+                <ng-template #noCoords><span class="cell-muted">—</span></ng-template>
+              </td>
+              <td class="skills-cell">
+                <ng-container *ngIf="m.skills?.length; else noSkills">
+                  <span *ngFor="let s of m.skills" class="skill-badge">{{ skillLabel(s) }}</span>
+                </ng-container>
+                <ng-template #noSkills><span class="cell-muted">—</span></ng-template>
+              </td>
+              <td class="action-cell">
+                <button
+                  type="button"
+                  class="btn-icon btn-edit-icon"
+                  [title]="'NETWORK_MEMBERS.TOOLTIP_EDIT' | translate"
+                  (click)="editMember(m)"
+                  [disabled]="loading"
+                >&#9998;</button>
+                <button
+                  type="button"
+                  class="btn-icon btn-delete-icon"
+                  [title]="'NETWORK_MEMBERS.TOOLTIP_DELETE' | translate"
+                  (click)="deleteMember(m.id!)"
+                  [disabled]="loading"
+                >&#128465;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="members.length > 0"
+        [totalItems]="members.length"
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (currentPageChange)="onMembersPageChange($event)"
+        (pageSizeChange)="onMembersPageSizeChange($event)"
+      />
+    </section>
+  </div>
+
+  <app-confirm-dialog
+    [title]="confirmDialogTitle"
+    [message]="confirmDialogMessage"
+    [confirmText]="confirmDialogConfirmText"
+    [cancelText]="confirmDialogCancelText"
+    [confirmDanger]="true"
+    (confirmed)="onConfirmDialogResult($event)"
+  />
+</main>

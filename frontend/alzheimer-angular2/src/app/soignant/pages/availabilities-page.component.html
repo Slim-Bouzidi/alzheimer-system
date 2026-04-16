@@ -1,0 +1,138 @@
+<header class="topbar-page topbar-page--hero">
+  <div class="topbar-page-inner">
+    <h1>{{ 'AVAILABILITIES.PAGE_TITLE' | translate }}</h1>
+    <p class="topbar-subtitle">{{ 'AVAILABILITIES.PAGE_SUBTITLE' | translate }}</p>
+  </div>
+</header>
+<main class="content-area">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/soignant-dashboard">{{ 'AVAILABILITIES.BREADCRUMB_DASHBOARD' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a routerLink="/soignant-dashboard/network/availabilities">{{ 'AVAILABILITIES.BREADCRUMB_NETWORK' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current">{{ 'AVAILABILITIES.BREADCRUMB_PAGE' | translate }}</span>
+    </nav>
+
+    <!-- Form card -->
+    <section class="form-card" [class.card-editing]="editingId != null">
+      <h2 class="card-title">{{ 'AVAILABILITIES.FORM_TITLE' | translate }}</h2>
+      <div class="form-row member-select-row">
+        <label class="form-label" for="member-select">{{ 'AVAILABILITIES.CHOOSE_MEMBER' | translate }}</label>
+        <select
+          id="member-select"
+          class="form-input form-select"
+          [ngModel]="selectedMemberId"
+          (ngModelChange)="onMemberChange($event)"
+          [disabled]="loading"
+        >
+          <option [ngValue]="null">-- {{ 'AVAILABILITIES.SELECT_MEMBER' | translate }} --</option>
+          <option *ngFor="let m of members" [ngValue]="m.id">{{ m.fullName }}</option>
+        </select>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="avail-form form-grid">
+        <div class="form-row">
+          <label class="form-label" for="day">{{ 'AVAILABILITIES.DAY' | translate }}</label>
+          <select id="day" formControlName="dayOfWeek" class="form-input form-select" [disabled]="loading">
+            <option *ngFor="let d of daysOfWeek" [value]="d.value">{{ d.label }}</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="start">{{ 'AVAILABILITIES.START' | translate }}</label>
+          <input id="start" type="time" formControlName="startTime" class="form-input" [disabled]="loading" />
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="end">{{ 'AVAILABILITIES.END' | translate }}</label>
+          <input id="end" type="time" formControlName="endTime" class="form-input" [disabled]="loading" />
+        </div>
+        <div class="form-row form-row-checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="active" [disabled]="loading" />
+            {{ 'AVAILABILITIES.ACTIVE' | translate }}
+          </label>
+        </div>
+        <p class="required-hint form-row-full">{{ 'AVAILABILITIES.REQUIRED_FIELDS_HINT' | translate }}</p>
+        <div class="form-actions form-row-full">
+          <button *ngIf="editingId != null" type="button" class="btn-outline" (click)="cancelEdit()" [disabled]="loading">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="btn-primary btn-add-slot"
+            [disabled]="loading"
+          >
+            {{ editingId != null ? ('AVAILABILITIES.SAVE' | translate) : ('AVAILABILITIES.ADD_SLOT' | translate) }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Slots list card -->
+    <section class="slots-list-card">
+      <h2 class="card-title">{{ 'AVAILABILITIES.LIST_TITLE' | translate }}</h2>
+      <p *ngIf="message" class="msg-inline" [class.msg-success]="message.type === 'success'" [class.msg-error]="message.type === 'error'">{{ message.text }}</p>
+      <p *ngIf="loading && slots.length === 0 && !message" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="!loading && selectedMemberId != null && slots.length === 0" class="empty-msg empty-state">{{ 'AVAILABILITIES.NO_SLOTS' | translate }}</p>
+      <p *ngIf="!loading && selectedMemberId == null" class="empty-msg empty-state">{{ 'AVAILABILITIES.SELECT_MEMBER' | translate }}</p>
+      <div *ngIf="slots.length > 0" class="table-wrap">
+        <table class="members-table">
+          <thead>
+            <tr>
+              <th>{{ 'AVAILABILITIES.COL_DAY' | translate }}</th>
+              <th>{{ 'AVAILABILITIES.COL_START' | translate }}</th>
+              <th>{{ 'AVAILABILITIES.COL_END' | translate }}</th>
+              <th>{{ 'AVAILABILITIES.COL_ACTIVE' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let slot of pagedSlots">
+              <td><span class="day-badge">{{ dayLabel(slot.dayOfWeek) }}</span></td>
+              <td><span class="time-cell">{{ toTimeInputValue(slot.startTime) }}</span></td>
+              <td><span class="time-cell">{{ toTimeInputValue(slot.endTime) }}</span></td>
+              <td>
+                <span class="active-badge" [class.active-yes]="slot.active" [class.active-no]="!slot.active">
+                  {{ slot.active ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+                </span>
+              </td>
+              <td class="action-cell">
+                <button
+                  type="button"
+                  class="btn-icon btn-edit-icon"
+                  [title]="'AVAILABILITIES.TOOLTIP_EDIT' | translate"
+                  (click)="editSlot(slot)"
+                  [disabled]="loading"
+                >&#9998;</button>
+                <button
+                  type="button"
+                  class="btn-icon btn-delete-icon"
+                  [title]="'AVAILABILITIES.TOOLTIP_DELETE' | translate"
+                  (click)="deleteSlot(slot)"
+                  [disabled]="loading"
+                >&#128465;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="slots.length > 0"
+        [totalItems]="slots.length"
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        (currentPageChange)="onSlotsPageChange($event)"
+        (pageSizeChange)="onSlotsPageSizeChange($event)"
+      />
+    </section>
+  </div>
+
+  <app-confirm-dialog
+    [title]="confirmDialogTitle"
+    [message]="confirmDialogMessage"
+    [confirmText]="confirmDialogConfirmText"
+    [cancelText]="confirmDialogCancelText"
+    [confirmDanger]="true"
+    (confirmed)="onConfirmDialogResult($event)"
+  />
+</main>

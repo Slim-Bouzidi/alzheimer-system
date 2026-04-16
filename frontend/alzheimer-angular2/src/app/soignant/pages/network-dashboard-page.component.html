@@ -1,0 +1,82 @@
+<header class="topbar-page topbar-page--hero">
+  <div class="topbar-page-inner">
+    <h1>{{ 'NETWORK_DASHBOARD.PAGE_TITLE' | translate }}</h1>
+    <p class="topbar-subtitle">{{ 'NETWORK_DASHBOARD.PAGE_SUBTITLE' | translate }}</p>
+  </div>
+</header>
+<main class="content-area">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/soignant-dashboard">{{ 'NETWORK_DASHBOARD.BREADCRUMB_DASHBOARD' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a routerLink="/soignant-dashboard/network/dashboard">{{ 'NETWORK_DASHBOARD.BREADCRUMB_NETWORK' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current">{{ 'NETWORK_DASHBOARD.BREADCRUMB_PAGE' | translate }}</span>
+    </nav>
+
+    <div class="page-toolbar">
+      <button type="button" class="btn-primary btn-with-icon btn-refresh" (click)="refresh()" [disabled]="loading">
+        <span class="btn-ico" aria-hidden="true">🔄</span>
+        <span>{{ 'NETWORK_DASHBOARD.REFRESH' | translate }}</span>
+      </button>
+    </div>
+
+    <p *ngIf="loading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+    <p *ngIf="error" class="msg-inline msg-error">{{ error }}</p>
+
+    <ng-container *ngIf="!loading && data">
+      <section class="kpi-grid" aria-label="KPI summary">
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.TOTAL_MISSIONS' | translate }}</h3>
+          <p class="kpi-value">{{ data.totalMissions }}</p>
+        </article>
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.PENDING_MISSIONS' | translate }}</h3>
+          <p class="kpi-value" style="color:#b45309;">{{ data.pendingMissions }}</p>
+        </article>
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.COMPLETED_MISSIONS' | translate }}</h3>
+          <p class="kpi-value" style="color:#15803d;">{{ data.completedMissions }}</p>
+        </article>
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.ESCALATED_MISSIONS' | translate }}</h3>
+          <p class="kpi-value" style="color:#b91c1c;">{{ data.escalatedMissions }}</p>
+        </article>
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.AVG_RESPONSE' | translate }}</h3>
+          <p class="kpi-value">{{ data.averageResponseTime | number : '1.0-1' }} <span class="kpi-unit">min</span></p>
+        </article>
+        <article class="kpi-card">
+          <h3 class="kpi-label">{{ 'NETWORK_DASHBOARD.ESCALATION_COUNT' | translate }}</h3>
+          <p class="kpi-value">{{ data.escalationCount }}</p>
+        </article>
+      </section>
+
+      <div class="dashboard-columns">
+        <section class="form-card list-block">
+          <h2 class="card-title">{{ 'NETWORK_DASHBOARD.TOP_INTERVENANTS' | translate }}</h2>
+          <p *ngIf="!data.topIntervenants?.length" class="empty-msg">{{ 'NETWORK_DASHBOARD.NO_TOP' | translate }}</p>
+          <ol *ngIf="data.topIntervenants?.length" class="ranked-list">
+            <li *ngFor="let row of data.topIntervenants">
+              <span class="rank-name">{{ row.name }}</span>
+              <span class="rank-meta"
+                >{{ 'NETWORK_DASHBOARD.RATING_AVG' | translate }}: {{ row.rating | number : '1.1-1' }}</span
+              >
+            </li>
+          </ol>
+        </section>
+
+        <section class="form-card list-block">
+          <h2 class="card-title">{{ 'NETWORK_DASHBOARD.MISSIONS_PER_ZONE' | translate }}</h2>
+          <p *ngIf="!zoneEntries().length" class="empty-msg">{{ 'NETWORK_DASHBOARD.NO_ZONES' | translate }}</p>
+          <ul *ngIf="zoneEntries().length" class="zone-list">
+            <li *ngFor="let z of zoneEntries()">
+              <span class="zone-name">{{ z.zone }}</span>
+              <span class="zone-count">{{ z.count }}</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </ng-container>
+  </div>
+</main>

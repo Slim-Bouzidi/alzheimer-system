@@ -1,0 +1,512 @@
+<header class="topbar-page topbar-page--hero">
+  <div class="topbar-page-inner">
+    <h1>{{ 'PATIENT_NETWORK.PAGE_TITLE' | translate }}</h1>
+    <p class="topbar-subtitle">{{ 'PATIENT_NETWORK.PAGE_SUBTITLE' | translate }}</p>
+  </div>
+</header>
+<main class="content-area">
+  <div class="page-container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/soignant-dashboard">{{ 'PATIENT_NETWORK.BREADCRUMB_DASHBOARD' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <a routerLink="/soignant-dashboard/network/patient-network">{{ 'PATIENT_NETWORK.BREADCRUMB_PATIENTS' | translate }}</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current">{{ 'PATIENT_NETWORK.BREADCRUMB_PAGE' | translate }}</span>
+    </nav>
+
+    <!-- Patient hero card -->
+    <section class="patient-card-hero">
+      <div class="patient-avatar" aria-hidden="true">
+        <span class="avatar-letter">P</span>
+      </div>
+      <div class="patient-select-wrap">
+        <label for="patient-select" class="patient-label">{{ 'PATIENT_NETWORK.PATIENT' | translate }}</label>
+        <select
+          id="patient-select"
+          class="form-input form-select patient-select"
+          [ngModel]="selectedPatientId"
+          (ngModelChange)="onPatientChange($event)"
+        >
+          <option [ngValue]="null">-- {{ 'PATIENT_NETWORK.SELECT_PATIENT' | translate }} --</option>
+          <option *ngFor="let p of patients" [ngValue]="p.id">{{ patientLabel(p) }}</option>
+        </select>
+      </div>
+      <button type="button" class="view-file-btn" (click)="openPatientFile()" tabindex="0" [attr.aria-label]="'PATIENT_NETWORK.VIEW_FILE' | translate">
+        <span class="material-icons view-file-icon" aria-hidden="true">folder_open</span>
+        <span class="view-file-label">{{ 'PATIENT_NETWORK.VIEW_FILE' | translate }}</span>
+      </button>
+    </section>
+
+    <!-- Patient WGS84 (distance ranking uses backend Haversine when patient + member have coordinates) -->
+    <section class="form-card patient-geo-card" *ngIf="selectedPatientId != null">
+      <h2 class="card-title">{{ 'PATIENT_NETWORK.PATIENT_GEO_TITLE' | translate }}</h2>
+      <p class="patient-geo-lead">{{ 'PATIENT_NETWORK.PATIENT_GEO_LEAD' | translate }}</p>
+      <form [formGroup]="patientGeoForm" (ngSubmit)="savePatientGeo()" class="members-form form-grid patient-geo-form">
+        <div class="form-row">
+          <label class="form-label" for="patient-zone">{{ 'NETWORK_MEMBERS.ZONE' | translate }}</label>
+          <input
+            id="patient-zone"
+            type="text"
+            formControlName="zone"
+            class="form-input"
+            [class.invalid]="patientGeoZoneCtrl().invalid && patientGeoZoneCtrl().touched"
+          />
+          <div class="form-error" *ngIf="patientGeoZoneCtrl().invalid && patientGeoZoneCtrl().touched">
+            <span *ngIf="patientGeoZoneCtrl().hasError('maxlength')">
+              {{ 'NETWORK_MEMBERS.VALIDATION.MAX_LENGTH' | translate:{ max: 120 } }}
+            </span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="patient-lat">{{ 'NETWORK_MEMBERS.LATITUDE' | translate }}</label>
+          <input
+            id="patient-lat"
+            type="number"
+            formControlName="latitude"
+            class="form-input"
+            step="0.0001"
+            [attr.placeholder]="'NETWORK_MEMBERS.PLACEHOLDER_LAT' | translate"
+            [class.invalid]="patientGeoLatCtrl().invalid && patientGeoLatCtrl().touched"
+          />
+          <div class="form-error" *ngIf="patientGeoLatCtrl().invalid && patientGeoLatCtrl().touched">
+            <span *ngIf="patientGeoLatCtrl().hasError('latRange')">{{ 'NETWORK_MEMBERS.VALIDATION.LAT_RANGE' | translate }}</span>
+            <span *ngIf="patientGeoLatCtrl().hasError('geoNumber')">{{ 'NETWORK_MEMBERS.VALIDATION.GEO_NUMBER' | translate }}</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="patient-lon">{{ 'NETWORK_MEMBERS.LONGITUDE' | translate }}</label>
+          <input
+            id="patient-lon"
+            type="number"
+            formControlName="longitude"
+            class="form-input"
+            step="0.0001"
+            [attr.placeholder]="'NETWORK_MEMBERS.PLACEHOLDER_LON' | translate"
+            [class.invalid]="patientGeoLonCtrl().invalid && patientGeoLonCtrl().touched"
+          />
+          <div class="form-error" *ngIf="patientGeoLonCtrl().invalid && patientGeoLonCtrl().touched">
+            <span *ngIf="patientGeoLonCtrl().hasError('lonRange')">{{ 'NETWORK_MEMBERS.VALIDATION.LON_RANGE' | translate }}</span>
+            <span *ngIf="patientGeoLonCtrl().hasError('geoNumber')">{{ 'NETWORK_MEMBERS.VALIDATION.GEO_NUMBER' | translate }}</span>
+          </div>
+        </div>
+        <div class="form-actions form-row-full">
+          <button type="submit" class="btn-primary" [disabled]="patientGeoSaving || patientGeoForm.invalid">
+            {{ 'PATIENT_NETWORK.PATIENT_GEO_SAVE' | translate }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Form card -->
+    <section class="form-card" [class.card-editing]="editingLinkId != null">
+      <h2 class="card-title">{{ 'PATIENT_NETWORK.SECTION_TITLE' | translate }}</h2>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="members-form">
+        <div class="form-row">
+          <label class="form-label" for="member-select">{{ 'PATIENT_NETWORK.MEMBER' | translate }}</label>
+          <select
+            id="member-select"
+            formControlName="memberId"
+            class="form-input form-select"
+            [class.invalid]="form.get('memberId')?.invalid && form.get('memberId')?.touched"
+          >
+            <option [ngValue]="null">-- {{ 'PATIENT_NETWORK.SELECT_MEMBER' | translate }} --</option>
+            <option *ngFor="let m of members" [ngValue]="m.id">{{ memberSelectLabel(m) }}</option>
+          </select>
+          <span class="form-error" *ngIf="form.get('memberId')?.invalid && form.get('memberId')?.touched">{{ 'PATIENT_NETWORK.REQUIRED' | translate }}</span>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="role-input">{{ 'PATIENT_NETWORK.ROLE' | translate }}</label>
+          <input
+            id="role-input"
+            type="text"
+            formControlName="roleInNetwork"
+            class="form-input"
+            [placeholder]="'PATIENT_NETWORK.ROLE_PLACEHOLDER' | translate"
+            [class.invalid]="form.get('roleInNetwork')?.invalid && form.get('roleInNetwork')?.touched"
+          />
+          <span class="form-error" *ngIf="form.get('roleInNetwork')?.invalid && form.get('roleInNetwork')?.touched">{{ 'PATIENT_NETWORK.REQUIRED' | translate }}</span>
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="trust-select">{{ 'PATIENT_NETWORK.TRUST_LEVEL' | translate }}</label>
+          <select
+            id="trust-select"
+            formControlName="trustLevel"
+            class="form-input form-select"
+            [class.invalid]="form.get('trustLevel')?.invalid && form.get('trustLevel')?.touched"
+          >
+            <option value="">-- {{ 'PATIENT_NETWORK.SELECT_TRUST' | translate }} --</option>
+            <option *ngFor="let t of trustLevels" [value]="t">{{ t }}</option>
+          </select>
+          <span class="form-error" *ngIf="form.get('trustLevel')?.invalid && form.get('trustLevel')?.touched">{{ 'PATIENT_NETWORK.REQUIRED' | translate }}</span>
+        </div>
+        <div class="form-row">
+          <label class="form-label">{{ 'PATIENT_NETWORK.PRIORITY_RANK' | translate }}</label>
+          <input type="number" formControlName="priorityRank" class="form-input" min="1" [class.invalid]="form.get('priorityRank')?.invalid && form.get('priorityRank')?.touched" />
+          <span class="form-error" *ngIf="form.get('priorityRank')?.invalid && form.get('priorityRank')?.touched">{{ 'PATIENT_NETWORK.REQUIRED' | translate }}</span>
+        </div>
+        <div class="form-row">
+          <label class="form-label">{{ 'PATIENT_NETWORK.PERMISSIONS' | translate }}</label>
+          <div class="checkbox-group">
+            <label *ngFor="let p of permissionOptions" class="checkbox-label">
+              <input type="checkbox" [checked]="hasPermission(p)" (change)="togglePermission(p)" />
+              {{ ('PATIENT_NETWORK.PERMISSION_LABEL.' + p) | translate }}
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="canAccessHome" />
+            {{ 'PATIENT_NETWORK.CAN_ACCESS_HOME' | translate }}
+          </label>
+        </div>
+        <p class="required-hint">{{ 'PATIENT_NETWORK.REQUIRED_FIELDS_HINT' | translate }}</p>
+        <div class="form-actions">
+          <button *ngIf="editingLinkId != null" type="button" class="btn-outline" (click)="cancelEdit()">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            [class.btn-primary]="editingLinkId == null"
+            [class.btn-edit]="editingLinkId != null"
+            [disabled]="loading"
+            class="btn-add-network"
+          >
+            {{ editingLinkId != null ? ('PATIENT_NETWORK.UPDATE_BTN' | translate) : ('PATIENT_NETWORK.LINK_BTN' | translate) }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Members list card -->
+    <section class="members-list-card">
+      <h2 class="card-title">{{ 'PATIENT_NETWORK.LIST_TITLE' | translate }}</h2>
+      <p *ngIf="message" class="msg-inline" [class.msg-success]="message.type === 'success'" [class.msg-error]="message.type === 'error'">{{ message.text }}</p>
+      <p *ngIf="loading && links.length === 0 && !message" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="!loading && links.length === 0" class="empty-msg empty-state">{{ 'PATIENT_NETWORK.NO_LINKS' | translate }}</p>
+      <div *ngIf="links.length > 0" class="table-wrap">
+        <table class="members-table">
+          <thead>
+            <tr>
+              <th>{{ 'PATIENT_NETWORK.COL_MEMBER' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.COL_SKILLS' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.COL_ROLE' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.COL_TRUST' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let link of pagedLinks">
+              <td><span class="member-name">{{ link.member?.fullName ?? '—' }}</span></td>
+              <td class="skills-cell">
+                <ng-container *ngIf="skillsForLinkedMember(link.member?.id) as linkSkills">
+                  <ng-container *ngIf="linkSkills.length; else linkNoSkills">
+                    <span *ngFor="let s of linkSkills" class="skill-badge">{{ skillLabel(s) }}</span>
+                  </ng-container>
+                </ng-container>
+                <ng-template #linkNoSkills><span class="cell-muted">—</span></ng-template>
+              </td>
+              <td><span class="role-badge">{{ link.roleInNetwork }}</span></td>
+              <td><span class="trust-badge" [class.trust-trusted]="link.trustLevel === 'TRUSTED'" [class.trust-normal]="link.trustLevel === 'NORMAL'">{{ link.trustLevel }}</span></td>
+              <td class="action-cell">
+                <button
+                  type="button"
+                  class="btn-icon btn-edit-icon"
+                  [title]="'PATIENT_NETWORK.TOOLTIP_EDIT' | translate"
+                  (click)="editLink(link)"
+                >&#9998;</button>
+                <button
+                  type="button"
+                  class="btn-icon btn-delete-icon"
+                  [title]="'PATIENT_NETWORK.TOOLTIP_DELETE' | translate"
+                  (click)="deleteLink(link)"
+                >&#128465;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="links.length > 0"
+        [totalItems]="links.length"
+        [currentPage]="linksCurrentPage"
+        [pageSize]="linksPageSize"
+        [pageSizeOptions]="linksPageSizeOptions"
+        (currentPageChange)="onLinksPageChange($event)"
+        (pageSizeChange)="onLinksPageSizeChange($event)"
+      />
+    </section>
+
+    <!-- Best Intervenants -->
+    <section class="feature-card best-intervenants-card">
+      <div class="card-header-row">
+        <h2 class="card-title">{{ 'PATIENT_NETWORK.BEST_INTERVENANTS_TITLE' | translate }}</h2>
+        <button
+          type="button"
+          class="btn-primary btn-compute"
+          (click)="computeBestIntervenants()"
+          [disabled]="rankingLoading || links.length === 0"
+        >
+          {{ 'PATIENT_NETWORK.COMPUTE_BEST_BTN' | translate }}
+        </button>
+      </div>
+      <p class="muted dispatch-history-hint">{{ 'PATIENT_NETWORK.MISSIONS_HELPER' | translate }}</p>
+      <p *ngIf="rankingLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="rankingError" class="msg-inline msg-error">{{ rankingError }}</p>
+      <p *ngIf="!rankingLoading && !rankingError && rankedIntervenants.length === 0" class="empty-msg empty-state">
+        {{ 'PATIENT_NETWORK.NO_RANKING' | translate }}
+      </p>
+      <div *ngIf="rankedIntervenants.length > 0" class="table-wrap">
+        <table class="members-table ranking-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ 'PATIENT_NETWORK.COL_MEMBER' | translate }}</th>
+              <th>{{ 'NETWORK_MEMBERS.TYPE' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.COL_SKILLS' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.COL_DISTANCE' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.REPUTATION' | translate }}</th>
+              <th class="th-score">{{ 'PATIENT_NETWORK.SCORE' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.REASONS' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of pagedRankedIntervenants; let i = index" class="ranking-row">
+              <td><span class="rank-badge">{{ rankedStartIndex + i + 1 }}</span></td>
+              <td>
+                <div class="iv-name-block">
+                  <span class="iv-name">{{ r.fullName }}</span>
+                  <span *ngIf="isTopRatedPagedItem(i)" class="top-rated-badge">{{ 'PATIENT_NETWORK.TOP_RATED' | translate }}</span>
+                </div>
+              </td>
+              <td><span class="type-badge">{{ r.type ?? '—' }}</span></td>
+              <td class="skills-cell-rank">
+                <span *ngFor="let s of (r.skills || [])" class="skill-badge">{{ skillLabel(s) }}</span>
+                <span *ngIf="!(r.skills?.length)" class="cell-muted">—</span>
+              </td>
+              <td class="cell-distance">
+                <span *ngIf="r.distanceKm != null" class="distance-pill">{{ 'PATIENT_NETWORK.DISTANCE_LABEL' | translate: { km: distanceKmLabel(r) } }}</span>
+                <span *ngIf="r.distanceKm == null" class="cell-muted">—</span>
+              </td>
+              <td class="rating-cell"><span class="rating-text rating-stars">{{ formatAverageRating(r) }}</span></td>
+              <td><span class="score-pill">{{ r.score }}</span></td>
+              <td>
+                <ul class="reasons-list">
+                  <li *ngFor="let reason of r.reasons">{{ reason }}</li>
+                </ul>
+              </td>
+              <td class="action-cell">
+                <button
+                  type="button"
+                  class="btn-primary btn-sm btn-with-icon"
+                  (click)="dispatchMissionForMember(r.memberId)"
+                  [disabled]="missionDispatchMemberId != null || selectedPatientId == null"
+                >
+                  <span class="btn-ico" aria-hidden="true">➕</span>
+                  <span>{{ 'PATIENT_NETWORK.DISPATCH_MISSION_BTN' | translate }}</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="rankedIntervenants.length > 0"
+        [totalItems]="rankedIntervenants.length"
+        [currentPage]="rankedCurrentPage"
+        [pageSize]="rankedPageSize"
+        [pageSizeOptions]="rankedPageSizeOptions"
+        (currentPageChange)="onRankedPageChange($event)"
+        (pageSizeChange)="onRankedPageSizeChange($event)"
+      />
+    </section>
+
+    <!-- Dispatch Planner: rules = backend AlertDispatchPlannerService (CHUTE=home access, FUGUE=GPS_VIEW, MALAISE=no extra permission filter) -->
+    <section class="feature-card dispatch-card">
+      <div class="card-header-row">
+        <h2 class="card-title">{{ 'PATIENT_NETWORK.DISPATCH_PLANNER_TITLE' | translate }}</h2>
+        <div class="dispatch-toolbar">
+          <label class="dispatch-label">{{ 'PATIENT_NETWORK.ALERT_TYPE' | translate }}</label>
+          <select class="form-input form-select dispatch-select" [(ngModel)]="dispatchAlertType">
+            <option *ngFor="let t of alertTypes" [value]="t">{{ ('PATIENT_NETWORK.ALERT_' + t) | translate }}</option>
+          </select>
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="generateDispatchPlan()"
+            [disabled]="links.length === 0 || dispatchPlanLoading"
+          >
+            {{ 'PATIENT_NETWORK.GENERATE_PLAN_BTN' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-outline btn-trigger-alert"
+            (click)="triggerAlertDemo()"
+            [disabled]="selectedPatientId == null || links.length === 0 || alertTriggerLoading || dispatchPlanLoading"
+            [title]="'PATIENT_NETWORK.ALERT_TRIGGER_TOOLTIP' | translate"
+          >
+            {{ 'PATIENT_NETWORK.ALERT_TRIGGER_BTN' | translate }}
+          </button>
+        </div>
+      </div>
+      <p class="muted dispatch-history-hint">{{ 'PATIENT_NETWORK.DISPATCH_HELPER' | translate }}</p>
+      <p *ngIf="dispatchPlanError" class="msg-inline msg-error">{{ dispatchPlanError }}</p>
+      <p *ngIf="dispatchPlanLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="!dispatchPlan && !dispatchPlanError && !dispatchPlanLoading" class="empty-msg empty-state">{{ 'PATIENT_NETWORK.DISPATCH_EMPTY_HINT' | translate }}</p>
+      <div *ngIf="dispatchPlan" class="dispatch-plan-wrap">
+        <div *ngFor="let s of dispatchPlan.steps" class="dispatch-step-block">
+          <div class="step-header">
+            <span class="step-badge">{{ 'PATIENT_NETWORK.DISPATCH_STEP' | translate: { step: s.step } }}</span>
+            <span class="step-timeout">{{ 'PATIENT_NETWORK.DISPATCH_TIMEOUT' | translate }}: {{ s.timeoutLabel }}{{ s.note ? ' · ' + s.note : '' }}</span>
+          </div>
+          <ng-container *ngIf="(s.assignees || []).length > 0; else stepNoAssignees">
+            <div class="step-assignees">
+              <span *ngFor="let a of (s.assignees || []); let last = last" class="assignee-chip">{{ a.fullName }}{{ !last ? ', ' : '' }}</span>
+            </div>
+            <div class="step-reasons">
+              <div *ngFor="let a of (s.assignees || [])">
+                <div *ngIf="(a.reasons || []).length > 0" class="reason-chips">
+                  <span
+                    *ngFor="let reason of (a.reasons || [])"
+                    class="reason-chip"
+                    [ngClass]="getReasonChipClass(reason)"
+                  >{{ reason }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #stepNoAssignees>
+            <p *ngIf="s.step === 3" class="escalation-msg">{{ 'PATIENT_NETWORK.DISPATCH_ESCALATION_EMPTY' | translate }}</p>
+            <p *ngIf="s.step !== 3" class="no-assignees">—</p>
+          </ng-template>
+        </div>
+      </div>
+      <p
+        *ngIf="dispatchPlan && (!dispatchPlan.steps || dispatchPlan.steps.length === 0)"
+        class="empty-msg empty-state"
+      >
+        {{ 'PATIENT_NETWORK.NO_PLAN_GENERATED' | translate }}
+      </p>
+    </section>
+
+    <!-- Persisted dispatch history (GET /api/dispatch/history/...) -->
+    <section class="feature-card dispatch-history-card" *ngIf="selectedPatientId != null">
+      <div class="card-header-row">
+        <h2 class="card-title">{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_TITLE' | translate }}</h2>
+        <div class="dispatch-history-actions">
+          <button
+            type="button"
+            class="btn-outline"
+            (click)="loadDispatchHistory()"
+            [disabled]="dispatchHistoryLoading"
+          >
+            {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_LOAD' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-outline"
+            (click)="refreshDispatchHistory()"
+            [disabled]="dispatchHistoryLoading"
+          >
+            {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_REFRESH' | translate }}
+          </button>
+        </div>
+      </div>
+      <p class="muted dispatch-history-hint">{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_HINT' | translate }}</p>
+      <p *ngIf="dispatchHistoryError" class="msg-inline msg-error">{{ dispatchHistoryError }}</p>
+      <p *ngIf="dispatchHistoryLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</p>
+      <p *ngIf="dispatchHistoryQueried && !dispatchHistoryLoading && dispatchHistoryItems.length === 0 && !dispatchHistoryError" class="empty-msg empty-state">
+        {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_EMPTY' | translate }}
+      </p>
+      <div *ngIf="!dispatchHistoryLoading && dispatchHistoryItems.length > 0" class="table-wrap">
+        <table class="members-table dispatch-history-table">
+          <thead>
+            <tr>
+              <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_ID' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_ALERT' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_STATUS' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_MISSION' | translate }}</th>
+              <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_AT' | translate }}</th>
+              <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let h of pagedDispatchHistoryItems" [class.row-selected]="dispatchHistorySelectedId === h.id">
+              <td>{{ h.id }}</td>
+              <td><span class="type-badge">{{ h.alertType }}</span></td>
+              <td>
+                <span [class]="dispatchHistoryStatusClass(h.status)">{{ h.status }}</span>
+              </td>
+              <td>{{ h.missionId ?? '—' }}</td>
+              <td class="cell-date">{{ h.generatedAt | date: 'short' }}</td>
+              <td class="action-cell">
+                <button type="button" class="btn-primary btn-sm" (click)="openDispatchHistoryDetail(h.id)" [disabled]="dispatchHistoryDetailLoading">
+                  {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_VIEW' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <app-table-pagination
+        *ngIf="!dispatchHistoryLoading && dispatchHistoryItems.length > 0"
+        [totalItems]="dispatchHistoryItems.length"
+        [currentPage]="dispatchHistoryCurrentPage"
+        [pageSize]="dispatchHistoryPageSize"
+        [pageSizeOptions]="dispatchHistoryPageSizeOptions"
+        (currentPageChange)="onDispatchHistoryPageChange($event)"
+        (pageSizeChange)="onDispatchHistoryPageSizeChange($event)"
+      />
+
+      <div *ngIf="dispatchHistoryDetailLoading" class="empty-msg">{{ 'COMMON.LOADING' | translate }}</div>
+      <div *ngIf="dispatchHistoryDetail != null && !dispatchHistoryDetailLoading" class="dispatch-history-detail">
+        <div class="detail-header-row">
+          <h3 class="card-title">{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_DETAIL_TITLE' | translate }} #{{ dispatchHistoryDetail.id }}</h3>
+          <button type="button" class="btn-outline btn-sm" (click)="closeDispatchHistoryDetail()">
+            {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_CLOSE' | translate }}
+          </button>
+        </div>
+        <p class="muted small-meta">
+          {{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_MISSION' | translate }}: {{ dispatchHistoryDetail.missionId ?? '—' }}
+        </p>
+        <div class="table-wrap" *ngIf="(dispatchHistoryDetail.steps || []).length > 0">
+          <table class="members-table">
+            <thead>
+              <tr>
+                <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_STEP' | translate }}</th>
+                <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_TIMEOUT' | translate }}</th>
+                <th>{{ 'PATIENT_NETWORK.COL_MEMBER' | translate }}</th>
+                <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_STATUS' | translate }}</th>
+                <th>{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_COL_AT' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of dispatchHistoryDetail.steps">
+                <td>{{ s.stepNumber }}</td>
+                <td>{{ s.timeoutMinutes }} min</td>
+                <td>
+                  <span class="member-name">{{ s.assigneeName || ('#' + s.assigneeMemberId) }}</span>
+                  <span class="muted small-id">({{ s.assigneeMemberId }})</span>
+                </td>
+                <td>
+                  <span [class]="dispatchHistoryStatusClass(s.status)">{{ s.status }}</span>
+                </td>
+                <td class="cell-date">{{ s.startedAt | date: 'short' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p *ngIf="!dispatchHistoryDetail.steps.length" class="empty-msg">{{ 'PATIENT_NETWORK.DISPATCH_HISTORY_NO_STEPS' | translate }}</p>
+      </div>
+    </section>
+  </div>
+
+  <app-confirm-dialog
+    [title]="confirmDialogTitle"
+    [message]="confirmDialogMessage"
+    [confirmText]="confirmDialogConfirmText"
+    [cancelText]="confirmDialogCancelText"
+    [confirmDanger]="true"
+    (confirmed)="onConfirmDialogResult($event)"
+  />
+</main>

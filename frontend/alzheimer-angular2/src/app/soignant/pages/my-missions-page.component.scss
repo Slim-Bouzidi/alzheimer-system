@@ -1,0 +1,243 @@
+:host {
+  display: block;
+}
+
+:host .page-container {
+  max-width: 960px;
+}
+
+.breadcrumb {
+  font-size: 0.875rem;
+  color: var(--soignant-text-muted);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.breadcrumb a {
+  color: var(--soignant-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.breadcrumb-sep {
+  margin: 0 0.15rem;
+  color: #94a3b8;
+}
+
+.breadcrumb-current {
+  color: var(--soignant-text);
+  font-weight: 600;
+}
+
+.missions-toolbar .toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.missions-toolbar .form-label {
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+.missions-toolbar .form-select {
+  min-width: 220px;
+  flex: 1;
+}
+
+.toolbar-row-filters {
+  margin-top: 0.75rem;
+  align-items: stretch;
+}
+
+.filter-group {
+  min-width: 220px;
+  flex: 1;
+}
+
+.msg-inline {
+  margin-top: 1rem;
+}
+
+.msg-success {
+  color: #047857;
+}
+
+.msg-error {
+  color: #b91c1c;
+}
+
+.cell-desc {
+  max-width: 220px;
+  font-size: 0.875rem;
+  word-break: break-word;
+}
+
+.cell-date {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.mission-dates {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  margin-top: 0.3rem;
+}
+
+.muted {
+  color: var(--soignant-text-muted, #64748b);
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: #f1f5f9;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.muted {
+  color: var(--soignant-text-muted);
+}
+
+.report-form-block,
+.report-list-block {
+  margin-top: 1.25rem;
+}
+
+.report-notes {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.report-rating-select {
+  max-width: 120px;
+}
+
+.missions-table .action-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.report-secondary-btn {
+  align-self: stretch;
+  text-align: center;
+}
+
+.poll-hint {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.missions-list-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.missions-bell {
+  font-size: 1.1rem;
+}
+
+.missions-pending-badge {
+  font-weight: 700;
+  color: var(--soignant-primary, #2563eb);
+}
+
+.new-mission-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+  font-size: 0.9rem;
+}
+
+.new-mission-banner-text {
+  font-weight: 600;
+}
+
+.new-mission-banner-dismiss {
+  flex-shrink: 0;
+}
+
+.missions-table tbody tr.new {
+  background: #fff3cd;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mission-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0;
+  border-left: 2px solid #cbd5e1;
+}
+
+.mission-timeline-item {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem 0;
+  padding-left: 0.75rem;
+}
+
+.mission-timeline-icon {
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+
+.mission-timeline-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mission-timeline-desc {
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.mission-timeline-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+@media (max-width: 980px) {
+  .members-list-card {
+    padding: 1.25rem;
+  }
+
+  .missions-table th,
+  .missions-table td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.83rem;
+  }
+
+  .missions-table .action-cell {
+    min-width: 10.5rem;
+    gap: 0.3rem;
+  }
+
+  .toolbar-row .btn-primary,
+  .toolbar-row .btn-outline {
+    min-height: 2.15rem;
+  }
+}

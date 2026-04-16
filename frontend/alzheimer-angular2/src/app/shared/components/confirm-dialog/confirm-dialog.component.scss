@@ -1,0 +1,108 @@
+.confirm-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: confirm-dialog-fade 0.2s ease-out;
+}
+
+.confirm-dialog-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 420px;
+  width: 100%;
+  padding: 1.5rem;
+  animation: confirm-dialog-slide 0.25s ease-out;
+}
+
+.confirm-dialog-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.confirm-dialog-message {
+  margin: 0 0 1.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.confirm-dialog-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  transition: background 0.15s, color 0.15s;
+}
+
+.confirm-dialog-btn:hover {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.confirm-dialog-btn.confirm {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: #fff;
+}
+
+.confirm-dialog-btn.confirm:hover {
+  background: #0f766e;
+  border-color: #0f766e;
+}
+
+.confirm-dialog-btn.confirm.danger {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.confirm-dialog-btn.confirm.danger:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.confirm-dialog-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.35);
+}
+
+.confirm-dialog-btn.confirm.danger:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.35);
+}
+
+@keyframes confirm-dialog-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-dialog-slide {
+  from {
+    transform: translateY(-12px);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

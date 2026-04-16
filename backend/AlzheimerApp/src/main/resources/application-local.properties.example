@@ -1,0 +1,13 @@
+# Copy to application-local.properties (gitignored) or set variables in your run configuration.
+# Never commit real API keys.
+#
+# IMPORTANT: Do not set brevo.api.key=${BREVO_API_KEY:} in application-local.properties unless you
+# always define BREVO_API_KEY — it overrides application.properties and defaults to empty → mock mode (no HTTP).
+
+# brevo.api.key=your-brevo-v3-api-key
+# Must be an **API key** (SMTP & API → API Keys), typically prefix xkeysib-.
+# Do NOT use the SMTP relay password / xsmtpsib- key here — REST /v3/smtp/email will reject it.
+# brevo.sender.email=verified-sender@your-domain.com
+# brevo.sender.name=Support Network
+# support.network.mail.admin-email=coordinator@your-domain.com
+# support.network.mission-email-accept-base-url=http://localhost:8088
