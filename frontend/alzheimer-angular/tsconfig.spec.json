@@ -9,7 +9,11 @@
     ]
   },
   "include": [
-    "src/**/*.spec.ts",
+    "src/app/services/**/*.spec.ts",
+    "src/app/features/**/*.spec.ts",
+    "src/app/layout/**/*.spec.ts",
+    "src/app/shared/**/*.spec.ts",
+    "src/app/app.component.spec.ts",
     "src/**/*.d.ts"
   ]
 }

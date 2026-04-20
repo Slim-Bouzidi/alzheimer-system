@@ -2,8 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 import keycloak from './app/keycloak';
-import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { environment } from './environments/environment';
 
 // User sync function
 async function syncUserIfNeeded() {
@@ -14,15 +13,17 @@ async function syncUserIfNeeded() {
   const keycloakId = keycloak.tokenParsed.sub;
   const email = keycloak.tokenParsed['email'];
   const roles = keycloak.tokenParsed['realm_access']?.['roles'] || [];
-  
+
   // Filter out default Keycloak roles
-  const userRole = roles.find((role: string) => 
+  const userRole = roles.find((role: string) =>
     ['ADMIN', 'DOCTOR', 'CAREGIVER', 'PATIENT'].includes(role)
   ) || 'PATIENT'; // Default to PATIENT if no role found
 
   try {
+    const usersApiBaseUrl = `${environment.apiUrl}/users`;
+
     // Check if user exists in database
-    const response = await fetch(`http://localhost:8080/api/users/by-keycloak-id/${keycloakId}`, {
+    const response = await fetch(`${usersApiBaseUrl}/by-keycloak-id/${keycloakId}`, {
       headers: {
         'Authorization': `Bearer ${keycloak.token}`
       }
@@ -30,8 +31,7 @@ async function syncUserIfNeeded() {
 
     if (response.status === 404) {
       // User doesn't exist, sync them
-      console.log('User not found in database, syncing...');
-      await fetch('http://localhost:8080/api/users/sync', {
+      await fetch(`${usersApiBaseUrl}/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +43,6 @@ async function syncUserIfNeeded() {
           role: userRole
         })
       });
-      console.log('User synced successfully');
     }
   } catch (error) {
     console.error('Error syncing user:', error);
@@ -65,7 +64,7 @@ keycloak.init({
     window.location.href = '/landing';
     return;
   }
-  
+
   bootstrapApplication(AppComponent, appConfig)
     .catch((err) => console.error(err));
 }).catch((error) => console.error('Keycloak init failed', error));

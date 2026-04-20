@@ -1,5 +1,7 @@
 package com.alzheimer.cognitiveservice.service;
 
+import com.alzheimer.cognitiveservice.client.PatientDTO;
+import com.alzheimer.cognitiveservice.client.PatientServiceClient;
 import com.alzheimer.cognitiveservice.config.RabbitMQConfig;
 import com.alzheimer.cognitiveservice.dto.ActivityRequest;
 import com.alzheimer.cognitiveservice.dto.ActivityResponse;
@@ -21,8 +23,23 @@ public class CognitiveActivityService {
 
     private final CognitiveActivityRepository repository;
     private final RabbitTemplate rabbitTemplate;
+    private final PatientServiceClient patientServiceClient; // OpenFeign client
 
     public ActivityResponse saveActivity(ActivityRequest request) {
+
+        // ── OpenFeign call: verify patient exists in patient-service ──
+        try {
+            PatientDTO patient = patientServiceClient.getPatientById(
+                    Integer.parseInt(request.getPatientId())
+            );
+            log.info("Patient verified via OpenFeign: {} {}",
+                    patient.getFirstName(), patient.getLastName());
+        } catch (Exception e) {
+            log.warn("Could not verify patient {} via patient-service: {}",
+                    request.getPatientId(), e.getMessage());
+            // We log the warning but still save — patient-service may be temporarily down
+        }
+
         CognitiveActivity activity = CognitiveActivity.builder()
                 .patientId(request.getPatientId())
                 .gameType(request.getGameType())
@@ -32,9 +49,8 @@ public class CognitiveActivityService {
                 .build();
 
         CognitiveActivity saved = repository.save(activity);
-        
         ActivityResponse response = mapToResponse(saved);
-        
+
         // Publish event to RabbitMQ
         try {
             rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, response);

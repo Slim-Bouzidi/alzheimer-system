@@ -48,18 +48,18 @@ export class SidebarComponent {
     return this.allNavItems.filter(item => this.canShowNavItem(item));
   });
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   readonly profileMenuItems: MenuItem[] = [
-    { 
-      label: 'My Profile', 
+    {
+      label: 'My Profile',
       icon: 'pi pi-user',
       command: () => this.router.navigate(['/profile'])
     },
     { label: 'Account Settings', icon: 'pi pi-cog' },
     { separator: true },
-    { 
-      label: 'Sign Out', 
+    {
+      label: 'Sign Out',
       icon: 'pi pi-sign-out',
       command: () => this.onLogout()
     },
@@ -68,7 +68,7 @@ export class SidebarComponent {
   private canShowNavItem(item: NavItem): boolean {
     // Get user roles
     const userRoles = this.getUserRoles();
-    
+
     // If user has no roles, only show basic items (no role restrictions)
     if (userRoles.length === 0) {
       // Users without roles can only see items without role restrictions
@@ -92,16 +92,16 @@ export class SidebarComponent {
 
   private getUserRoles(): string[] {
     const roles: string[] = [];
-    
+
     // Keycloak default roles to ignore
     const defaultRoles = ['offline_access', 'uma_authorization', 'default-roles-alzheimer'];
-    
+
     // Get realm roles
     if (keycloak.realmAccess?.roles) {
       const realmRoles = keycloak.realmAccess.roles.filter(role => !defaultRoles.includes(role));
       roles.push(...realmRoles);
     }
-    
+
     // Get resource roles
     if (keycloak.resourceAccess) {
       Object.values(keycloak.resourceAccess).forEach((resource: any) => {
@@ -110,17 +110,17 @@ export class SidebarComponent {
         }
       });
     }
-    
+
     return roles;
   }
 
   private hasRole(role: string): boolean {
-    return keycloak.hasRealmRole(role) || 
-           keycloak.hasResourceRole(role) || 
-           keycloak.hasRealmRole(role.toUpperCase()) || 
-           keycloak.hasResourceRole(role.toUpperCase()) ||
-           keycloak.hasRealmRole(role.toLowerCase()) || 
-           keycloak.hasResourceRole(role.toLowerCase());
+    return keycloak.hasRealmRole(role) ||
+      keycloak.hasResourceRole(role) ||
+      keycloak.hasRealmRole(role.toUpperCase()) ||
+      keycloak.hasResourceRole(role.toUpperCase()) ||
+      keycloak.hasRealmRole(role.toLowerCase()) ||
+      keycloak.hasResourceRole(role.toLowerCase());
   }
 
   onLogout(): void {

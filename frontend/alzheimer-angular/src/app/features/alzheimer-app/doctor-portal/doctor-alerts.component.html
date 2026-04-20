@@ -1,0 +1,34 @@
+<div class="alerts-layout">
+  <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar-portal>
+
+  <main class="alerts-main">
+    <header class="alerts-header">
+      <div>
+        <h1>Medical Alerts</h1>
+        <p>Review doctor-facing alert items from the dashboard.</p>
+      </div>
+    </header>
+
+    <section class="alerts-note">
+      <strong>Current status:</strong> `AlzheimerApp` does not yet expose a dedicated alerts API.
+      This page shows the alert feed currently available in the doctor dashboard.
+    </section>
+
+    <section class="alerts-list">
+      <article class="alert-card" *ngFor="let alert of alerts" [class]="'alert-card alert-' + alert.level">
+        <div class="alert-meta">
+          <span class="alert-level">{{ alert.level }}</span>
+          <span class="alert-time">{{ alert.time }}</span>
+        </div>
+        <h2>{{ alert.patient }}</h2>
+        <p>{{ alert.message }}</p>
+        <div class="alert-recommendation">{{ alert.recommendation }}</div>
+      </article>
+    </section>
+
+    <section class="alerts-actions">
+      <button type="button" class="action-btn" (click)="goToPatients()">Open Patients</button>
+      <button type="button" class="action-btn secondary" (click)="goToReports()">Open Reports</button>
+    </section>
+  </main>
+</div>

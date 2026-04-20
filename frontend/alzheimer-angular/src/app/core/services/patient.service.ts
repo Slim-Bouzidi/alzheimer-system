@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import keycloak from '../../keycloak';
+import { environment } from '../../../environments/environment';
 
 export interface PatientProfile {
   id?: number;
@@ -30,7 +31,7 @@ export interface PatientProfile {
   providedIn: 'root'
 })
 export class PatientService {
-  private apiUrl = 'http://localhost:8080/api/patients';
+  private apiUrl = `${environment.apiUrl}/patients`;
 
   constructor(private http: HttpClient) {}
 

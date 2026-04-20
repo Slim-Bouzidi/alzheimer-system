@@ -1,0 +1,92 @@
+<aside class="sidebar" [class.role-soignant]="role === 'SOIGNANT'">
+  <div class="brand">
+    <span class="brand-icon"><i class="pi pi-heart-fill" aria-hidden="true"></i></span>
+    <h2 class="brand-text">NeuroMed</h2>
+  </div>
+
+  <!-- Menu SOIGNANT : structure complète -->
+  <ng-container *ngIf="role === 'SOIGNANT'">
+    <nav class="sidebar-nav">
+      <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
+        <i class="nav-icon" [class]="item.icon" aria-hidden="true"></i>
+        <span class="nav-label">{{ item.label }}</span>
+        <span *ngIf="getBadgeCount(item.route) > 0" class="nav-badge nav-badge-{{ getBadgeType(item.route) }}">{{
+          getBadgeCount(item.route) }}</span>
+        <span *ngIf="getBadgeCount(item.route) === 0 && getBadgeDot(item.route)" class="nav-badge-dot"
+          [title]="'SIDEBAR.TODO' | translate"></span>
+      </a>
+
+      <!-- Sous-menu Gestion des Rappels -->
+      <div class="nav-group">
+        <button type="button" class="nav-item nav-item-toggle" (click)="toggleRappelsMenu()"
+          [class.open]="rappelsMenuOpen">
+          <i class="nav-icon pi pi-clock" aria-hidden="true"></i>
+          <span class="nav-label">Reminders Management</span>
+          <span class="nav-chevron">{{ rappelsMenuOpen ? '▲' : '▼' }}</span>
+        </button>
+        <div class="nav-submenu" *ngIf="rappelsMenuOpen">
+          <a routerLink="/soignant-rappels-medicaments" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <i class="nav-icon pi pi-tablet" aria-hidden="true"></i>
+            <span>Medication Reminders</span>
+          </a>
+          <a routerLink="/soignant-rappels-repas" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <i class="nav-icon pi pi-shop" aria-hidden="true"></i>
+            <span>Meal Reminders</span>
+          </a>
+          <a routerLink="/soignant-rappels-rendez-vous" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
+            <i class="nav-icon pi pi-calendar" aria-hidden="true"></i>
+            <span>Appointment Reminders</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Section inférieure -->
+    <div class="sidebar-footer">
+      <a routerLink="/soignant-notifications" routerLinkActive="active" class="nav-item nav-item-footer">
+        <i class="nav-icon pi pi-comments" aria-hidden="true"></i>
+        <span class="nav-label">Notifications</span>
+        <span *ngIf="notificationsCount > 0" class="nav-badge nav-badge-default">{{ notificationsCount }}</span>
+      </a>
+      <a routerLink="/soignant-parametres" class="nav-item nav-item-footer">
+        <i class="nav-icon pi pi-cog" aria-hidden="true"></i>
+        <span class="nav-label">Settings</span>
+      </a>
+      <a routerLink="/soignant-profil" class="nav-item nav-item-footer">
+        <i class="nav-icon pi pi-user" aria-hidden="true"></i>
+        <span class="nav-label">My Profile</span>
+      </a>
+      <div class="user-mini-profile">
+        <div class="avatar">{{ userName.charAt(0) }}</div>
+        <div class="user-info">
+          <p class="user-name">{{ userName }}</p>
+          <p class="user-role">{{ userRole }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Autres rôles : menu simple -->
+  <ng-container *ngIf="role !== 'SOIGNANT'">
+    <nav class="sidebar-nav">
+      <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
+        <i class="nav-icon" [class]="item.icon" aria-hidden="true"></i>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-mini-profile">
+        <div class="avatar">{{ userName.charAt(0) }}</div>
+        <div class="user-info">
+          <p class="user-name">{{ userName }}</p>
+          <p class="user-role">{{ userRole }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</aside>

@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class PatientService {
 
-  private api = 'http://localhost:8080/api/patients';
+  private api = `${environment.apiUrl}/patients`;
 
   private refreshSubject = new Subject<void>();
   refresh$ = this.refreshSubject.asObservable();

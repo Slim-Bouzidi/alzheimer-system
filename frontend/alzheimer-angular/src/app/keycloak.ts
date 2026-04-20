@@ -1,9 +1,10 @@
 import Keycloak from 'keycloak-js';
+import { environment } from '../environments/environment';
 
 const keycloak = new Keycloak({
-  url: 'http://localhost:8081',
-  realm: 'alzheimer-realm',
-  clientId: 'alzheimer-angular-client'
+  url: environment.keycloakUrl,
+  realm: environment.keycloakRealm,
+  clientId: environment.keycloakClientId
 });
 
 export default keycloak;

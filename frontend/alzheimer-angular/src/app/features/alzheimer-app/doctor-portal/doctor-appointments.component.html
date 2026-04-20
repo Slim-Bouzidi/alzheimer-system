@@ -1,0 +1,390 @@
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar-portal>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title-small">{{ 'DOCTOR_APPOINTMENTS.APPOINTMENT' | translate }}</h1>
+                <span class="topbar-date">{{ todayFormatted }}</span>
+            </div>
+
+            <div class="topbar-actions">
+                <button class="btn btn-primary btn-schedule" (click)="scheduleNew()">
+                    <span class="btn-icon-plus">+</span> {{ 'DOCTOR_APPOINTMENTS.NEW_APPOINTMENT' | translate }}
+                </button>
+                <button class="icon-btn notice-btn">
+                    <span class="icon">🔔</span>
+                    <span class="badge-dot" *ngIf="todayAppointments.length > 0"></span>
+                </button>
+                <button class="btn btn-logout" (click)="logout()">
+                    <span>Déconnexion</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Appointments Content -->
+        <main class="content-area appointments-content">
+            <div class="card" *ngIf="!appointmentsApiAvailable || !patientsApiAvailable">
+                <p *ngIf="!appointmentsApiAvailable">
+                    `AlzheimerApp` does not expose a rendez-vous API yet, so this page is using fallback data to keep the doctor workflow available.
+                </p>
+                <p *ngIf="!patientsApiAvailable">
+                    Patient records could not be loaded from the backend, so the patient list is also using temporary fallback data.
+                </p>
+            </div>
+
+            <!-- Stats Cards Row -->
+            <div class="stats-row">
+                <div class="stat-card stat-total">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ rendezVous.length }}</span>
+                        <span class="stat-label">{{ 'DOCTOR_APPOINTMENTS.TOTAL_APPOINTMENTS' | translate }}</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-today">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ todayAppointments.length }}</span>
+                        <span class="stat-label">{{ 'DOCTOR_APPOINTMENTS.DAY_SCHEDULE' | translate }}</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-confirmed">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ confirmedCount }}</span>
+                        <span class="stat-label">{{ 'DOCTOR_APPOINTMENTS.CONFIRMED' | translate }}</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ pendingCount }}</span>
+                        <span class="stat-label">{{ 'DOCTOR_APPOINTMENTS.PENDING' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="appointments-layout">
+
+                <!-- Left Column: Calendar & Today's Timeline -->
+                <div class="left-section">
+
+                    <!-- Calendar Card -->
+                    <div class="card calendar-card">
+                        <div class="card-header">
+                            <h2>{{ currentMonth }}</h2>
+                            <div class="calendar-actions">
+                                <button class="btn-icon-nav" (click)="prevMonth()" [title]="'DOCTOR_APPOINTMENTS.PREVIOUS_MONTH' | translate">‹</button>
+                                <button class="btn-icon-nav btn-today" (click)="goToToday()">Auj.</button>
+                                <button class="btn-icon-nav" (click)="nextMonth()" [title]="'DOCTOR_APPOINTMENTS.NEXT_MONTH' | translate">›</button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-grid">
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.MON' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.TUE' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.WED' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.THU' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.FRI' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.SAT' | translate }}</div>
+                            <div class="day-name">{{ 'DOCTOR_APPOINTMENTS.DAYS.SUN' | translate }}</div>
+
+                            <div class="day-cell" *ngFor="let day of calendarDays"
+                                [class.has-appointment]="day.hasAppointment"
+                                [class.today]="day.isToday"
+                                [class.selected]="day.isSelected"
+                                [class.other-month]="!day.isCurrentMonth"
+                                [class.weekend]="day.isWeekend"
+                                (click)="selectDate(day)">
+                                <span class="day-number">{{ day.date }}</span>
+                                <span class="dot" *ngIf="day.hasAppointment"></span>
+                                <span class="appointment-count" *ngIf="day.appointmentCount > 1">{{ day.appointmentCount }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Timeline -->
+                    <div class="card timeline-card">
+                        <div class="card-header">
+                            <h2>🕐 {{ 'DOCTOR_APPOINTMENTS.DAY_SCHEDULE' | translate }}</h2>
+                            <span class="badge-count">{{ todayAppointments.length }}</span>
+                        </div>
+                        <div class="timeline" *ngIf="todayAppointments.length > 0">
+                            <div class="timeline-item" *ngFor="let rdv of todayAppointments; let i = index"
+                                 [class.timeline-past]="isRdvPast(rdv)"
+                                 [class.timeline-current]="isRdvCurrent(rdv)"
+                                 [class.timeline-upcoming]="!isRdvPast(rdv) && !isRdvCurrent(rdv)">
+                                <div class="timeline-marker">
+                                    <div class="timeline-dot" [class.active]="isRdvCurrent(rdv)"></div>
+                                    <div class="timeline-line" *ngIf="i < todayAppointments.length - 1"></div>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-time">{{ rdv.dateHeure | date:'HH:mm' }}</div>
+                                    <div class="timeline-details">
+                                        <span class="timeline-patient">{{ rdv.patient?.nomComplet || 'Patient' }}</span>
+                                        <span class="timeline-type">{{ getAppointmentTypeLabel(rdv.typeRdv || rdv.type || '') }}</span>
+                                    </div>
+                                    <span class="statut-badge statut-sm" [ngClass]="'statut-' + (rdv.statut || 'PLANIFIE').toLowerCase()">
+                                        {{ getStatutLabel(rdv.statut || 'PLANIFIE') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="empty-timeline" *ngIf="todayAppointments.length === 0">
+                            <span class="empty-icon-sm">☀️</span>
+                            <p>{{ 'DOCTOR_APPOINTMENTS.NO_APPOINTMENT_TODAY' | translate }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Patients Section -->
+                    <div class="card patients-card">
+                        <div class="card-header">
+                            <h2>👥 {{ 'DOCTOR_APPOINTMENTS.PATIENTS' | translate }}</h2>
+                            <button class="btn-link" (click)="goToPatients()">{{ 'DOCTOR_APPOINTMENTS.VIEW_ALL_PATIENTS' | translate }}</button>
+                        </div>
+                        <div class="patients-grid-dashboard">
+                            <div class="patient-card-dashboard" *ngFor="let patient of getRecentPatients()" (click)="viewPatientDetails(patient)">
+                                <div class="patient-avatar-sm" [ngClass]="patient.actif ? 'stable' : 'attention'">
+                                    {{ getPatientInitials(patient) }}
+                                </div>
+                                <div class="patient-info-dashboard">
+                                    <h4>{{ patient.nomComplet }}</h4>
+                                    <p class="patient-meta">{{ patient.age }} {{ 'COMMON.YEARS_OLD' | translate }} · {{ patient.numeroDeTelephone || ('DOCTOR_APPOINTMENTS.NO_PHONE' | translate) }}</p>
+                                </div>
+                                <span class="status-dot" [ngClass]="patient.actif ? 'dot-active' : 'dot-inactive'" [title]="patient.actif ? 'Actif' : 'Inactif'"></span>
+                            </div>
+                        </div>
+                        <div class="empty-msg" *ngIf="patients.length === 0">
+                            {{ 'DOCTOR_APPOINTMENTS.NO_PATIENT_REGISTERED' | translate }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Rendez-vous Table & Requests -->
+                <div class="right-section">
+
+                    <!-- Rendez-vous Table -->
+                    <div class="card list-card">
+                        <div class="card-header">
+                            <h2>📋 {{ 'DOCTOR_APPOINTMENTS.ALL_APPOINTMENTS' | translate }}</h2>
+                            <div class="table-controls">
+                                <div class="search-box">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" [placeholder]="'DOCTOR_APPOINTMENTS.SEARCH_PATIENT' | translate" 
+                                           [(ngModel)]="searchQuery" (input)="filterRendezVous()">
+                                </div>
+                                <div class="filter-tabs">
+                                    <button class="filter-tab" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">{{ 'DOCTOR_APPOINTMENTS.FILTER_ALL' | translate }}</button>
+                                    <button class="filter-tab" [class.active]="activeFilter === 'PLANIFIE'" (click)="setFilter('PLANIFIE')">{{ 'DOCTOR_APPOINTMENTS.FILTER_PLANNED' | translate }}</button>
+                                    <button class="filter-tab" [class.active]="activeFilter === 'CONFIRME'" (click)="setFilter('CONFIRME')">{{ 'DOCTOR_APPOINTMENTS.FILTER_CONFIRMED' | translate }}</button>
+                                    <button class="filter-tab" [class.active]="activeFilter === 'TERMINE'" (click)="setFilter('TERMINE')">{{ 'DOCTOR_APPOINTMENTS.FILTER_COMPLETED' | translate }}</button>
+                                    <button class="filter-tab" [class.active]="activeFilter === 'ANNULE'" (click)="setFilter('ANNULE')">{{ 'DOCTOR_APPOINTMENTS.FILTER_CANCELLED' | translate }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="appointments-table">
+                            <table class="medical-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'DOCTOR_APPOINTMENTS.DATE_TIME' | translate }}</th>
+                                        <th>{{ 'DOCTOR.PATIENT' | translate }}</th>
+                                        <th>{{ 'DOCTOR_APPOINTMENTS.TYPE' | translate }}</th>
+                                        <th>{{ 'DOCTOR_APPOINTMENTS.STATUS' | translate }}</th>
+                                        <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let rdv of filteredRendezVous" 
+                                        [class.row-today]="isToday(rdv.dateHeure)"
+                                        [class.row-past]="isPast(rdv.dateHeure)"
+                                        class="rdv-row">
+                                        <td>
+                                            <div class="rdv-datetime">
+                                                <span class="rdv-date">{{ rdv.dateHeure | date:'EEE dd MMM':'':'fr-FR' }}</span>
+                                                <span class="rdv-time">{{ rdv.dateHeure | date:'HH:mm' }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="patient-cell">
+                                                <div class="patient-avatar-xs">{{ getPatientInitialsFromRdv(rdv) }}</div>
+                                                <span class="patient-name-cell">{{ rdv.patient?.nomComplet || 'Non assigné' }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="type-badge" [ngClass]="'type-' + (rdv.typeRdv || rdv.type || 'CONSULTATION').toLowerCase()">
+                                                {{ getAppointmentTypeLabel(rdv.typeRdv || rdv.type || '') }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="statut-badge" [ngClass]="'statut-' + (rdv.statut || 'PLANIFIE').toLowerCase()">
+                                                {{ getStatutLabel(rdv.statut || 'PLANIFIE') }}
+                                            </span>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <div class="action-buttons">
+                                                <button class="btn-action btn-confirm" *ngIf="rdv.statut === 'PLANIFIE'" 
+                                                        (click)="confirmRendezVous(rdv)" [title]="'DOCTOR_APPOINTMENTS.CONFIRMED' | translate">✓</button>
+                                                <button class="btn-action btn-edit" (click)="editRendezVous(rdv)" [title]="'COMMON.EDIT' | translate">✏️</button>
+                                                <button class="btn-action btn-delete" (click)="deleteRendezVous(rdv.id!)" [title]="'COMMON.DELETE' | translate">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="filteredRendezVous.length === 0">
+                                        <td colspan="5" class="empty-table">
+                                            <div class="empty-table-content">
+                                                <span class="empty-icon">📅</span>
+                                                <p *ngIf="searchQuery || activeFilter !== 'all'">{{ 'DOCTOR_APPOINTMENTS.NO_RESULTS_FOUND' | translate }}</p>
+                                                <p *ngIf="!searchQuery && activeFilter === 'all'">{{ 'DOCTOR_APPOINTMENTS.NO_APPOINTMENT_PLANNED' | translate }}</p>
+                                                <button class="btn btn-sm btn-primary" (click)="scheduleNew()" *ngIf="!searchQuery && activeFilter === 'all'">
+                                                    {{ 'DOCTOR_APPOINTMENTS.SCHEDULE_APPOINTMENT' | translate }}
+                                                </button>
+                                                <button class="btn btn-sm btn-outline" (click)="clearFilters()" *ngIf="searchQuery || activeFilter !== 'all'">
+                                                    Effacer les filtres
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination info -->
+                        <div class="table-footer" *ngIf="filteredRendezVous.length > 0">
+                            <span class="table-info">{{ filteredRendezVous.length }} {{ filteredRendezVous.length > 1 ? ('DOCTOR_APPOINTMENTS.APPOINTMENTS_DISPLAYED_PLURAL' | translate) : ('DOCTOR_APPOINTMENTS.APPOINTMENTS_DISPLAYED' | translate) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Pending Requests -->
+                    <div class="card requests-card" *ngIf="appointmentRequests.length > 0">
+                        <div class="card-header">
+                            <h2>⏳ {{ 'DOCTOR_APPOINTMENTS.PENDING_REQUESTS' | translate }}</h2>
+                            <span class="badge-count badge-warning">{{ appointmentRequests.length }}</span>
+                        </div>
+                        <div class="request-list">
+                            <div class="request-item" *ngFor="let req of appointmentRequests">
+                                <div class="req-header">
+                                    <span class="req-name">{{ req.patient }}</span>
+                                    <span class="req-date">{{ req.date }} à {{ req.time }}</span>
+                                </div>
+                                <p class="req-reason">"{{ req.reason }}"</p>
+                                <div class="req-actions">
+                                    <button class="btn-sm btn-accept" (click)="approveRequest(req.id)">✓ {{ 'DOCTOR_APPOINTMENTS.ACCEPT' | translate }}</button>
+                                    <button class="btn-sm btn-decline" (click)="declineRequest(req.id)">✕ {{ 'DOCTOR_APPOINTMENTS.DECLINE' | translate }}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Formulaire de Planification de Rendez-vous -->
+    <div class="modal-overlay" *ngIf="showAppointmentForm" (click)="closeAppointmentForm()">
+        <div class="modal-container" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3><span *ngIf="isEditing">✏️ {{ 'DOCTOR_APPOINTMENTS.EDIT_APPOINTMENT' | translate }}</span><span *ngIf="!isEditing">📅 {{ 'DOCTOR_APPOINTMENTS.SCHEDULE_NEW' | translate }}</span> {{ 'DOCTOR_APPOINTMENTS.APPOINTMENT' | translate }}</h3>
+                <button class="close-btn" (click)="closeAppointmentForm()">×</button>
+            </div>
+            
+            <form class="appointment-form" (ngSubmit)="saveRendezVous()">
+                <!-- Patient -->
+                <div class="form-group full-width">
+                    <label for="patient">{{ 'DOCTOR.PATIENT' | translate }} <span class="required">*</span></label>
+                    <select id="patient" name="patient" [(ngModel)]="currentRendezVous.patient" required>
+                        <option value="">{{ 'DOCTOR_APPOINTMENTS.SELECT_PATIENT' | translate }}</option>
+                        <option *ngFor="let patient of patients" [value]="patient.id">
+                            {{ patient.nomComplet }} ({{ patient.age }} {{ 'COMMON.YEARS_OLD' | translate }})
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Date & Heure -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="appointmentDate">{{ 'DOCTOR_APPOINTMENTS.DATE' | translate }} <span class="required">*</span></label>
+                        <input type="date" id="appointmentDate" name="appointmentDate" 
+                               [(ngModel)]="dateRendez" required 
+                               [min]="todayDate">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appointmentTime">{{ 'DOCTOR_APPOINTMENTS.TIME' | translate }} <span class="required">*</span></label>
+                        <select id="appointmentTime" name="appointmentTime" [(ngModel)]="heureRendez" required>
+                            <option value="">{{ 'DOCTOR_APPOINTMENTS.SELECT_TIME' | translate }}</option>
+                            <option value="08:00">08:00</option>
+                            <option value="08:30">08:30</option>
+                            <option value="09:00">09:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:00">10:00</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="11:30">11:30</option>
+                            <option value="12:00">12:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:00">15:00</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:00">16:00</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:00">17:00</option>
+                            <option value="17:30">17:30</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Type & Statut -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="appointmentType">{{ 'DOCTOR_APPOINTMENTS.TYPE' | translate }} <span class="required">*</span></label>
+                        <select id="appointmentType" name="appointmentType" [(ngModel)]="currentRendezVous.type" required>
+                            <option value="">{{ 'DOCTOR_APPOINTMENTS.SELECT_TYPE' | translate }}</option>
+                            <option value="CONSULTATION">{{ 'DOCTOR_APPOINTMENTS.CONSULTATION' | translate }}</option>
+                            <option value="URGENCE">{{ 'DOCTOR_APPOINTMENTS.EMERGENCY' | translate }}</option>
+                            <option value="SUIVI">{{ 'DOCTOR_APPOINTMENTS.FOLLOW_UP' | translate }}</option>
+                            <option value="REEDUCATION">{{ 'DOCTOR_APPOINTMENTS.REHABILITATION' | translate }}</option>
+                            <option value="EVALUATION">{{ 'DOCTOR_APPOINTMENTS.EVALUATION' | translate }}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentStatut">{{ 'DOCTOR_APPOINTMENTS.STATUS' | translate }}</label>
+                        <select id="appointmentStatut" name="appointmentStatut" [(ngModel)]="currentRendezVous.statut">
+                            <option value="PLANIFIE">{{ 'DOCTOR_APPOINTMENTS.STATUS_PLANNED' | translate }}</option>
+                            <option value="CONFIRME">{{ 'DOCTOR_APPOINTMENTS.STATUS_CONFIRMED' | translate }}</option>
+                            <option value="TERMINE">{{ 'DOCTOR_APPOINTMENTS.STATUS_COMPLETED' | translate }}</option>
+                            <option value="ANNULE">{{ 'DOCTOR_APPOINTMENTS.STATUS_CANCELLED' | translate }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Rappel -->
+                <div class="form-group full-width">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="sendReminder" [(ngModel)]="currentRendezVous.envoyerRappel">
+                        <span class="checkbox-text">{{ 'DOCTOR_APPOINTMENTS.SEND_REMINDER' | translate }}</span>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+                        {{ 'COMMON.CANCEL' | translate }}
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!isFormValid()">
+                        <span *ngIf="isEditing">✏️ {{ 'COMMON.EDIT' | translate }}</span>
+                        <span *ngIf="!isEditing">✓ {{ 'COMMON.SAVE' | translate }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

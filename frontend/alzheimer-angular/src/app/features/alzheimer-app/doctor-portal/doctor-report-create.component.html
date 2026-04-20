@@ -1,0 +1,257 @@
+<div class="dashboard-layout report-create-page">
+  <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar-portal>
+
+  <div class="main-wrapper">
+    <header class="topbar">
+      <h1 class="page-title">{{ 'DOCTOR_REPORT_CREATE.PAGE_TITLE' | translate }}</h1>
+      <div class="topbar-actions">
+        <button type="button" class="btn-outline" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+        <button type="button" class="btn btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </header>
+
+    <main class="content-area report-create-content">
+      <div class="context-banner">
+        <span class="context-icon" aria-hidden="true">💡</span>
+        <div class="context-text">
+          <strong>Integration note</strong><br>
+          This follow-up report form currently saves through the app's local follow-up workflow because `AlzheimerApp` does not expose a doctor report creation API yet.
+        </div>
+      </div>
+
+      <!-- Indicateur de progression (structure logique du formulaire) -->
+      <nav class="form-steps" aria-label="Étapes du rapport">
+        <ol class="form-steps-list">
+          <li class="step-dot" [class.active]="true">{{ 'DOCTOR_REPORT_CREATE.STEP_PATIENT' | translate }}</li>
+          <li class="step-dot">{{ 'DOCTOR_REPORT_CREATE.STEP_ADHERENCE' | translate }}</li>
+          <li class="step-dot">{{ 'DOCTOR_REPORT_CREATE.STEP_DIRECTIVES' | translate }}</li>
+          <li class="step-dot">{{ 'DOCTOR_REPORT_CREATE.STEP_VALIDATION' | translate }}</li>
+        </ol>
+      </nav>
+
+      <!-- Bandeau de contexte -->
+      <div class="context-banner">
+        <span class="context-icon" aria-hidden="true">📅</span>
+        <div class="context-text">
+          <strong>{{ 'DOCTOR_REPORT_CREATE.CONTEXT_BANNER_TITLE' | translate }}</strong><br>
+          {{ 'DOCTOR_REPORT_CREATE.CONTEXT_BANNER_DESC' | translate }}
+        </div>
+      </div>
+
+      <form (ngSubmit)="submit()" #f="ngForm" class="report-form">
+        <!-- ─── Zone 1 : Identification du patient ─── -->
+        <section id="block-identity" class="block block-identity" [class.block-has-error]="errorBlockId === 'identity'" aria-labelledby="heading-identity">
+          <h2 id="heading-identity" class="block-title">
+            <span class="block-num">1</span>
+            {{ 'DOCTOR_REPORT_CREATE.PATIENT_IDENTIFICATION' | translate }}
+          </h2>
+          <p class="help-inline">{{ 'DOCTOR_REPORT_CREATE.PATIENT_IDENTIFICATION_HELP' | translate }}</p>
+          <p class="legend-required"><span class="required">*</span> {{ 'DOCTOR_REPORT_CREATE.REQUIRED_FIELD' | translate }}</p>
+          <div class="patient-selector">
+            <label for="patient-select">{{ 'DOCTOR_REPORT_CREATE.STEP_PATIENT' | translate }} <span class="required" aria-hidden="true">*</span></label>
+            <select id="patient-select" [(ngModel)]="selectedPatient" name="patient" required
+              (ngModelChange)="selectPatient($event)" class="input input-lg">
+              <option [ngValue]="null">{{ 'DOCTOR_REPORT_CREATE.SELECT_PATIENT' | translate }}</option>
+              <option *ngFor="let p of patients" [ngValue]="p">
+                {{ p.name }} — {{ p.age }} {{ 'COMMON.YEARS_OLD' | translate }}
+              </option>
+            </select>
+          </div>
+          <p *ngIf="errorBlockId === 'identity'" class="inline-error" role="alert">{{ 'DOCTOR_REPORT_CREATE.PATIENT_SELECT_ERROR' | translate }}</p>
+          <div *ngIf="selectedPatient" class="patient-summary">
+            <span class="patient-name">{{ selectedPatient.name }}</span>
+            <span class="patient-meta">{{ selectedPatient.age }} {{ 'COMMON.YEARS_OLD' | translate }}</span>
+          </div>
+        </section>
+
+        <!-- ─── Période du suivi (7 jours) ─── -->
+        <section id="block-period" class="block block-period" aria-labelledby="heading-period">
+          <h2 id="heading-period" class="block-title">
+            <span class="block-num">2</span>
+            {{ 'DOCTOR_REPORT_CREATE.MONITORING_PERIOD' | translate }}
+          </h2>
+          <p class="help-inline">{{ 'DOCTOR_REPORT_CREATE.MONITORING_PERIOD_HELP' | translate }}</p>
+          <div class="period-fields">
+            <div class="period-field">
+              <label for="date-debut">{{ 'DOCTOR_REPORT_CREATE.START_DATE' | translate }} <span class="required">*</span></label>
+              <input id="date-debut" type="date" [(ngModel)]="dateDebut" name="dateDebut" class="input" required>
+            </div>
+            <div class="period-field">
+              <label for="date-fin">{{ 'DOCTOR_REPORT_CREATE.END_DATE' | translate }} <span class="required">*</span></label>
+              <input id="date-fin" type="date" [(ngModel)]="dateFin" name="dateFin" class="input" required>
+            </div>
+            <div class="period-summary" *ngIf="periodeJours > 0">
+              <span class="period-days">{{ periodeJours }} {{ 'DOCTOR_REPORT_CREATE.DAYS_COUNT' | translate }}</span> — {{ 'DOCTOR_REPORT_CREATE.MANDATORY_REFERENCE' | translate }}
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── Traçabilité (lecture seule) ─── -->
+        <section class="block block-meta" aria-labelledby="heading-meta">
+          <h2 id="heading-meta" class="block-title block-title-sm">{{ 'DOCTOR_REPORT_CREATE.TRACEABILITY' | translate }}</h2>
+          <div class="meta-grid">
+            <div class="meta-field">
+              <span class="meta-label">{{ 'DOCTOR_REPORT_CREATE.CREATION_DATETIME' | translate }}</span>
+              <span class="meta-value">{{ 'DOCTOR_REPORT_CREATE.RECORDED_AT_VALIDATION' | translate }}</span>
+            </div>
+            <div class="meta-field">
+              <span class="meta-label">{{ 'DOCTOR_REPORT_CREATE.PHYSICIAN' | translate }}</span>
+              <span class="meta-value">{{ medecinNom }}</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── Zone 3 : Observance médicamenteuse (PRIORITAIRE) ─── -->
+        <section id="block-observance" class="block block-priority" [class.block-has-error]="errorBlockId === 'observance'" aria-labelledby="heading-observance">
+          <div class="block-title-row">
+            <h2 id="heading-observance" class="block-title">
+              <span class="block-num">4</span>
+              {{ 'DOCTOR_REPORT_CREATE.MEDICATION_ADHERENCE' | translate }}
+            </h2>
+            <span class="badge-priority" aria-label="Section prioritaire">{{ 'DOCTOR_REPORT_CREATE.PRIORITY' | translate }}</span>
+          </div>
+          <p class="help-inline">
+            {{ 'DOCTOR_REPORT_CREATE.MEDICATION_ADHERENCE_HELP' | translate }}
+          </p>
+          <div class="table-wrap">
+            <table class="table-medications" role="table">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'DOCTOR_REPORT_CREATE.MEDICATION' | translate }} <span class="required">*</span></th>
+                  <th scope="col">{{ 'DOCTOR_REPORT_CREATE.DOSAGE' | translate }}</th>
+                  <th scope="col">{{ 'DOCTOR_REPORT_CREATE.INTAKE_TIME' | translate }}</th>
+                  <th scope="col">{{ 'DOCTOR_REPORT_CREATE.MONITORING_EXPECTATIONS' | translate }}</th>
+                  <th scope="col" class="th-actions">{{ 'COMMON.ACTIONS' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let t of traitements; let i = index">
+                  <td>
+                    <input [(ngModel)]="t.nom" [name]="'nom_' + i" type="text" class="input" required
+                      placeholder="ex. Donépézil" aria-label="Nom du médicament">
+                  </td>
+                  <td>
+                    <input [(ngModel)]="t.dosage" [name]="'dosage_' + i" type="text" class="input"
+                      placeholder="ex. 10 mg" aria-label="Dosage">
+                  </td>
+                  <td>
+                    <select [(ngModel)]="t.momentPrise" [name]="'moment_' + i" class="input input-select" aria-label="Moment de prise">
+                      <option value="matin">{{ 'DOCTOR_REPORT_CREATE.INTAKE_MORNING' | translate }}</option>
+                      <option value="midi">{{ 'DOCTOR_REPORT_CREATE.INTAKE_NOON' | translate }}</option>
+                      <option value="soir">{{ 'DOCTOR_REPORT_CREATE.INTAKE_EVENING' | translate }}</option>
+                      <option value="autre">{{ 'DOCTOR_REPORT_CREATE.INTAKE_OTHER' | translate }}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input [(ngModel)]="t.attentesSuivi" [name]="'attentes_' + i" type="text" class="input"
+                      placeholder="ex. Vérifier prise, noter tout refus" aria-label="Attentes de suivi">
+                  </td>
+                  <td class="td-actions">
+                    <div class="row-actions">
+                      <button type="button" class="btn-icon-action btn-duplicate" (click)="duplicateTraitement(i)" [title]="'DOCTOR_REPORT_CREATE.DUPLICATE' | translate" aria-label="Dupliquer">⎎</button>
+                      <button type="button" class="btn-icon-remove" (click)="removeTraitement(i)" [title]="'DOCTOR_REPORT_CREATE.REMOVE' | translate" aria-label="Retirer">×</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p *ngIf="errorBlockId === 'observance'" class="inline-error" role="alert">{{ 'DOCTOR_REPORT_CREATE.TREATMENT_REQUIRED' | translate }}</p>
+          <button type="button" class="btn-add-row" (click)="addTraitement()">
+            <span class="btn-add-icon">+</span> {{ 'DOCTOR_REPORT_CREATE.ADD_TREATMENT' | translate }}
+          </button>
+          <div class="form-group">
+            <label for="attentes-generales">{{ 'DOCTOR_REPORT_CREATE.GENERAL_EXPECTATIONS' | translate }}</label>
+            <textarea id="attentes-generales" [(ngModel)]="attentesGenerales" name="attentesGenerales"
+              class="input input-textarea" rows="2" placeholder="ex. Signaler tout oubli ou refus dans la fiche de transmission."></textarea>
+          </div>
+        </section>
+
+        <!-- ─── Zone 4 : Alimentation et hydratation ─── -->
+        <section class="block block-directives" aria-labelledby="heading-alim">
+          <h2 id="heading-alim" class="block-title">
+            <span class="block-num">5</span>
+            {{ 'DOCTOR_REPORT_CREATE.FOOD_HYDRATION' | translate }}
+          </h2>
+          <p class="help-inline">{{ 'DOCTOR_REPORT_CREATE.FOOD_HYDRATION_HELP' | translate }}</p>
+          <div class="directives-list">
+            <div *ngFor="let d of directivesAlim; let i = index" class="directive-row">
+              <input [(ngModel)]="d.libelle" [name]="'alim_lib_' + i" type="text" class="input directive-libelle"
+                placeholder="ex. Hydratation minimale 1,5 L/j">
+              <input [(ngModel)]="d.detail" [name]="'alim_det_' + i" type="text" class="input directive-detail"
+                placeholder="Détail (optionnel)">
+              <button type="button" class="btn-icon-remove" (click)="removeDirectiveAlim(i)" [title]="'DOCTOR_REPORT_CREATE.REMOVE' | translate" aria-label="Retirer">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" (click)="addDirectiveAlim()">
+            <span class="btn-add-icon">+</span> {{ 'DOCTOR_REPORT_CREATE.ADD_DIRECTIVE' | translate }}
+          </button>
+        </section>
+
+        <!-- ─── Zone 5 : Vie sociale et hygiène de vie ─── -->
+        <section class="block block-directives" aria-labelledby="heading-vie">
+          <h2 id="heading-vie" class="block-title">
+            <span class="block-num">6</span>
+            {{ 'DOCTOR_REPORT_CREATE.SOCIAL_LIFE' | translate }}
+          </h2>
+          <p class="help-inline">{{ 'DOCTOR_REPORT_CREATE.SOCIAL_LIFE_HELP' | translate }}</p>
+          <div class="directives-list">
+            <div *ngFor="let d of directivesVieSociale; let i = index" class="directive-row">
+              <input [(ngModel)]="d.libelle" [name]="'vs_lib_' + i" type="text" class="input directive-libelle"
+                placeholder="ex. Encourager une activité sociale légère (visite, promenade)">
+              <input [(ngModel)]="d.detail" [name]="'vs_det_' + i" type="text" class="input directive-detail"
+                placeholder="Détail (optionnel)">
+              <button type="button" class="btn-icon-remove" (click)="removeDirectiveVieSociale(i)" [title]="'DOCTOR_REPORT_CREATE.REMOVE' | translate" aria-label="Retirer">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" (click)="addDirectiveVieSociale()">
+            <span class="btn-add-icon">+</span> {{ 'DOCTOR_REPORT_CREATE.ADD_DIRECTIVE' | translate }}
+          </button>
+        </section>
+
+        <!-- ─── Signature et validation médicale ─── -->
+        <section id="block-validation" class="block block-validation" aria-labelledby="heading-validation">
+          <h2 id="heading-validation" class="block-title">
+            <span class="block-num">6</span>
+            {{ 'DOCTOR_REPORT_CREATE.SIGNATURE_VALIDATION' | translate }}
+          </h2>
+          <p class="help-inline validation-notice">
+            {{ 'DOCTOR_REPORT_CREATE.SIGNATURE_VALIDATION_NOTICE' | translate }}
+          </p>
+          <div class="traceability-preview">
+            <span class="trace-label">{{ 'DOCTOR_REPORT_CREATE.RECORDED_AT_VALIDATION_LABEL' | translate }}</span>
+            <span class="trace-value">{{ medecinNom }} — {{ dateDebut | date:'dd/MM/yyyy' }} - {{ dateFin | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="signature-block">
+            <label class="checkbox-validation">
+              <input type="checkbox" [(ngModel)]="signatureValide" name="signatureValide" aria-describedby="attestation-desc">
+              <span class="checkbox-text">{{ 'DOCTOR_REPORT_CREATE.VALIDATION_CHECKBOX' | translate }}</span>
+            </label>
+            <p id="attestation-desc" class="attestation-desc">{{ 'DOCTOR_REPORT_CREATE.ATTESTATION_DESC' | translate }}</p>
+          </div>
+        </section>
+
+        <!-- Résumé avant envoi -->
+        <div class="submit-summary">
+          <span class="submit-summary-label">{{ 'DOCTOR_REPORT_CREATE.PREVIEW' | translate }}</span>
+          <span class="submit-summary-counts">
+            <strong>{{ summaryCounts.traitements }}</strong> {{ 'DOCTOR_REPORT_CREATE.TREATMENT_COUNT' | translate }},
+            <strong>{{ summaryCounts.alim }}</strong> {{ 'DOCTOR_REPORT_CREATE.FOOD_HYDRATION_COUNT' | translate }},
+            <strong>{{ summaryCounts.vie }}</strong> {{ 'DOCTOR_REPORT_CREATE.SOCIAL_LIFE_COUNT' | translate }}
+          </span>
+        </div>
+
+        <!-- Actions du formulaire -->
+        <div class="form-actions">
+          <p *ngIf="errorMessage" class="error-msg" role="alert">{{ errorMessage }}</p>
+          <div class="form-actions-buttons">
+            <button type="button" class="btn-outline" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button type="submit" class="btn-submit" [disabled]="submitting || !selectedPatient">
+              {{ submitting ? ('DOCTOR_REPORT_CREATE.SUBMITTING' | translate) : ('DOCTOR_REPORT_CREATE.SUBMIT_BUTTON' | translate) }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,221 @@
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar-portal>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <h1 class="page-title-small">{{ 'DOCTOR_REPORTS.MEDICAL_REPORTS' | translate }}</h1>
+
+            <div class="topbar-actions">
+                <button class="icon-btn notice-btn">
+                    <span class="icon">🔔</span>
+                    <span class="badge-dot"></span>
+                </button>
+                <button class="btn btn-logout" (click)="logout()">
+                    <span>Déconnexion</span>
+                    <span class="icon">🚪</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Reports Content -->
+        <main class="content-area reports-content">
+            <div class="card" *ngIf="!reportsApiAvailable">
+                <p>
+                    `AlzheimerApp` does not expose a `/rapports` API yet. The structured follow-up section still works from local app data, but backend-generated medical reports are not available yet.
+                </p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary-bg">
+                        <span>👥</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_REPORTS.ACTIVE_PATIENTS' | translate }}</span>
+                        <h3 class="stat-value">{{ patientsActifs }}</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success-bg">
+                        <span>📄</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_REPORTS.TOTAL_REPORTS' | translate }}</span>
+                        <h3 class="stat-value">{{ totalRapports }}</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon info-bg">
+                        <span>📈</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_REPORTS.ADHERENCE_RATE' | translate }}</span>
+                        <h3 class="stat-value">{{ moyenneObservance }}%</h3>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning-bg">
+                        <span>✅</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_REPORTS.SENT_REPORTS' | translate }}</span>
+                        <h3 class="stat-value">{{ rapportsEnvoyes }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-row">
+                <!-- Quick Actions -->
+                <div class="card actions-card flex-1">
+                    <div class="card-header">
+                        <h3>{{ 'DOCTOR_REPORTS.QUICK_GENERATION' | translate }}</h3>
+                    </div>
+                    <div class="quick-actions-list">
+                        <button class="action-btn action-btn-primary" (click)="goToCreateRapportSuivi()">
+                            <span class="action-icon">📋</span>
+                            <div class="action-info">
+                                <span class="action-title">{{ 'DOCTOR_REPORTS.STRUCTURED_FOLLOW_UP' | translate }}</span>
+                                <span class="action-desc">{{ 'DOCTOR_REPORTS.STRUCTURED_FOLLOW_UP_DESC' | translate }}</span>
+                            </div>
+                            <span class="arrow-icon">→</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📊</span>
+                            <div class="action-info">
+                                <span class="action-title">{{ 'DOCTOR_REPORTS.ACTIVITY_REPORT' | translate }}</span>
+                                <span class="action-desc">{{ 'DOCTOR_REPORTS.ACTIVITY_REPORT_DESC' | translate }}</span>
+                            </div>
+                            <span class="arrow-icon">→</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">👥</span>
+                            <div class="action-info">
+                                <span class="action-title">{{ 'DOCTOR_REPORTS.PATIENT_LIST' | translate }}</span>
+                                <span class="action-desc">{{ 'DOCTOR_REPORTS.PATIENT_LIST_DESC' | translate }}</span>
+                            </div>
+                            <span class="arrow-icon">→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rapports de suivi structurés (transmis au soignant) -->
+            <div class="card table-card rapports-suivi-section" *ngIf="rapportsSuivi.length > 0">
+                <div class="card-header">
+                    <h3>{{ 'DOCTOR_REPORTS.FOLLOW_UP_REPORTS_SENT' | translate }}</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'DOCTOR.PATIENT' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.CREATED_DATE' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.READ_BY_CAREGIVER' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of rapportsSuivi">
+                                <td><strong>{{ r.patientPrenom }} {{ r.patientNom }}</strong></td>
+                                <td>{{ r.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>{{ r.luParSoignant ? 'Oui' : 'Non' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Rapports depuis l'API (dynamique) -->
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>{{ 'DOCTOR_REPORTS.MEDICAL_REPORTS' | translate }}</h3>
+                    <div class="search-box">
+                        <input type="text" [placeholder]="'DOCTOR_REPORTS.SEARCH_REPORT' | translate" class="search-input-sm"
+                               [(ngModel)]="searchQuery" (ngModelChange)="filterRapports()">
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading-state" *ngIf="loading">
+                    <p>{{ 'DOCTOR_REPORTS.LOADING_REPORTS' | translate }}</p>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive" *ngIf="!loading">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'DOCTOR_REPORTS.TITLE' | translate }}</th>
+                                <th>{{ 'DOCTOR.PATIENT' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.TYPE' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.PERIOD' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.CREATED_BY' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.STATUS' | translate }}</th>
+                                <th>{{ 'DOCTOR_REPORTS.GENERATION_DATE' | translate }}</th>
+                                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let rapport of filteredRapports">
+                                <td>
+                                    <div class="file-info">
+                                        <span class="file-icon">📄</span>
+                                        <span class="file-name">{{ rapport.titre || ('DOCTOR_REPORTS.NO_TITLE' | translate) }}</span>
+                                        <span class="file-id" *ngIf="rapport.id">#{{ rapport.id }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ rapport.patient?.nomComplet || '—' }}</td>
+                                <td>
+                                    <span class="badge badge-type">{{ getTypeLabel(rapport.typeRapport) | translate }}</span>
+                                </td>
+                                <td>
+                                    <span *ngIf="rapport.periodeDebut && rapport.periodeFin">
+                                        {{ rapport.periodeDebut | date:'dd/MM/yy' }} → {{ rapport.periodeFin | date:'dd/MM/yy' }}
+                                    </span>
+                                    <span *ngIf="!rapport.periodeDebut">—</span>
+                                </td>
+                                <td>{{ rapport.soignant?.nomComplet || rapport.soignant?.nom || '—' }}</td>
+                                <td>
+                                    <span class="badge-statut"
+                                          [class.statut-genere]="rapport.statut === 'GENERE'"
+                                          [class.statut-envoye]="rapport.statut === 'ENVOYE'"
+                                          [class.statut-archive]="rapport.statut === 'ARCHIVE'">
+                                        {{ getStatutLabel(rapport.statut) | translate }}
+                                    </span>
+                                </td>
+                                <td>{{ rapport.dateGeneration | date:'dd/MM/yyyy HH:mm' }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon-sm" (click)="downloadReport(rapport.id!)"
+                                                [title]="'DOCTOR_REPORTS.DOWNLOAD' | translate">⬇️</button>
+                                        <button class="btn-icon-sm btn-send" *ngIf="rapport.statut === 'GENERE'"
+                                                (click)="envoyerRapport(rapport)" [title]="'COMMON.SEND' | translate">📤</button>
+                                        <button class="btn-icon-sm btn-del" (click)="deleteRapport(rapport.id!)"
+                                                [title]="'COMMON.DELETE' | translate">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" *ngIf="filteredRapports.length === 0 && !loading">
+                        <span class="empty-icon">📭</span>
+                        <p *ngIf="searchQuery">{{ 'DOCTOR_REPORTS.NO_REPORT_MATCH' | translate }}</p>
+                        <p *ngIf="!searchQuery">{{ 'DOCTOR_REPORTS.NO_REPORT_AVAILABLE' | translate }}</p>
+                    </div>
+                </div>
+
+                <!-- Table footer -->
+                <div class="table-footer" *ngIf="filteredRapports.length > 0">
+                    <span class="table-info">{{ filteredRapports.length }} {{ 'DOCTOR_REPORTS.REPORT_COUNT' | translate }}</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

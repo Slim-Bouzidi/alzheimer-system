@@ -1,0 +1,255 @@
+<div class="dash">
+
+  <app-sidebar-portal
+    [role]="'DOCTEUR'"
+    [userName]="'Dr. ' + doctorName"
+    [userRole]="'Neurologist'"
+    [alertesCount]="stats.criticalAlerts">
+  </app-sidebar-portal>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Good morning, Dr. {{ doctorName }} 👋</h1>
+        <p class="page-date">{{ todayDate }}</p>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" title="Search">🔍</button>
+        <button class="icon-btn notif" title="Notifications">
+          🔔<span class="notif-dot"></span>
+        </button>
+        <div class="avatar-sm">DR</div>
+      </div>
+    </header>
+
+    <!-- ── KPI Cards ── -->
+    <section class="kpi-row">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top">
+          <span class="kpi-label">Total Patients</span>
+          <span class="kpi-icon">👥</span>
+        </div>
+        <div class="kpi-value">{{ stats.totalPatients }}</div>
+        <div class="kpi-sub">Under your care</div>
+      </div>
+
+      <div class="kpi-card kpi-teal">
+        <div class="kpi-top">
+          <span class="kpi-label">Today's Appointments</span>
+          <span class="kpi-icon">📅</span>
+        </div>
+        <div class="kpi-value">{{ stats.todayAppointments }}</div>
+        <div class="kpi-sub">Scheduled today</div>
+      </div>
+
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-top">
+          <span class="kpi-label">Pending Reports</span>
+          <span class="kpi-icon">📋</span>
+        </div>
+        <div class="kpi-value">{{ stats.pendingReports }}</div>
+        <div class="kpi-sub">Awaiting review</div>
+      </div>
+
+      <div class="kpi-card kpi-red">
+        <div class="kpi-top">
+          <span class="kpi-label">Critical Alerts</span>
+          <span class="kpi-icon">🚨</span>
+        </div>
+        <div class="kpi-value">{{ stats.criticalAlerts }}</div>
+        <div class="kpi-sub">Require attention</div>
+      </div>
+    </section>
+
+    <!-- ── Middle row ── -->
+    <section class="mid-row">
+
+      <!-- Appointments -->
+      <div class="panel panel-appointments">
+        <div class="panel-header">
+          <h2 class="panel-title">Today's Schedule</h2>
+          <button class="link-btn" (click)="goToAppointments()">View all →</button>
+        </div>
+        <div class="appt-list">
+          <div class="appt-item" *ngFor="let a of appointments">
+            <div class="appt-time">{{ a.time }}</div>
+            <div class="appt-avatar">{{ a.avatar }}</div>
+            <div class="appt-info">
+              <span class="appt-name">{{ a.name }}</span>
+              <span class="appt-type">{{ a.type }}</span>
+            </div>
+            <span class="appt-badge" [class.confirmed]="a.status==='confirmed'" [class.pending]="a.status==='pending'">
+              {{ a.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="panel panel-alerts">
+        <div class="panel-header">
+          <h2 class="panel-title">Medical Alerts</h2>
+          <button class="link-btn" (click)="goToAlerts()">View all →</button>
+        </div>
+        <div class="alert-list">
+          <div class="alert-item" *ngFor="let al of alerts" [class]="'alert-item alert-' + al.level">
+            <div class="alert-dot" [class]="'dot-' + al.level"></div>
+            <div class="alert-body">
+              <span class="alert-patient">{{ al.patient }}</span>
+              <span class="alert-msg">{{ al.message }}</span>
+            </div>
+            <span class="alert-time">{{ al.time }}</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Patients table ── -->
+    <section class="panel panel-patients">
+      <div class="panel-header">
+        <h2 class="panel-title">Recent Patients</h2>
+        <button class="link-btn" (click)="goToPatients()">Manage all →</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Date of Birth</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Risk</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of recentPatients">
+              <td>
+                <div class="patient-cell">
+                  <div class="p-avatar">{{ getInitials(p) }}</div>
+                  <span class="p-name">{{ getFullName(p) }}</span>
+                </div>
+              </td>
+              <td class="muted">{{ p.dateOfBirth || p.dateNaissance || '—' }}</td>
+              <td class="muted">{{ p.phone || p.numeroDeTelephone || '—' }}</td>
+              <td><span class="badge" [ngClass]="getStatusClass(p.status || '')">{{ p.status || 'stable' }}</span></td>
+              <td>
+                <span *ngIf="p.riskLevel" class="badge badge-danger">{{ p.riskLevel }}</span>
+                <span *ngIf="!p.riskLevel" class="muted">—</span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="act-btn" title="View">👁</button>
+                  <button class="act-btn" title="Report">📝</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="recentPatients.length === 0">
+              <td colspan="6" class="empty-row">No patients loaded yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Quick Actions ── -->
+    <section class="quick-grid">
+      <button class="quick-card" (click)="goToAppointments()">
+        <span class="quick-icon">🧪</span>
+        <span class="quick-label">New Cognitive Test</span>
+      </button>
+      <button class="quick-card" (click)="goToReportCreate()">
+        <span class="quick-icon">📊</span>
+        <span class="quick-label">Generate Report</span>
+      </button>
+      <button class="quick-card" (click)="goToPatients()">
+        <span class="quick-icon">💊</span>
+        <span class="quick-label">Prescribe Medication</span>
+      </button>
+      <button class="quick-card" (click)="openAddModal()">
+        <span class="quick-icon">➕</span>
+        <span class="quick-label">Add Patient</span>
+      </button>
+    </section>
+
+  </main>
+</div>
+
+<!-- ── Add Patient Modal ── -->
+<div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Patient</h3>
+      <button class="modal-close" (click)="closeAddModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-error" *ngIf="addError">{{ addError }}</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" [(ngModel)]="newPatient.firstName" placeholder="e.g. Marie" />
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" [(ngModel)]="newPatient.lastName" placeholder="e.g. Dupont" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date of Birth</label>
+          <input type="date" [(ngModel)]="newPatient.dateOfBirth" />
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select [(ngModel)]="newPatient.gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" [(ngModel)]="newPatient.phone" placeholder="e.g. 06 12 34 56 78" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select [(ngModel)]="newPatient.status">
+            <option value="stable">Stable</option>
+            <option value="attention">Attention</option>
+            <option value="high-risk">High Risk</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Address</label>
+        <input type="text" [(ngModel)]="newPatient.address" placeholder="e.g. 123 Rue de la Paix, Paris" />
+      </div>
+
+      <div class="form-group full checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="newPatient.familyHistoryAlzheimer" />
+          Family history of Alzheimer's
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeAddModal()" [disabled]="addLoading">Cancel</button>
+      <button class="btn-submit" (click)="submitAddPatient()" [disabled]="addLoading">
+        {{ addLoading ? 'Saving...' : 'Add Patient' }}
+      </button>
+    </div>
+  </div>
+</div>

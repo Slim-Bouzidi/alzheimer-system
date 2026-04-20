@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ActivityRequest {
     patientId: string;
@@ -18,7 +19,7 @@ export interface ActivityResponse extends ActivityRequest {
   providedIn: 'root'
 })
 export class CognitiveService {
-  private apiUrl = 'http://localhost:8080/api/cognitive-activities';
+  private apiUrl = `${environment.apiUrl}/cognitive-activities`;
 
   constructor(private http: HttpClient) { }
 

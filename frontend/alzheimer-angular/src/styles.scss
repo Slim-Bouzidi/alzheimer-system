@@ -9,6 +9,8 @@ $primary-hex: #1E293B;
 // ─── Light theme (default): iOS-like SaaS ──────────────────────────────────────
 :root {
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: var(--font-family);
+  --font-heading: var(--font-family);
   --sidebar-width: #{v.$sidebar-width};
   --sidebar-collapsed-width: #{v.$sidebar-width-collapsed};
   --topbar-height: #{v.$topbar-height};
@@ -24,6 +26,16 @@ $primary-hex: #1E293B;
   // Text
   --text-color: #0f172a;
   --text-color-secondary: #64748b;
+  --text-primary: var(--text-color);
+  --text-secondary: var(--text-color-secondary);
+  --text-muted: #94a3b8;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 0.9375rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
 
   // Primary (buttons, active states, tags)
   --primary-color: #{$primary-hex};
@@ -37,6 +49,73 @@ $primary-hex: #1E293B;
   --nav-active-bg: #e0f2fe;
   --nav-active-color: #0369a1;
   --primary-light-bg: #dbeafe;
+  --primary-gradient: linear-gradient(135deg, #2563eb, #1d4ed8);
+
+  // Common doctor-page aliases
+  --bg-color: var(--surface-ground);
+  --card-bg: var(--surface-card);
+  --border-color: var(--surface-border);
+  --border-light: #eef2f7;
+
+  // Additional tokens used by doctor pages
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --success-50: #f0fdf4;
+  --success-100: #dcfce7;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --danger-50: #fef2f2;
+  --danger-100: #fee2e2;
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+  --info-50: #f0f9ff;
+
+  // Radius aliases
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  // Spacing aliases
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  // Transition aliases
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // Shadow aliases
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-card: var(--shadow-sm);
+  --shadow-card-hover: var(--shadow-md);
+  --shadow-xl: 0 25px 50px -12px rgba(15, 23, 42, 0.3);
 }
 
 // ─── PrimeNG overrides: primary = #1E293B ──────────────────────────────────────
@@ -56,7 +135,8 @@ $primary-hex: #1E293B;
 }
 
 // ─── Global Reset & Transitions ────────────────────────────────────────────────
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -70,12 +150,12 @@ html, body {
 // Smooth Layout Transitions
 * {
   transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              margin 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-              padding 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    margin 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+    padding 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 // ─── Rich Dark Mode (Zinc-950 base) ────────────────────────────────────────────
@@ -105,17 +185,20 @@ html.app-dark {
   color: var(--primary-color-text) !important;
   border-radius: v.$border-radius;
 }
+
 .p-button.p-button-primary:not(.p-button-text):not(.p-button-outlined):hover,
 .p-button:not(.p-button-secondary):not(.p-button-success):not(.p-button-help):not(.p-button-warning):not(.p-button-danger):not(.p-button-text):not(.p-button-outlined):hover {
   background: var(--primary-600) !important;
   border-color: var(--primary-600) !important;
   color: var(--primary-color-text) !important;
 }
+
 .p-card {
   border-radius: v.$border-radius-lg !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06) !important;
   border: 1px solid var(--surface-border) !important;
 }
+
 .p-tag.p-tag-info,
 .p-badge.p-badge-info {
   background: var(--primary-color) !important;
@@ -142,14 +225,37 @@ html.app-dark {
 }
 
 // ─── Utility Classes ───────────────────────────────────────────────────────────
-.w-full { width: 100%; }
-.h-full { height: 100%; }
-.flex { display: flex; }
-.flex-column { flex-direction: column; }
-.align-items-center { align-items: center; }
-.justify-content-between { justify-content: space-between; }
-.gap-2 { gap: 0.5rem; }
-.mb-3 { margin-bottom: 1rem; }
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
 
 // ─── Dialog Mask Fix: Cover entire viewport including sidebar ─────────────────
 .p-dialog-mask {

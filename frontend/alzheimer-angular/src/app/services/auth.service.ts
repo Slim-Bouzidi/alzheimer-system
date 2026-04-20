@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import keycloak from '../keycloak';
 
 export interface TokenResponse {
@@ -24,8 +25,8 @@ export interface LoginError {
   providedIn: 'root'
 })
 export class AuthService {
-  private tokenUrl = 'http://localhost:8081/realms/alzheimer-realm/protocol/openid-connect/token';
-  private clientId = 'alzheimer-angular-client';
+  private tokenUrl = `${environment.keycloakUrl}/realms/${environment.keycloakRealm}/protocol/openid-connect/token`;
+  private clientId = environment.keycloakClientId;
 
   constructor(private http: HttpClient) { }
 
@@ -61,12 +62,16 @@ export class AuthService {
   }
 
   /**
-   * Store tokens in localStorage and reload to let main.ts handle the auth state.
+   * Initialize Keycloak runtime with tokens from direct grant login.
    */
   async initKeycloakWithTokens(tokens: TokenResponse): Promise<boolean> {
-    localStorage.setItem('kc_token', tokens.access_token);
-    localStorage.setItem('kc_refreshToken', tokens.refresh_token);
-    localStorage.setItem('kc_idToken', tokens.id_token);
-    return true;
+    return keycloak.init({
+      onLoad: 'check-sso',
+      checkLoginIframe: false,
+      pkceMethod: 'S256',
+      token: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      idToken: tokens.id_token
+    });
   }
 }

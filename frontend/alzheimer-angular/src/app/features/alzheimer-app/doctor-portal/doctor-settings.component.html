@@ -1,0 +1,136 @@
+<div class="dashboard-layout">
+    <!-- Sidebar (Shared/Reused) -->
+    <!-- Sidebar (Shared/Reused) -->
+    <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar-portal>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <header class="topbar">
+            <h1 class="page-title-small">{{ 'DOCTOR.SETTINGS_TITLE' | translate }}</h1>
+
+            <div class="topbar-actions">
+                <button class="icon-btn notice-btn">
+                    <span class="icon">🔔</span>
+                    <span class="badge-dot"></span>
+                </button>
+                <button class="btn btn-logout" (click)="logout()">
+                    <span>{{ 'COMMON.LOGOUT' | translate }}</span>
+                    <span class="icon">🚪</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <main class="content-area settings-content">
+
+            <!-- Tabs Navigation -->
+            <div class="settings-tabs">
+                <button class="tab-btn" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'">
+                    <span>👤</span> {{ 'DOCTOR_SETTINGS.PROFILE_TAB' | translate }}
+                </button>
+                <button class="tab-btn" [class.active]="activeTab === 'notifications'"
+                    (click)="activeTab = 'notifications'">
+                    <span>🔔</span> {{ 'DOCTOR_SETTINGS.NOTIFICATIONS_TAB' | translate }}
+                </button>
+                <button class="tab-btn" [class.active]="activeTab === 'security'" (click)="activeTab = 'security'">
+                    <span>🛡️</span> {{ 'DOCTOR_SETTINGS.SECURITY_TAB' | translate }}
+                </button>
+            </div>
+
+            <!-- Settings Panels -->
+            <div class="settings-panel">
+
+                <!-- Profile Section -->
+                <div *ngIf="activeTab === 'profile'" class="settings-section">
+                    <h2>{{ 'DOCTOR_SETTINGS.PERSONAL_INFO' | translate }}</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>{{ 'DOCTOR_SETTINGS.FULL_NAME' | translate }}</label>
+                            <input type="text" [value]="userInfo.name" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>{{ 'DOCTOR_SETTINGS.PROFESSIONAL_EMAIL' | translate }}</label>
+                            <input type="email" [value]="userInfo.email" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>{{ 'DOCTOR_SETTINGS.SPECIALIZATION' | translate }}</label>
+                            <input type="text" [value]="userInfo.specialization" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>{{ 'DOCTOR_SETTINGS.LICENSE_NUMBER' | translate }}</label>
+                            <input type="text" [value]="userInfo.license" class="form-input" disabled>
+                        </div>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn btn-primary">{{ 'DOCTOR_SETTINGS.SAVE_CHANGES' | translate }}</button>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div *ngIf="activeTab === 'notifications'" class="settings-section">
+                    <h2>{{ 'DOCTOR_SETTINGS.NOTIFICATION_PREFERENCES' | translate }}</h2>
+                    <div class="toggles-list">
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h3>{{ 'DOCTOR_SETTINGS.EMAIL_NOTIFICATIONS' | translate }}</h3>
+                                <p>{{ 'DOCTOR_SETTINGS.EMAIL_NOTIFICATIONS_DESC' | translate }}</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" [checked]="notificationSettings.email">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h3>{{ 'DOCTOR_SETTINGS.SMS_NOTIFICATIONS' | translate }}</h3>
+                                <p>{{ 'DOCTOR_SETTINGS.SMS_NOTIFICATIONS_DESC' | translate }}</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" [checked]="notificationSettings.sms">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-item">
+                            <div class="toggle-info">
+                                <h3>{{ 'DOCTOR_SETTINGS.PUSH_NOTIFICATIONS' | translate }}</h3>
+                                <p>{{ 'DOCTOR_SETTINGS.PUSH_NOTIFICATIONS_DESC' | translate }}</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" [checked]="notificationSettings.push">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Section -->
+                <div *ngIf="activeTab === 'security'" class="settings-section">
+                    <h2>{{ 'DOCTOR_SETTINGS.SECURITY_LOGIN' | translate }}</h2>
+                    <div class="security-items">
+                        <div class="security-item">
+                            <div class="item-icon">🔒</div>
+                            <div class="item-content">
+                                <h3>{{ 'DOCTOR_SETTINGS.PASSWORD' | translate }}</h3>
+                                <p>{{ 'DOCTOR_SETTINGS.LAST_CHANGE' | translate }} : {{ securitySettings.lastPasswordChange }}</p>
+                                <button class="btn btn-outline-sm">{{ 'DOCTOR_SETTINGS.CHANGE' | translate }}</button>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="item-icon">🛡️</div>
+                            <div class="item-content">
+                                <h3>{{ 'DOCTOR_SETTINGS.TWO_FACTOR' | translate }}</h3>
+                                <p>{{ 'DOCTOR_SETTINGS.TWO_FACTOR_DESC' | translate }}</p>
+                                <label class="switch">
+                                    <input type="checkbox" [checked]="securitySettings.twoFactor">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>

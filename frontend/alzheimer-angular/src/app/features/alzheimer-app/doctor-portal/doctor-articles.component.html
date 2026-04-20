@@ -1,0 +1,89 @@
+<div class="doctor-dashboard-container">
+    <!-- Use the shared sidebar setup, with Doctor role -->
+    <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. Admin'" [userRole]="'Responsable'"></app-sidebar-portal>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <h1>📚 Manage Articles (Knowledge Base)</h1>
+                    <p class="role-badge">Educational Content</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="articles-content">
+            <div class="articles-header">
+                <h2>Published Articles</h2>
+                <button class="btn btn-primary" (click)="openModal()">+ Add New Article</button>
+            </div>
+
+            <!-- Modal Overlay -->
+            <div class="modal-overlay" *ngIf="isModalOpen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Publish a New Article</h2>
+                        <button class="close-btn" (click)="closeModal()">×</button>
+                    </div>
+
+                    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+                    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+                    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="article-form">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" formControlName="title" placeholder="Article title" />
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" formControlName="category" placeholder="e.g. Nutrition, Alzheimer" />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Target Audience</label>
+                                <select formControlName="targetAudience">
+                                    <option value="ALL">All roles</option>
+                                    <option value="SOIGNANT">Soignant</option>
+                                    <option value="AIDANT">Aidant</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Content</label>
+                            <textarea formControlName="content" rows="6"
+                                placeholder="Write your article content here..."></textarea>
+                        </div>
+
+                        <div class="modal-actions">
+                            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                            <button type="submit" [disabled]="articleForm.invalid"
+                                class="btn btn-primary submit-btn">Publish Article</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <section class="article-list-section">
+                <div class="articles-grid">
+                    <div class="article-card" *ngFor="let article of articles">
+                        <div class="article-header">
+                            <h3>{{ article.title }}</h3>
+                            <span class="audience-badge">{{ article.targetAudience }}</span>
+                        </div>
+                        <p class="article-category"><strong>Category:</strong> {{ article.category }}</p>
+                        <p class="article-text">{{ article.content | slice:0:150 }}...</p>
+                        <div class="article-actions">
+                            <button class="btn btn-danger btn-sm" (click)="deleteArticle(article.id!)">Delete</button>
+                        </div>
+                    </div>
+                    <div *ngIf="articles.length === 0" class="no-articles">
+                        No articles published yet.
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
