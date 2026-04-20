@@ -151,6 +151,10 @@
     transition: all 0.2s;
 }
 
+.icon {
+    font-size: 0.95rem;
+}
+
 .icon-btn {
     width: 40px;
     height: 40px;
@@ -221,6 +225,62 @@
 .search-icon {
     margin-right: 0.75rem;
     color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.sort-container {
+    margin-left: auto;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sort-select-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.sort-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 30px 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 95px;
+}
+
+.sort-select:hover {
+    border-color: var(--slate-300);
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.select-caret {
+    position: absolute;
+    right: 10px;
+    font-size: 0.7rem;
+    color: #64748b;
+    pointer-events: none;
 }
 
 .search-input {
@@ -370,8 +430,14 @@
     cursor: pointer;
     border: none;
     background: inherit;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     transition: all 0.3s ease;
+}
+
+.status-caret {
+    font-size: 0.6rem;
 }
 
 .patient-status-badge:hover {
@@ -428,6 +494,12 @@
     margin: 0.25rem 0;
     font-size: 0.85rem;
     color: var(--text-secondary);
+}
+
+.patient-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .patient-condition {
@@ -515,11 +587,14 @@
     font-size: 0.75rem;
     font-weight: 600;
     color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .assign-select {
     width: 100%;
-    padding: 8px 12px;
+    padding: 8px 32px 8px 12px;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
     font-size: 0.85rem;
@@ -527,7 +602,12 @@
     background: white;
     cursor: pointer;
     transition: all 0.2s ease;
-    appearance: auto;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
 }
 
 .assign-select:focus {
@@ -754,6 +834,12 @@
 .btn-danger:hover {
     background-color: #dc2626;
     box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+.btn .pi,
+.btn-icon .pi,
+.modal-close .pi {
+    font-size: 0.85rem;
 }
 
 /* Emergency Contact View Styles */

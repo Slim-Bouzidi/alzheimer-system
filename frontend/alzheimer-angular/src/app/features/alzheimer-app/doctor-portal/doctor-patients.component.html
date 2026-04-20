@@ -10,12 +10,12 @@
 
             <div class="topbar-actions">
                 <button class="icon-btn notice-btn">
-                    <span class="icon">🔔</span>
+                    <i class="pi pi-bell icon" aria-hidden="true"></i>
                     <span class="badge-dot"></span>
                 </button>
                 <button class="btn btn-logout" (click)="logout()">
                     <span>Déconnexion</span>
-                    <span class="icon">🚪</span>
+                    <i class="pi pi-sign-out icon" aria-hidden="true"></i>
                 </button>
             </div>
         </header>
@@ -26,18 +26,20 @@
             <!-- Action Bar -->
             <div class="action-bar">
                 <div class="search-container">
-                    <span class="search-icon">🔍</span>
+                    <i class="pi pi-search search-icon" aria-hidden="true"></i>
                     <input type="text" [placeholder]="'DOCTOR.SEARCH_BY_NAME' | translate" class="search-input"
                         (input)="filterPatients($event)">
                 </div>
 
-                <div class="sort-container" style="margin-left: auto; margin-right: 15px;">
-                    <label for="sortSelect" style="margin-right: 5px; font-weight: bold;">Trier par : </label>
-                    <select id="sortSelect" class="sort-select" (change)="onSortChange($event)"
-                        style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                        <option value="default">Défaut</option>
-                        <option value="status">Statut</option>
-                    </select>
+                <div class="sort-container">
+                    <label for="sortSelect" class="sort-label">Trier par :</label>
+                    <div class="sort-select-wrapper">
+                        <select id="sortSelect" class="sort-select" (change)="onSortChange($event)">
+                            <option value="default">Défaut</option>
+                            <option value="status">Statut</option>
+                        </select>
+                        <i class="pi pi-chevron-down select-caret" aria-hidden="true"></i>
+                    </div>
                 </div>
 
                 <button class="btn btn-primary" (click)="addPatient()">
@@ -51,7 +53,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>{{ 'DOCTOR.NEW_PATIENT' | translate }}</h2>
-                        <button class="modal-close" (click)="addPatient()">✕</button>
+                        <button class="modal-close" (click)="addPatient()"><i class="pi pi-times" aria-hidden="true"></i></button>
                     </div>
 
                     <div class="modal-body">
@@ -122,18 +124,19 @@
 
             <!-- Loading State -->
             <div class="loading-state" *ngIf="isLoading">
-                <div class="loading-spinner">⏳</div>
+                <i class="pi pi-spin pi-spinner loading-spinner" aria-hidden="true"></i>
                 <h3>{{ 'DOCTOR.LOADING_PATIENTS' | translate }}</h3>
                 <p>{{ 'DOCTOR.LOADING_BACKEND' | translate }}</p>
             </div>
 
             <!-- Error State -->
             <div class="error-state" *ngIf="error && !isLoading">
-                <span class="error-icon">❌</span>
+                <i class="pi pi-exclamation-triangle error-icon" aria-hidden="true"></i>
                 <h3>{{ 'DOCTOR.CONNECTION_ERROR' | translate }}</h3>
                 <p>{{ error }}</p>
                 <button class="btn btn-primary" (click)="loadPatientsFromDatabase()">
-                    🔄 {{ 'COMMON.RETRY' | translate }}
+                    <i class="pi pi-refresh" aria-hidden="true"></i>
+                    {{ 'COMMON.RETRY' | translate }}
                 </button>
             </div>
 
@@ -147,7 +150,8 @@
                         <div class="patient-status-dropdown">
                             <button class="patient-status-badge" [ngClass]="getStatusClass(patient.status)"
                                 (click)="toggleStatusDropdown(patient)">
-                                {{ getStatusLabel(patient.status) }} ▼
+                                {{ getStatusLabel(patient.status) }}
+                                <i class="pi pi-chevron-down status-caret" aria-hidden="true"></i>
                             </button>
                             <div class="status-dropdown-menu" *ngIf="patient.showStatusDropdown">
                                 <button class="status-option" (click)="updatePatientStatus(patient, 'stable')">
@@ -172,7 +176,8 @@
                             {{ patient.gender === 'M' ? 'Male' : (patient.gender === 'F' ? 'Female' : patient.gender) }}
                         </p>
                         <p class="patient-phone" *ngIf="patient.numeroDeTelephone">
-                            📞 {{ patient.numeroDeTelephone }}
+                            <i class="pi pi-phone" aria-hidden="true"></i>
+                            {{ patient.numeroDeTelephone }}
                         </p>
                     </div>
 
@@ -189,7 +194,10 @@
 
                     <!-- Assignation soignant -->
                     <div class="soignant-assign">
-                        <label class="assign-label">👩‍⚕️ {{ 'DOCTOR.ASSIGNED_CAREGIVER' | translate }}</label>
+                        <label class="assign-label">
+                            <i class="pi pi-user-plus" aria-hidden="true"></i>
+                            {{ 'DOCTOR.ASSIGNED_CAREGIVER' | translate }}
+                        </label>
                         <select class="assign-select" [value]="patient.soignant?.id || ''"
                             [disabled]="!soignantApiAvailable" (change)="assignerSoignant(patient, $event)">
                             <option value="">{{ 'DOCTOR.NOT_ASSIGNED_OPTION' | translate }}</option>
@@ -205,22 +213,22 @@
                         <button class="btn-icon treatment-btn"
                             [title]="hasTreatment(patient) ? 'View treatment' : 'Add treatment'"
                             (click)="openTreatmentDialog(patient)">
-                            {{ hasTreatment(patient) ? '💊' : '➕' }}
+                            <i [class]="hasTreatment(patient) ? 'pi pi-briefcase' : 'pi pi-plus'" aria-hidden="true"></i>
                         </button>
                         <!-- Medical Record Button -->
                         <button class="btn-icon medical-btn"
                             [title]="hasMedicalRecord(patient) ? 'View medical record' : 'Add medical record'"
                             (click)="openMedicalRecordDialog(patient)">
-                            {{ hasMedicalRecord(patient) ? '📖' : '➕' }}
+                            <i [class]="hasMedicalRecord(patient) ? 'pi pi-file' : 'pi pi-plus'" aria-hidden="true"></i>
                         </button>
                         <!-- Emergency Contact Button -->
                         <button class="btn-icon emergency-btn"
                             [title]="hasEmergencyContact(patient) ? 'Voir contact urgence' : 'Ajouter contact urgence'"
                             (click)="openEmergencyContactDialog(patient)">
-                            {{ hasEmergencyContact(patient) ? '🚨' : '➕' }}
+                            <i [class]="hasEmergencyContact(patient) ? 'pi pi-users' : 'pi pi-plus'" aria-hidden="true"></i>
                         </button>
                         <button class="btn-icon delete-btn" title="Supprimer patient"
-                            (click)="deletePatient(patient)">🗑️</button>
+                            (click)="deletePatient(patient)"><i class="pi pi-trash" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>
@@ -228,7 +236,7 @@
             <!-- Empty State (Base de données vide) -->
             <div class="empty-state"
                 *ngIf="!isLoading && !error && filteredPatients.length === 0 && patients.length === 0">
-                <span class="empty-icon">�️</span>
+                <i class="pi pi-inbox empty-icon" aria-hidden="true"></i>
                 <h3>{{ 'DOCTOR.NO_PATIENTS_DB' | translate }}</h3>
                 <p>{{ 'DOCTOR.DB_EMPTY' | translate }}</p>
                 <p>{{ 'DOCTOR.ADD_PATIENTS_BACKEND' | translate }}</p>
@@ -237,7 +245,7 @@
             <!-- No Results State -->
             <div class="empty-state"
                 *ngIf="!isLoading && !error && filteredPatients.length === 0 && patients.length > 0">
-                <span class="empty-icon">🔍</span>
+                <i class="pi pi-search empty-icon" aria-hidden="true"></i>
                 <h3>{{ 'DOCTOR.NO_PATIENT_FOUND' | translate }}</h3>
                 <p>{{ 'DOCTOR.NO_PATIENT_MATCH' | translate }}</p>
             </div>
@@ -253,9 +261,10 @@
                             <button *ngIf="hasTreatment(selectedPatient!)" class="btn btn-primary"
                                 style="padding: 6px 12px; font-size: 14px;"
                                 (click)="exportTreatmentsPdf(selectedPatient!)">
-                                📄 Export PDF
+                                <i class="pi pi-file-pdf" aria-hidden="true"></i>
+                                Export PDF
                             </button>
-                            <button class="modal-close" (click)="closeTreatmentDialog()">✕</button>
+                            <button class="modal-close" (click)="closeTreatmentDialog()"><i class="pi pi-times" aria-hidden="true"></i></button>
                         </div>
                     </div>
 
@@ -292,11 +301,13 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="startEditTreatment(treatment)">
-                                            ✏️ Edit
+                                            <i class="pi pi-pencil" aria-hidden="true"></i>
+                                            Edit
                                         </button>
                                         <button class="btn btn-danger"
                                             (click)="deleteTreatment(selectedPatient!, treatment)">
-                                            🗑️ Delete
+                                            <i class="pi pi-trash" aria-hidden="true"></i>
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
@@ -344,10 +355,12 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="cancelEditTreatment()">
-                                            ✖️ Cancel
+                                            <i class="pi pi-times" aria-hidden="true"></i>
+                                            Cancel
                                         </button>
                                         <button class="btn btn-primary" (click)="saveEditTreatment(selectedPatient!)">
-                                            💾 Save
+                                            <i class="pi pi-check" aria-hidden="true"></i>
+                                            Save
                                         </button>
                                     </div>
                                 </div>
@@ -423,7 +436,7 @@
                     <div class="modal-header">
                         <h2>{{ hasMedicalRecord(selectedPatient!) ? 'Medical Record' : 'Add Medical Record' }} - {{
                             selectedPatient?.nomComplet }}</h2>
-                        <button class="modal-close" (click)="closeMedicalRecordDialog()">✕</button>
+                        <button class="modal-close" (click)="closeMedicalRecordDialog()"><i class="pi pi-times" aria-hidden="true"></i></button>
                     </div>
 
                     <div class="modal-body">
@@ -455,11 +468,13 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="startEditMedicalRecord(record)">
-                                            ✏️ Edit
+                                            <i class="pi pi-pencil" aria-hidden="true"></i>
+                                            Edit
                                         </button>
                                         <button class="btn btn-danger"
                                             (click)="deleteMedicalRecord(selectedPatient!, record)">
-                                            🗑️ Delete
+                                            <i class="pi pi-trash" aria-hidden="true"></i>
+                                            Delete
                                         </button>
                                     </div>
                                 </div>
@@ -494,11 +509,13 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="cancelEditMedicalRecord()">
-                                            ✖️ Cancel
+                                            <i class="pi pi-times" aria-hidden="true"></i>
+                                            Cancel
                                         </button>
                                         <button class="btn btn-primary"
                                             (click)="saveEditMedicalRecord(selectedPatient!)">
-                                            💾 Save
+                                            <i class="pi pi-check" aria-hidden="true"></i>
+                                            Save
                                         </button>
                                     </div>
                                 </div>
@@ -559,7 +576,7 @@
                     <div class="modal-header">
                         <h2>{{ hasEmergencyContact(selectedPatient!) ? 'Contact Urgence' : 'Ajouter Contact Urgence' }}
                             - {{ selectedPatient?.nomComplet }}</h2>
-                        <button class="modal-close" (click)="closeEmergencyContactDialog()">✕</button>
+                        <button class="modal-close" (click)="closeEmergencyContactDialog()"><i class="pi pi-times" aria-hidden="true"></i></button>
                     </div>
 
                     <div class="modal-body">
@@ -588,11 +605,13 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="startEditEmergencyContact(contact)">
-                                            ✏️ Edit
+                                            <i class="pi pi-pencil" aria-hidden="true"></i>
+                                            Edit
                                         </button>
                                         <button class="btn btn-danger"
                                             (click)="deleteEmergencyContact(selectedPatient!, contact)">
-                                            🗑️ Supprimer
+                                            <i class="pi pi-trash" aria-hidden="true"></i>
+                                            Supprimer
                                         </button>
                                     </div>
                                 </div>
@@ -625,11 +644,13 @@
                                     </div>
                                     <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
                                         <button class="btn btn-secondary" (click)="cancelEditEmergencyContact()">
-                                            ✖️ Annuler
+                                            <i class="pi pi-times" aria-hidden="true"></i>
+                                            Annuler
                                         </button>
                                         <button class="btn btn-primary"
                                             (click)="saveEditEmergencyContact(selectedPatient!)">
-                                            💾 Enregistrer
+                                            <i class="pi pi-check" aria-hidden="true"></i>
+                                            Enregistrer
                                         </button>
                                     </div>
                                 </div>
