@@ -1,0 +1,481 @@
+.patient-home {
+  padding: 2rem 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// ── Greeting ──
+.greeting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.greeting-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.25rem;
+}
+
+.greeting-sub {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.go-workspace-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+
+  &:hover { background: #4f46e5; transform: translateY(-1px); }
+  &.small { padding: 0.45rem 1rem; font-size: 0.8rem; margin-top: 0.75rem; }
+}
+
+// ── Cards ──
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.card-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 1rem;
+}
+
+.skeleton-block {
+  height: 120px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 10px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ── Top Grid ──
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+// Score Card
+.score-card {
+  .score-big {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+
+    .score-max {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+  }
+
+  .score-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+  }
+
+  .score-meta {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+
+  .score-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .b-label {
+      font-size: 0.72rem;
+      color: #64748b;
+      width: 80px;
+      flex-shrink: 0;
+      text-transform: capitalize;
+    }
+
+    .b-track {
+      flex: 1;
+      height: 4px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .b-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+    }
+
+    .b-val {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #475569;
+      width: 28px;
+      text-align: right;
+    }
+  }
+
+  .empty-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+    color: #94a3b8;
+
+    i { font-size: 1.75rem; }
+    p { font-size: 0.82rem; margin: 0; }
+  }
+}
+
+// Alerts Card
+.alerts-card {
+  &.has-alerts { border-color: #fee2e2; }
+
+  .no-alerts {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #22c55e;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 0;
+
+    i { font-size: 1.25rem; }
+  }
+
+  .alerts-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .alert-count {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #f59e0b;
+      line-height: 1;
+
+      &.critical { color: #ef4444; }
+    }
+
+    .alert-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      strong { font-size: 0.875rem; color: #1e293b; }
+      span { font-size: 0.75rem; color: #64748b; }
+    }
+  }
+
+  .alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .alert-chip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+
+    &.critical { background: #fee2e2; color: #991b1b; }
+    &.high { background: #ffedd5; color: #c2410c; }
+    &.medium { background: #fef9c3; color: #a16207; }
+    &.low { background: #f0fdf4; color: #166534; }
+
+    i { flex-shrink: 0; margin-top: 1px; }
+  }
+
+  .more-alerts {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    text-align: center;
+    padding-top: 0.25rem;
+  }
+}
+
+// Trends Card
+.trends-card {
+  .no-trends {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+
+    i { font-size: 1.25rem; }
+  }
+
+  .trend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .trend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    i.pi { color: #94a3b8; font-size: 0.9rem; }
+
+    .t-label {
+      flex: 1;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .t-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+
+      &.improving { background: #dcfce7; color: #166534; }
+      &.declining { background: #fee2e2; color: #991b1b; }
+      &.stable { background: #f1f5f9; color: #475569; }
+      &.insufficient_data { background: #f1f5f9; color: #94a3b8; }
+    }
+  }
+}
+
+// ── Section Title ──
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: -0.75rem;
+}
+
+// ── Games Grid ──
+.games-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+    border-color: #c7d2fe;
+    transform: translateY(-1px);
+  }
+
+  .game-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i { font-size: 1.1rem; }
+  }
+
+  .game-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+
+    .game-name { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
+    .game-desc { font-size: 0.78rem; color: #94a3b8; }
+  }
+
+  .game-arrow { color: #cbd5e1; font-size: 0.8rem; }
+}
+
+// ── Bottom Grid ──
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 700px) { grid-template-columns: 1fr; }
+}
+
+// Activity Card
+.activity-card {
+  .no-activity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+
+    i { font-size: 1.25rem; }
+  }
+
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .activity-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .act-icon-wrap {
+      width: 36px;
+      height: 36px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      i { font-size: 0.85rem; color: #6366f1; }
+    }
+
+    .act-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+
+      .act-name { font-size: 0.82rem; font-weight: 600; color: #334155; }
+      .act-date { font-size: 0.72rem; color: #94a3b8; }
+    }
+
+    .act-score {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #475569;
+    }
+  }
+}
+
+// Health Card
+.health-card {
+  .no-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+
+    i { font-size: 1.25rem; }
+  }
+
+  .health-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .health-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+
+    .h-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+    }
+
+    .h-val {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
+
+      &.flag-yes { color: #ef4444; }
+    }
+  }
+}
+
+.view-all-btn {
+  display: inline-block;
+  background: none;
+  border: none;
+  color: #6366f1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  margin-top: 0.5rem;
+
+  &:hover { text-decoration: underline; }
+}

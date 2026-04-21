@@ -93,7 +93,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadComponent: () => import('./shared/components/placeholder/placeholder.component').then(m => m.PlaceholderComponent),
+        loadComponent: () => import('./features/patient-home/patient-home.component').then(m => m.PatientHomeComponent),
         data: { title: 'Dashboard', icon: 'pi-th-large' }
       },
       {

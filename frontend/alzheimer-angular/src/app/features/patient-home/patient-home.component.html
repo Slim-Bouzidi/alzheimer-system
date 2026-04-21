@@ -1,0 +1,200 @@
+<div class="patient-home">
+
+  <!-- Greeting -->
+  <div class="greeting-row">
+    <div>
+      <h1 class="greeting-title">Good day, {{ userName }} 👋</h1>
+      <p class="greeting-sub">Here's your cognitive health overview.</p>
+    </div>
+    <button class="go-workspace-btn" (click)="goToWorkspace()">
+      <i class="pi pi-play-circle"></i> Start a Game
+    </button>
+  </div>
+
+  <!-- Top Row: Score + Alerts + Games -->
+  <div class="top-grid">
+
+    <!-- Cognitive Score Card -->
+    <div class="card score-card">
+      <div class="card-label">Cognitive Health Score</div>
+      <ng-container *ngIf="!loadingReport">
+        <ng-container *ngIf="report?.cognitiveScore && report?.cognitiveScore?.category !== 'INSUFFICIENT_DATA'; else noScore">
+          <div class="score-big" [ngStyle]="{ color: scoreColor }">
+            {{ report!.cognitiveScore.overallScore | number:'1.0-0' }}
+            <span class="score-max">/100</span>
+          </div>
+          <div class="score-badge" [ngStyle]="{ background: scoreColor + '18', color: scoreColor }">
+            {{ scoreCategory }}
+          </div>
+          <div class="score-meta">Based on {{ report!.cognitiveScore.dataPointsUsed }} data points</div>
+          <div class="score-breakdown">
+            <div class="breakdown-row" *ngFor="let entry of report!.cognitiveScore.breakdown | keyvalue">
+              <span class="b-label">{{ entry.key }}</span>
+              <div class="b-track">
+                <div class="b-fill" [ngStyle]="{ width: entry.value + '%', background: scoreColor }"></div>
+              </div>
+              <span class="b-val">{{ entry.value | number:'1.0-0' }}</span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #noScore>
+          <div class="empty-score">
+            <i class="pi pi-info-circle"></i>
+            <p>Complete at least 5 game sessions to unlock your health score.</p>
+            <button class="go-workspace-btn small" (click)="goToWorkspace()">Play Now</button>
+          </div>
+        </ng-template>
+      </ng-container>
+      <div class="skeleton-block" *ngIf="loadingReport"></div>
+    </div>
+
+    <!-- Alerts Summary Card -->
+    <div class="card alerts-card" [class.has-alerts]="alertCount > 0">
+      <div class="card-label">System Alerts</div>
+      <ng-container *ngIf="!loadingReport">
+        <div class="no-alerts" *ngIf="alertCount === 0">
+          <i class="pi pi-check-circle"></i>
+          <span>No active alerts</span>
+        </div>
+        <div class="alerts-summary" *ngIf="alertCount > 0">
+          <div class="alert-count" [class.critical]="hasCriticalAlert">{{ alertCount }}</div>
+          <div class="alert-desc">
+            <strong>{{ hasCriticalAlert ? 'Critical' : 'Active' }} alert{{ alertCount > 1 ? 's' : '' }}</strong>
+            <span>{{ hasCriticalAlert ? 'Immediate attention recommended' : 'Review in your workspace' }}</span>
+          </div>
+        </div>
+        <div class="alert-list" *ngIf="alertCount > 0">
+          <div class="alert-chip" *ngFor="let a of report!.activeAlerts.slice(0, 3)" [ngClass]="a.severity.toLowerCase()">
+            <i class="pi pi-exclamation-triangle"></i>
+            <span>{{ a.message | slice:0:60 }}{{ a.message.length > 60 ? '…' : '' }}</span>
+          </div>
+          <div class="more-alerts" *ngIf="alertCount > 3">+{{ alertCount - 3 }} more in workspace</div>
+        </div>
+      </ng-container>
+      <div class="skeleton-block" *ngIf="loadingReport"></div>
+    </div>
+
+    <!-- Domain Trends Card -->
+    <div class="card trends-card">
+      <div class="card-label">Domain Trends (14-Day)</div>
+      <ng-container *ngIf="!loadingReport">
+        <div class="no-trends" *ngIf="!report?.trends?.length">
+          <i class="pi pi-chart-line"></i>
+          <span>No trend data yet</span>
+        </div>
+        <div class="trend-list" *ngIf="report?.trends?.length">
+          <div class="trend-row" *ngFor="let t of report!.trends">
+            <i class="pi" [ngClass]="getGameIcon(t.gameType)"></i>
+            <span class="t-label">{{ getGameLabel(t.gameType) }}</span>
+            <span class="t-badge" [ngClass]="t.trend.toLowerCase()">
+              <i class="pi" [ngClass]="t.trend === 'IMPROVING' ? 'pi-arrow-up-right' : t.trend === 'DECLINING' ? 'pi-arrow-down-right' : 'pi-minus'"></i>
+              {{ t.trend === 'INSUFFICIENT_DATA' ? 'New' : t.trend }}
+            </span>
+          </div>
+        </div>
+      </ng-container>
+      <div class="skeleton-block" *ngIf="loadingReport"></div>
+    </div>
+  </div>
+
+  <!-- Quick Play -->
+  <div class="section-title">Quick Play</div>
+  <div class="games-grid">
+    <div class="game-card" *ngFor="let g of games" (click)="goToWorkspace()">
+      <div class="game-icon-wrap" [ngStyle]="{ background: g.color + '18' }">
+        <i class="pi" [ngClass]="g.icon" [ngStyle]="{ color: g.color }"></i>
+      </div>
+      <div class="game-info">
+        <span class="game-name">{{ g.label }}</span>
+        <span class="game-desc">{{ g.desc }}</span>
+      </div>
+      <i class="pi pi-chevron-right game-arrow"></i>
+    </div>
+  </div>
+
+  <!-- Bottom Row: Recent Activity + Health Profile -->
+  <div class="bottom-grid">
+
+    <!-- Recent Activity -->
+    <div class="card activity-card">
+      <div class="card-label">Recent Activity</div>
+      <div class="no-activity" *ngIf="!recentActivity.length">
+        <i class="pi pi-history"></i>
+        <span>No games played yet</span>
+      </div>
+      <div class="activity-list" *ngIf="recentActivity.length">
+        <div class="activity-row" *ngFor="let a of recentActivity">
+          <div class="act-icon-wrap">
+            <i class="pi" [ngClass]="getGameIcon(a.gameType)"></i>
+          </div>
+          <div class="act-info">
+            <span class="act-name">{{ getGameLabel(a.gameType) }}</span>
+            <span class="act-date">{{ a.timestamp | date:'MMM d, h:mm a' }}</span>
+          </div>
+          <span class="act-score">{{ a.score }}{{ a.gameType.toLowerCase() === 'reflex' ? 'ms' : '' }}</span>
+        </div>
+      </div>
+      <button class="view-all-btn" (click)="goToWorkspace()">View all activity →</button>
+    </div>
+
+    <!-- Health Profile -->
+    <div class="card health-card">
+      <div class="card-label">Health Profile</div>
+      <ng-container *ngIf="!loadingProfile">
+        <div class="no-profile" *ngIf="!profile">
+          <i class="pi pi-user"></i>
+          <span>No profile data found</span>
+        </div>
+        <div class="health-grid" *ngIf="profile">
+          <div class="health-item" *ngIf="profile.age">
+            <span class="h-label">Age</span>
+            <span class="h-val">{{ profile.age }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.bmi">
+            <span class="h-label">BMI</span>
+            <span class="h-val">{{ profile.bmi | number:'1.1-1' }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.heartRate">
+            <span class="h-label">Heart Rate</span>
+            <span class="h-val">{{ profile.heartRate }} bpm</span>
+          </div>
+          <div class="health-item" *ngIf="profile.bloodSugar">
+            <span class="h-label">Blood Sugar</span>
+            <span class="h-val">{{ profile.bloodSugar }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.systolicBP">
+            <span class="h-label">Blood Pressure</span>
+            <span class="h-val">{{ profile.systolicBP }}/{{ profile.diastolicBP }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.sleepQuality">
+            <span class="h-label">Sleep Quality</span>
+            <span class="h-val">{{ profile.sleepQuality }}/10</span>
+          </div>
+          <div class="health-item" *ngIf="profile.physicalActivity">
+            <span class="h-label">Physical Activity</span>
+            <span class="h-val">{{ profile.physicalActivity }}/10</span>
+          </div>
+          <div class="health-item" *ngIf="profile.dietQuality">
+            <span class="h-label">Diet Quality</span>
+            <span class="h-val">{{ profile.dietQuality }}/10</span>
+          </div>
+          <div class="health-item" *ngIf="profile.diabetes !== undefined">
+            <span class="h-label">Diabetes</span>
+            <span class="h-val" [class.flag-yes]="profile.diabetes">{{ profile.diabetes ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.hypertension !== undefined">
+            <span class="h-label">Hypertension</span>
+            <span class="h-val" [class.flag-yes]="profile.hypertension">{{ profile.hypertension ? 'Yes' : 'No' }}</span>
+          </div>
+          <div class="health-item" *ngIf="profile.familyHistory !== undefined">
+            <span class="h-label">Family History</span>
+            <span class="h-val" [class.flag-yes]="profile.familyHistory">{{ profile.familyHistory ? 'Yes' : 'No' }}</span>
+          </div>
+        </div>
+        <a class="view-all-btn" routerLink="/profile">Edit profile →</a>
+      </ng-container>
+      <div class="skeleton-block" *ngIf="loadingProfile"></div>
+    </div>
+
+  </div>
+</div>
