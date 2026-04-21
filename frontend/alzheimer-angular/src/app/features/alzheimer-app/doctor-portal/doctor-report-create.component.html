@@ -6,7 +6,10 @@
       <h1 class="page-title">{{ 'DOCTOR_REPORT_CREATE.PAGE_TITLE' | translate }}</h1>
       <div class="topbar-actions">
         <button type="button" class="btn-outline" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
-        <button type="button" class="btn btn-logout" (click)="logout()">Déconnexion</button>
+        <button type="button" class="btn btn-logout" (click)="logout()">
+          <span>Logout</span>
+          <i class="pi pi-sign-out icon" aria-hidden="true"></i>
+        </button>
       </div>
     </header>
 

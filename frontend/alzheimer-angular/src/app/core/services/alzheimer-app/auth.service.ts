@@ -62,6 +62,15 @@ export class AuthService {
     }
 
     logout(): void {
-        keycloak.logout({ redirectUri: window.location.origin });
+        console.log('[AuthService] Logout initiated');
+        try {
+            keycloak.logout({ redirectUri: window.location.origin });
+        } catch (error) {
+            console.error('[AuthService] Logout error:', error);
+            // Fallback: clear local storage and redirect
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = window.location.origin;
+        }
     }
 }

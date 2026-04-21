@@ -8,6 +8,7 @@ import { PatientService, Patient } from '../../../core/services/alzheimer-app/pa
 import { RapportSuiviService } from '../../../core/services/alzheimer-app/rapport-suivi.service';
 import { RapportSuiviStructure } from '../../../core/models/alzheimer-app/rapport-suivi-structure.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../core/services/alzheimer-app/auth.service';
 
 @Component({
     selector: 'app-doctor-reports',
@@ -36,7 +37,8 @@ export class DoctorReportsComponent implements OnInit {
         private rapportService: RapportService,
         private patientService: PatientService,
         private rapportSuiviService: RapportSuiviService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -156,7 +158,7 @@ export class DoctorReportsComponent implements OnInit {
     }
 
     logout(): void {
-        this.router.navigate(['/test']);
+        this.authService.logout();
     }
 
     downloadReport(id: number): void {

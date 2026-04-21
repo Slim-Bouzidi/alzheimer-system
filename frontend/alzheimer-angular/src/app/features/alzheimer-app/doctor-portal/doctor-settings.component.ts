@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SidebarComponent } from '../../../shared/sidebar-portal/sidebar.component';
+import { AuthService } from '../../../core/services/alzheimer-app/auth.service';
 
 @Component({
     selector: 'app-doctor-settings',
@@ -13,7 +14,7 @@ import { SidebarComponent } from '../../../shared/sidebar-portal/sidebar.compone
 })
 export class DoctorSettingsComponent {
 
-    constructor(private router: Router, private translate: TranslateService) {
+    constructor(private router: Router, private translate: TranslateService, private authService: AuthService) {
         this.userInfo.specialization = this.translate.instant('DOCTOR.SPECIALIZATION_GERIATRICS');
         this.securitySettings.lastPasswordChange = this.translate.instant('DOCTOR.LAST_PASSWORD_CHANGE_3_MONTHS');
     }
@@ -40,6 +41,6 @@ export class DoctorSettingsComponent {
     };
 
     logout(): void {
-        this.router.navigate(['/test']);
+        this.authService.logout();
     }
 }

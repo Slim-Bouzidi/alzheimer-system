@@ -7,6 +7,7 @@ import { RendezVousService, RendezVous } from '../../../core/services/alzheimer-
 import { PatientService, Patient } from '../../../core/services/alzheimer-app/patient.service';
 import { SidebarComponent } from '../../../shared/sidebar-portal/sidebar.component';
 import { TranslateFallbackPipe } from '../shared/pipes/translate-fallback.pipe';
+import { AuthService } from '../../../core/services/alzheimer-app/auth.service';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr, 'fr-FR');
@@ -114,7 +115,8 @@ export class DoctorAppointmentsComponent implements OnInit {
     constructor(
         private router: Router,
         private rendezVousService: RendezVousService,
-        private patientService: PatientService
+        private patientService: PatientService,
+        private authService: AuthService
     ) { }
 
     private readonly translate = {
@@ -414,7 +416,7 @@ export class DoctorAppointmentsComponent implements OnInit {
     }
 
     logout(): void {
-        this.router.navigate(['/test']);
+        this.authService.logout();
     }
 
     selectDate(day: any): void {

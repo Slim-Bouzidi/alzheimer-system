@@ -10,6 +10,7 @@ import { EmergencyContactService } from '../../../core/services/alzheimer-app/em
 import { MedicalRecordService } from '../../../core/services/alzheimer-app/medical-record.service';
 import { TreatmentService } from '../../../core/services/alzheimer-app/treatment.service';
 import { TranslateFallbackPipe } from '../shared/pipes/translate-fallback.pipe';
+import { AuthService } from '../../../core/services/alzheimer-app/auth.service';
 import { catchError, of, switchMap } from 'rxjs';
 
 @Component({
@@ -93,7 +94,8 @@ export class DoctorPatientsComponent implements OnInit {
         private userService: UserService,
         private emergencyContactService: EmergencyContactService,
         private medicalRecordService: MedicalRecordService,
-        private treatmentService: TreatmentService
+        private treatmentService: TreatmentService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -412,7 +414,7 @@ export class DoctorPatientsComponent implements OnInit {
     }
 
     logout(): void {
-        this.router.navigate(['/test']);
+        this.authService.logout();
     }
 
     exportTreatmentsPdf(patient: Patient): void {
