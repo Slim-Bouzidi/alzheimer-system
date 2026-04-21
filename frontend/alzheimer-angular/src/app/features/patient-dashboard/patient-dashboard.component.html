@@ -87,22 +87,22 @@
                 <div class="trend-item" *ngFor="let trend of cognitiveReport?.trends || []">
                   <div class="trend-left">
                     <i class="pi" [ngClass]="{
-                      'pi-bolt': trend.gameType === 'reflex',
-                      'pi-table': trend.gameType === 'memory',
-                      'pi-book': trend.gameType === 'verbal'
+                      'pi-bolt': trend.gameType === 'REFLEX',
+                      'pi-table': trend.gameType === 'MEMORY',
+                      'pi-book': trend.gameType === 'VERBAL'
                     }"></i>
-                    <span class="trend-game">{{ trend.gameType === 'reflex' ? 'Reflex' : (trend.gameType === 'memory' ? 'Memory' : 'Verbal') }}</span>
+                    <span class="trend-game">{{ trend.gameType === 'REFLEX' ? 'Reflex' : (trend.gameType === 'MEMORY' ? 'Memory' : 'Verbal') }}</span>
                   </div>
                   <div class="trend-indicator" [ngClass]="trend.trend">
                     <i class="pi"
                       [ngClass]="trend.trend === 'IMPROVING' ? 'pi-arrow-up-right' : (trend.trend === 'DECLINING' ? 'pi-arrow-down-right' : 'pi-minus')"></i>
                     <span>{{ trend.trend === 'INSUFFICIENT_DATA' ? 'New' : trend.trend }}</span>
                   </div>
-                  <div class="trend-change" *ngIf="trend.changePercent" [ngClass]="{
-                    'positive': trend.changePercent > 0,
-                    'negative': trend.changePercent < 0
+                  <div class="trend-change" *ngIf="trend.percentageChange" [ngClass]="{
+                    'positive': trend.percentageChange > 0,
+                    'negative': trend.percentageChange < 0
                   }">
-                    {{ trend.changePercent > 0 ? '+' : '' }}{{ trend.changePercent | number:'1.1-1' }}%
+                    {{ trend.percentageChange > 0 ? '+' : '' }}{{ trend.percentageChange | number:'1.1-1' }}%
                   </div>
                 </div>
               </div>
@@ -262,9 +262,8 @@
             <ng-template pTemplate="body" let-activity>
               <tr>
                 <td>
-                  <span class="test-label-flat" [ngClass]="activity.gameType">
-                    {{ activity.gameType === 'reflex' ? 'Reaction Time' : (activity.gameType === 'memory' ? 'Sequence
-                    Memory' : 'Verbal Memory') }}
+                  <span class="test-label-flat" [ngClass]="activity.gameType.toLowerCase()">
+                    {{ activity.gameType.toLowerCase() === 'reflex' ? 'Reaction Time' : (activity.gameType.toLowerCase() === 'memory' ? 'Sequence Memory' : 'Verbal Memory') }}
                   </span>
                 </td>
                 <td class="score-cell-modern">{{ activity.score }}{{ activity.gameType === 'reflex' ? 'ms' : '' }}</td>

@@ -100,9 +100,12 @@ public class CognitiveAnalysisService {
         CognitiveScoreResponse score = scoringEngine.getLatestScore(patientId)
                 .orElse(null);
 
-        List<TrendAnalysisResponse> trends = trendRepository.findByPatientIdOrderByAnalyzedAtDesc(patientId)
-                .stream()
-                .map(this::mapTrendToResponse)
+        // Fetch only the latest trend per game type the patient has actually played
+        List<String> playedGameTypes = activityRepository.findDistinctGameTypesByPatientId(patientId);
+        List<TrendAnalysisResponse> trends = playedGameTypes.stream()
+                .map(gameType -> trendRepository.findTopByPatientIdAndGameTypeOrderByAnalyzedAtDesc(patientId, gameType))
+                .filter(java.util.Optional::isPresent)
+                .map(opt -> mapTrendToResponse(opt.get()))
                 .toList();
 
         List<DeclineAlertResponse> activeAlerts = alertService.getActiveAlerts(patientId);

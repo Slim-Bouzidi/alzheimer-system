@@ -49,7 +49,7 @@ public class CognitiveActivityService {
 
         CognitiveActivity activity = CognitiveActivity.builder()
                 .patientId(request.getPatientId())
-                .gameType(request.getGameType())
+                .gameType(request.getGameType().toUpperCase())
                 .score(request.getScore())
                 .durationMs(request.getDurationMs())
                 .timestamp(LocalDateTime.now())
@@ -71,7 +71,7 @@ public class CognitiveActivityService {
         try {
             if (trendService != null && alertService != null) {
                 TrendAnalysisResponse trend = trendService.analyzeAndSave(
-                        request.getPatientId(), request.getGameType(), 14);
+                        request.getPatientId(), request.getGameType().toUpperCase(), 14);
                 alertService.evaluateAndAlert(trend);
                 log.info("Post-save analysis complete for patient {} / {}: {}",
                         request.getPatientId(), request.getGameType(), trend.getTrend());

@@ -534,6 +534,8 @@ export class PatientDashboardComponent implements OnInit, OnDestroy {
         this.isSaving = false;
         // Exit game and restore scroll after successful save
         this.exitGame();
+        // Refresh trends and report after each save
+        this.runFullAnalysis();
       },
       error: (err) => {
         this.isSaving = false;
@@ -545,21 +547,22 @@ export class PatientDashboardComponent implements OnInit, OnDestroy {
   }
 
   getPercentile(score: number, type: string): string {
-    if (type === 'reflex') {
+    const t = type.toLowerCase();
+    if (t === 'reflex') {
       if (score < 150) return '99.2%';
       if (score < 180) return '85.4%';
       if (score < 210) return '60.1%';
       if (score < 230) return '45.8%';
       if (score < 260) return '30.2%';
       return '12.5%';
-    } else if (type === 'memory') {
+    } else if (t === 'memory') {
       if (score > 15) return '98.5%';
       if (score > 12) return '88.2%';
       if (score > 9) return '72.4%';
       if (score > 7) return '55.1%';
       if (score > 4) return '30.8%';
       return '15.4%';
-    } else if (type === 'verbal') {
+    } else if (t === 'verbal') {
       if (score > 80) return '99.5%';
       if (score > 60) return '92.1%';
       if (score > 40) return '75.4%';

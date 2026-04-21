@@ -31,7 +31,8 @@ public class TrendAnalysisService {
      * Analyze trends for all game types for a patient.
      */
     public List<TrendAnalysisResponse> analyzeAll(String patientId, int periodDays) {
-        List<String> gameTypes = List.of("MEMORY", "REFLEX", "VERBAL", "ATTENTION");
+        // Only analyze game types the patient has actually played
+        List<String> gameTypes = activityRepository.findDistinctGameTypesByPatientId(patientId);
         List<TrendAnalysisResponse> results = new ArrayList<>();
 
         for (String gameType : gameTypes) {
@@ -72,18 +73,21 @@ public class TrendAnalysisService {
         // Calculate percentage change
         double percentageChange = calculatePercentageChange(activities, slope, periodDays);
 
-        // Save to database
-        TrendAnalysis entity = TrendAnalysis.builder()
-                .patientId(patientId)
-                .gameType(gameType)
-                .slope(slope)
-                .confidence(rSquared)
-                .trend(trend)
-                .percentageChange(percentageChange)
-                .dataPointsUsed(activities.size())
-                .periodDays(periodDays)
-                .analyzedAt(LocalDateTime.now())
-                .build();
+        // Upsert: reuse existing row for this patient+gameType to avoid duplicates
+        TrendAnalysis entity = trendRepository
+                .findTopByPatientIdAndGameTypeOrderByAnalyzedAtDesc(patientId, gameType)
+                .orElseGet(() -> TrendAnalysis.builder()
+                        .patientId(patientId)
+                        .gameType(gameType)
+                        .build());
+
+        entity.setSlope(slope);
+        entity.setConfidence(rSquared);
+        entity.setTrend(trend);
+        entity.setPercentageChange(percentageChange);
+        entity.setDataPointsUsed(activities.size());
+        entity.setPeriodDays(periodDays);
+        entity.setAnalyzedAt(LocalDateTime.now());
 
         TrendAnalysis saved = trendRepository.save(entity);
         log.info("Trend analysis saved: {} / {} = {} (slope: {}, confidence: {})",

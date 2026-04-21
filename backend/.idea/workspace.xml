@@ -4,26 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="">
+    <list default="true" id="7747b8de-47fb-45e6-951a-09893928722e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/RabbitMQConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveActivityService.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveActivityService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/cognitive.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/cognitive.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveAnalysisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveAnalysisService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/TrendAnalysisService.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/TrendAnalysisService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,30 +24,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 4,
-  &quot;fromUser&quot;: false
-}</component>
-  <component name="ProjectId" id="3COwqYwPJdDG0N3HdexgdLDeQXN" />
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="3CfhDDb3HFAiRgLJkjG2DAuxX3s" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "JUnit.CognitiveActivityControllerTest.executor": "Run",
-    "JUnit.CognitiveActivityServiceTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -65,20 +47,16 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.AlzheimerAppApplication.executor": "Run",
-    "Spring Boot.ApiGatewayApplication (1).executor": "Run",
     "Spring Boot.ApiGatewayApplication.executor": "Run",
     "Spring Boot.CognitiveServiceApplication.executor": "Run",
-    "Spring Boot.DiscoveryServerApplication (1).executor": "Run",
     "Spring Boot.DiscoveryServerApplication.executor": "Run",
     "Spring Boot.PatientServiceApplication.executor": "Run",
     "Spring Boot.UserServiceApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sliim/Desktop/alzheimer-system/backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,12 +67,6 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\sliim\Desktop\alzheimer-system\backend\cognitive-service\src\main" />
-      <recent name="C:\Users\sliim\Desktop\alzheimer-system\backend\discovery-server\src\main" />
-    </key>
-  </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -109,49 +81,15 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="AlzheimerAppApplication" value="FAILED" />
-              <entry key="ApiGatewayApplication" value="STOPPED" />
+              <entry key="AlzheimerAppApplication" value="STOPPED" />
               <entry key="CognitiveServiceApplication" value="STOPPED" />
-              <entry key="DiscoveryServerApplication" value="FAILED" />
-              <entry key="PatientServiceApplication" value="FAILED" />
-              <entry key="UserServiceApplication" value="FAILED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.CognitiveActivityServiceTest">
-    <configuration name="CognitiveActivityControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cognitive-service (1)" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.alzheimer.cognitiveservice.controller.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.alzheimer.cognitiveservice.controller" />
-      <option name="MAIN_CLASS_NAME" value="com.alzheimer.cognitiveservice.controller.CognitiveActivityControllerTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="CognitiveActivityServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cognitive-service (1)" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.alzheimer.cognitiveservice.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.alzheimer.cognitiveservice.service" />
-      <option name="MAIN_CLASS_NAME" value="com.alzheimer.cognitiveservice.service.CognitiveActivityServiceTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Spring Boot.AlzheimerAppApplication">
     <configuration name="AlzheimerAppApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="AlzheimerApp" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.alzheimerapp.AlzheimerAppApplication" />
@@ -159,28 +97,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="api-gateway (1)" />
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.apigateway.ApiGatewayApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.alzheimer.apigateway.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CognitiveServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="cognitive-service (1)" />
+    <configuration name="CognitiveServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="cognitive-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.cognitiveservice.CognitiveServiceApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.alzheimer.cognitiveservice.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DiscoveryServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="discovery-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.discovery.DiscoveryServerApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -192,72 +125,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="user-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.userservice.UserServiceApplication" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.alzheimer.userservice.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="JUnit.CognitiveActivityControllerTest" />
-      <item itemvalue="JUnit.CognitiveActivityServiceTest" />
-      <item itemvalue="Spring Boot.AlzheimerAppApplication" />
-      <item itemvalue="Spring Boot.PatientServiceApplication" />
-      <item itemvalue="Spring Boot.ApiGatewayApplication" />
-      <item itemvalue="Spring Boot.UserServiceApplication" />
-      <item itemvalue="Spring Boot.CognitiveServiceApplication" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.CognitiveServiceApplication" />
-        <item itemvalue="Spring Boot.ApiGatewayApplication" />
-        <item itemvalue="Spring Boot.UserServiceApplication" />
-        <item itemvalue="JUnit.CognitiveActivityServiceTest" />
-        <item itemvalue="JUnit.CognitiveActivityControllerTest" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="" />
-      <created>1776270116269</created>
+      <changelist id="7747b8de-47fb-45e6-951a-09893928722e" name="Changes" comment="" />
+      <created>1776782412129</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1776270116269</updated>
-      <workItem from="1776270117662" duration="178000" />
-      <workItem from="1776272778224" duration="4454000" />
-      <workItem from="1776288263735" duration="4907000" />
-      <workItem from="1776295193072" duration="13768000" />
-      <workItem from="1776708231907" duration="8811000" />
+      <updated>1776782412129</updated>
+      <workItem from="1776782418577" duration="2314000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="UnknownFeatures">
-    <option featureType="dependencySupport" implementationName="java:org.springframework.security:spring-security-core" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
-    <option featureType="dependencySupport" implementationName="java:org.jboss.resteasy:resteasy-core" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
-    <option featureType="dependencySupport" implementationName="java:io.projectreactor:reactor-core" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
-    <option featureType="dependencySupport" implementationName="executable:kubectl" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.cloud:spring-cloud-context" />
-    <option featureType="dependencySupport" implementationName="java:org.hibernate.validator:hibernate-validator" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
-    <option featureType="dependencySupport" implementationName="java:org.projectlombok:lombok" />
-    <option featureType="dependencySupport" implementationName="executable:docker" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.persistence:jakarta.persistence-api" />
-    <option featureType="dependencySupport" implementationName="java:jakarta.ws.rs:jakarta.ws.rs-api" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
-    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
   </component>
 </project>

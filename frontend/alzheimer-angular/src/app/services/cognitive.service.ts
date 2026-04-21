@@ -35,7 +35,7 @@ export interface TrendAnalysisResponse {
     trend: string;           // IMPROVING | STABLE | DECLINING | INSUFFICIENT_DATA
     slope: number;
     rSquared: number;
-    changePercent: number;
+    percentageChange: number;
     dataPoints: number;
     periodDays: number;
     analyzedAt: string;
