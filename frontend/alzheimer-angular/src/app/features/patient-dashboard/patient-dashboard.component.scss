@@ -474,7 +474,8 @@
         top: 2rem;
         display: flex;
         flex-direction: column;
-        height: fit-content;
+        max-height: calc(100vh - 4rem);
+        overflow: hidden;
       }
 
       .alerts-panel {
