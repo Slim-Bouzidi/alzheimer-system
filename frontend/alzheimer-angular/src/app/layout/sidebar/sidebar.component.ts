@@ -2,7 +2,6 @@ import { Component, EventEmitter, HostBinding, Output, signal, computed } from '
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import keycloak from '../../keycloak';
-import { TooltipModule } from 'primeng/tooltip';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
@@ -19,7 +18,7 @@ interface NavItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TooltipModule, AvatarModule, MenuModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, AvatarModule, MenuModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })

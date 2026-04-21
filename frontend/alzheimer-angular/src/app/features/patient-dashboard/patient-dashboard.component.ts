@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -9,7 +9,7 @@ import { TableModule } from 'primeng/table';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChartModule } from 'primeng/chart';
 import keycloak from '../../keycloak';
-import { CognitiveService, ActivityResponse } from '../../services/cognitive.service';
+import { CognitiveService, ActivityResponse, PatientCognitiveReport } from '../../services/cognitive.service';
 
 @Component({
   selector: 'app-patient-dashboard',
@@ -19,13 +19,20 @@ import { CognitiveService, ActivityResponse } from '../../services/cognitive.ser
   templateUrl: './patient-dashboard.component.html',
   styleUrls: ['./patient-dashboard.component.scss']
 })
-export class PatientDashboardComponent implements OnInit {
+export class PatientDashboardComponent implements OnInit, OnDestroy {
   
   // App States
   activeGame: 'reflex' | 'memory' | 'verbal' | 'none' = 'none';
+  lastActiveGame: 'reflex' | 'memory' | 'verbal' | 'none' = 'none';
   showResultScreen: boolean = false;
   isSaving: boolean = false;
+  isExiting: boolean = false; // Flag to prevent game logic during exit
   history: ActivityResponse[] = [];
+  cognitiveReport: PatientCognitiveReport | null = null;
+  isAnalyzing: boolean = false;
+  showAllAlerts: boolean = false; // Toggle for alerts list
+  showAllTrends: boolean = false; // Toggle for trends list
+  private scrollPositionBeforeGame: number = 0; // Store scroll position before game starts
   
   // Multi-Chart State
   activeChart: 'reflex' | 'memory' | 'verbal' = 'reflex';
@@ -66,6 +73,127 @@ export class PatientDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHistory();
+    this.loadCognitiveReport();
+  }
+
+  ngOnDestroy(): void {
+    // Cleanup: ensure scroll lock is removed when component is destroyed
+    clearTimeout(this.reflexTimeout);
+    document.body.classList.remove('game-active');
+    document.body.style.overflow = 'auto';
+    document.body.style.position = 'static';
+    document.body.style.width = 'auto';
+    document.body.style.top = '';
+  }
+
+  loadCognitiveReport() {
+    const patientId = keycloak.subject;
+    if (patientId) {
+      this.cognitiveService.getReport(patientId).subscribe({
+        next: (report) => {
+          this.cognitiveReport = report;
+          console.log('Cognitive report loaded:', report);
+        },
+        error: (err) => console.error('Failed to load cognitive report', err)
+      });
+    }
+  }
+
+  runFullAnalysis() {
+    const patientId = keycloak.subject;
+    if (patientId && !this.isAnalyzing) {
+      this.isAnalyzing = true;
+      this.cognitiveService.runAnalysis(patientId).subscribe({
+        next: (report) => {
+          this.cognitiveReport = report;
+          this.isAnalyzing = false;
+          this.messageService.add({
+            severity: 'success', 
+            summary: 'Analysis Complete', 
+            detail: 'Your cognitive health assessment has been updated.' 
+          });
+        },
+        error: (err) => {
+          this.isAnalyzing = false;
+          this.messageService.add({
+            severity: 'error', 
+            summary: 'Analysis Failed', 
+            detail: 'Could not complete the cognitive assessment.' 
+          });
+        }
+      });
+    }
+  }
+
+  resetAnalysis() {
+    const patientId = keycloak.subject;
+    if (patientId) {
+      this.cognitiveService.resetAnalysis(patientId).subscribe({
+        next: () => {
+          this.cognitiveReport = null;
+          this.loadCognitiveReport(); // This will load the 'Empty' state
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Analysis Reset',
+            detail: 'Cognitive scores, trends, and alerts have been cleared. Your game history is preserved.'
+          });
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Reset Failed',
+            detail: 'Could not clear the assessment data.'
+          });
+        }
+      });
+    }
+  }
+
+  acknowledgeAlert(alertId: number) {
+    this.cognitiveService.acknowledgeAlert(alertId).subscribe({
+      next: () => {
+        if (this.cognitiveReport) {
+          this.cognitiveReport.activeAlerts = this.cognitiveReport.activeAlerts.filter(a => a.id !== alertId);
+        }
+        this.messageService.add({ severity: 'success', summary: 'Dismissed', detail: 'Alert removed' });
+      }
+    });
+  }
+
+  dismissAllAlerts() {
+    const alerts = this.cognitiveReport?.activeAlerts || [];
+    alerts.forEach(alert => {
+        this.cognitiveService.acknowledgeAlert(alert.id).subscribe();
+    });
+    if (this.cognitiveReport) {
+        this.cognitiveReport.activeAlerts = [];
+    }
+    this.messageService.add({ severity: 'info', summary: 'Clear', detail: 'All alerts dismissed' });
+  }
+
+  toggleAlerts() {
+    this.showAllAlerts = !this.showAllAlerts;
+  }
+
+  toggleTrends() {
+    this.showAllTrends = !this.showAllTrends;
+  }
+
+  getAlertBadgeClass(): string {
+    const alerts = this.cognitiveReport?.activeAlerts || [];
+    if (alerts.some(a => a.severity === 'CRITICAL')) return 'badge-critical';
+    if (alerts.some(a => a.severity === 'HIGH')) return 'badge-high';
+    if (alerts.some(a => a.severity === 'MEDIUM')) return 'badge-medium';
+    return '';
+  }
+
+  getAlertCountLabel(): string {
+    const alerts = this.cognitiveReport?.activeAlerts || [];
+    const count = alerts.length;
+    if (count === 0) return '';
+    const hasCritical = alerts.some(a => a.severity === 'CRITICAL');
+    const pl = count !== 1 ? 's' : '';
+    return `${count} ${hasCritical ? 'Critical ' : ''}Alert${pl}`;
   }
 
   loadHistory() {
@@ -95,6 +223,14 @@ export class PatientDashboardComponent implements OnInit {
     this.initReflexChart();
     this.initMemoryChart();
     this.initVerbalChart();
+  }
+
+  // ── UI Helpers ──
+
+  getGaugeOffset(score: number | undefined): number {
+    if (score === undefined) return 440;
+    const circumference = 440; // 2 * pi * 70
+    return circumference - (score / 100 * circumference);
   }
 
   initReflexChart() {
@@ -204,10 +340,21 @@ export class PatientDashboardComponent implements OnInit {
 
   // --- Reflex Game Logic ---
   startReflexGame() {
+    // Save scroll position before starting game
+    this.scrollPositionBeforeGame = window.scrollY;
+    
     this.activeGame = 'reflex';
+    this.lastActiveGame = 'reflex';
     this.showResultScreen = false;
     this.isSaving = false;
     this.reflexAttempts = [];
+    
+    // Prevent body scroll using CSS class
+    document.body.classList.add('game-active');
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    
     this.nextReflexRound();
   }
 
@@ -221,7 +368,10 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   handleReflexClick() {
-    if (this.showResultScreen || this.isSaving) return;
+    // Don't process clicks if showing results, saving, exiting, or if activeGame is being reset
+    if (this.showResultScreen || this.isSaving || this.isExiting || this.activeGame !== 'reflex') {
+      return;
+    }
 
     if (this.reflexState === 'waiting') {
       clearTimeout(this.reflexTimeout);
@@ -247,11 +397,22 @@ export class PatientDashboardComponent implements OnInit {
 
   // --- Memory Game Logic ---
   startMemoryGame() {
+    // Save scroll position before starting game
+    this.scrollPositionBeforeGame = window.scrollY;
+    
     this.activeGame = 'memory';
+    this.lastActiveGame = 'memory';
     this.showResultScreen = false;
     this.isSaving = false;
     this.memoryLevel = 1;
     this.memorySequence = [];
+    
+    // Prevent body scroll using CSS class
+    document.body.classList.add('game-active');
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    
     this.nextMemoryLevel();
   }
 
@@ -295,12 +456,23 @@ export class PatientDashboardComponent implements OnInit {
 
   // --- Verbal Memory Logic ---
   startVerbalGame() {
+    // Save scroll position before starting game
+    this.scrollPositionBeforeGame = window.scrollY;
+    
     this.activeGame = 'verbal';
+    this.lastActiveGame = 'verbal';
     this.showResultScreen = false;
     this.isSaving = false;
     this.verbalScore = 0;
     this.lives = 3;
     this.seenWords.clear();
+    
+    // Prevent body scroll using CSS class
+    document.body.classList.add('game-active');
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    
     this.nextVerbalWord();
   }
 
@@ -359,12 +531,15 @@ export class PatientDashboardComponent implements OnInit {
       next: (res) => {
         this.messageService.add({severity:'success', summary:'Saved!', detail: 'Your score has been stored.'});
         this.loadHistory();
-        this.exitGame();
         this.isSaving = false;
+        // Exit game and restore scroll after successful save
+        this.exitGame();
       },
       error: (err) => {
         this.isSaving = false;
         this.messageService.add({severity:'error', summary:'Error', detail: 'Could not save score.'});
+        // Still exit the game even on error to restore scroll
+        this.exitGame();
       }
     });
   }
@@ -418,15 +593,58 @@ export class PatientDashboardComponent implements OnInit {
   }
 
   tryAgain() {
-    if (this.activeGame === 'reflex') this.startReflexGame();
-    else if (this.activeGame === 'memory') this.startMemoryGame();
-    else if (this.activeGame === 'verbal') this.startVerbalGame();
+    // Store which game to restart
+    const gameToRestart = this.lastActiveGame;
+    
+    // First exit to clean up and restore scroll
+    this.exitGame();
+    
+    // Then restart the game after a brief delay
+    setTimeout(() => {
+      if (gameToRestart === 'reflex') this.startReflexGame();
+      else if (gameToRestart === 'memory') this.startMemoryGame();
+      else if (gameToRestart === 'verbal') this.startVerbalGame();
+    }, 50);
   }
 
   exitGame() {
+    // Set exiting flag to prevent any game logic from running
+    this.isExiting = true;
+    
+    // Clear any pending timeouts first
+    clearTimeout(this.reflexTimeout);
+    
+    // Reset all game states IMMEDIATELY
     this.activeGame = 'none';
     this.showResultScreen = false;
     this.isSaving = false;
-    clearTimeout(this.reflexTimeout);
+    
+    // Reset reflex game state
+    this.reflexState = 'waiting';
+    this.reflexAttempts = [];
+    
+    // CRITICAL: Restore scrolling by removing ALL scroll-lock styles
+    // Use requestAnimationFrame to ensure DOM updates are processed
+    requestAnimationFrame(() => {
+      // Remove the game-active class
+      document.body.classList.remove('game-active');
+      
+      // Explicitly remove all inline styles that lock scrolling
+      document.body.style.overflow = 'auto';
+      document.body.style.position = 'static';
+      document.body.style.width = 'auto';
+      document.body.style.top = '';
+      
+      // Force a reflow to ensure styles are applied
+      void document.body.offsetHeight;
+      
+      // Restore scroll position to where user was before game started
+      window.scrollTo({ top: this.scrollPositionBeforeGame, behavior: 'auto' });
+    });
+    
+    // Reset exiting flag after a short delay
+    setTimeout(() => {
+      this.isExiting = false;
+    }, 100);
   }
 }

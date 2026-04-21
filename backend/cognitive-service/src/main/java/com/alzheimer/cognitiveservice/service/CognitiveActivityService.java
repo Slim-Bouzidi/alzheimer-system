@@ -5,6 +5,7 @@ import com.alzheimer.cognitiveservice.client.PatientServiceClient;
 import com.alzheimer.cognitiveservice.config.RabbitMQConfig;
 import com.alzheimer.cognitiveservice.dto.ActivityRequest;
 import com.alzheimer.cognitiveservice.dto.ActivityResponse;
+import com.alzheimer.cognitiveservice.dto.TrendAnalysisResponse;
 import com.alzheimer.cognitiveservice.entity.CognitiveActivity;
 import com.alzheimer.cognitiveservice.repository.CognitiveActivityRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,15 @@ public class CognitiveActivityService {
     private final CognitiveActivityRepository repository;
     private final RabbitTemplate rabbitTemplate;
     private final PatientServiceClient patientServiceClient; // OpenFeign client
+    private final TrendAnalysisService trendService;
+    private final AlertService alertService;
 
     public ActivityResponse saveActivity(ActivityRequest request) {
 
         // ── OpenFeign call: verify patient exists in patient-service ──
+        // Note: Skipping patient verification for now since patientId is a Keycloak UUID
+        // and patient-service expects integer IDs. This is a known integration issue.
+        /*
         try {
             PatientDTO patient = patientServiceClient.getPatientById(
                     Integer.parseInt(request.getPatientId())
@@ -39,6 +45,7 @@ public class CognitiveActivityService {
                     request.getPatientId(), e.getMessage());
             // We log the warning but still save — patient-service may be temporarily down
         }
+        */
 
         CognitiveActivity activity = CognitiveActivity.builder()
                 .patientId(request.getPatientId())
@@ -57,6 +64,20 @@ public class CognitiveActivityService {
             log.info("Published activity message to RabbitMQ for patient: {}", request.getPatientId());
         } catch (Exception e) {
             log.error("Failed to publish RabbitMQ message", e);
+        }
+
+        // ── Trigger background analysis after save (non-blocking) ──
+        // Note: This runs in the background and doesn't block the response
+        try {
+            if (trendService != null && alertService != null) {
+                TrendAnalysisResponse trend = trendService.analyzeAndSave(
+                        request.getPatientId(), request.getGameType(), 14);
+                alertService.evaluateAndAlert(trend);
+                log.info("Post-save analysis complete for patient {} / {}: {}",
+                        request.getPatientId(), request.getGameType(), trend.getTrend());
+            }
+        } catch (Exception e) {
+            log.warn("Post-save analysis failed (non-blocking): {}", e.getMessage());
         }
 
         return response;

@@ -1,140 +1,296 @@
 <div class="patient-dashboard">
   <div class="anim-reveal">
 
-  <p-toast />
+    <p-toast />
 
-  <!-- Premium Header -->
-  <header class="dashboard-header animate-fade-down" *ngIf="activeGame === 'none'">
-    <div class="header-content">
-      <div class="brand-bar">
-         <i class="pi pi-bolt icon-brand"></i>
-         <span class="brand-text">COGNITIVE BENCHMARK</span>
+    <!-- Premium Header -->
+    <header class="dashboard-header animate-fade-down" *ngIf="activeGame === 'none'">
+      <div class="header-content">
+        <div class="brand-bar">
+          <i class="pi pi-bolt icon-brand"></i>
+          <span class="brand-text">COGNITIVE BENCHMARK</span>
+        </div>
+        <h1>Test and improve your cognitive skills.</h1>
       </div>
-      <h1>Test and improve your cognitive skills.</h1>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main Grid: Premium Game Selection -->
-  <div class="dashboard-content" *ngIf="activeGame === 'none'">
-    <div class="game-grid-premium">
-      <div class="game-selector-card" (click)="startReflexGame()">
-        <div class="card-body">
+    <!-- Advanced Cognitive Analysis Report (The "Non-CRUD" Feature) -->
+    <div class="analysis-report-container animate-fade-in" *ngIf="activeGame === 'none'">
+      <div class="report-header-row">
+        <div class="report-title">
+          <i class="pi pi-shield"></i>
+          <span>Cognitive Health Assessment</span>
+        </div>
+        <div class="header-actions">
+          <button class="delete-report-btn" (click)="resetAnalysis()" title="Delete Report"
+            *ngIf="cognitiveReport && cognitiveReport.cognitiveScore && cognitiveReport.cognitiveScore.category !== 'INSUFFICIENT_DATA'">
+            <i class="pi pi-trash"></i>
+          </button>
+          <button class="run-analysis-btn-prominent" (click)="runFullAnalysis()" [disabled]="isAnalyzing"
+            title="Run a new cognitive health analysis based on your recent game sessions">
+            <i class="pi" [ngClass]="isAnalyzing ? 'pi-spin pi-spinner' : 'pi-refresh'"></i>
+            {{ isAnalyzing ? 'Analyzing...' : 'Run New Analysis' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- No data state -->
+      <div class="empty-report-card"
+        *ngIf="!cognitiveReport || !cognitiveReport.cognitiveScore || cognitiveReport.cognitiveScore.category === 'INSUFFICIENT_DATA'">
+        <div class="empty-content">
+          <i class="pi pi-info-circle"></i>
+          <p>Complete at least 5 sessions to unlock your weighted cognitive health assessment and trend detection.</p>
+        </div>
+      </div>
+
+      <!-- Active Report — 2-Column Layout -->
+      <div class="active-report-grid-v2"
+        *ngIf="cognitiveReport && cognitiveReport.cognitiveScore && cognitiveReport.cognitiveScore.category !== 'INSUFFICIENT_DATA'">
+
+        <!-- LEFT COLUMN: Score + Trends stacked -->
+        <div class="left-column">
+          <!-- Score Card -->
+          <div class="report-card health-score-card">
+            <div class="card-label">Overall Health Score</div>
+            <div class="score-display">
+              <span class="score-val">{{ cognitiveReport.cognitiveScore.overallScore | number:'1.0-0' }}</span>
+              <span class="score-max">/100</span>
+            </div>
+            <div class="category-badge" [ngClass]="cognitiveReport.cognitiveScore.category">
+              {{ cognitiveReport.cognitiveScore.category.replace('_', ' ') }}
+            </div>
+            <div class="score-breakdown" *ngIf="cognitiveReport.cognitiveScore.breakdown">
+              <div class="breakdown-item" *ngFor="let entry of cognitiveReport.cognitiveScore.breakdown | keyvalue">
+                <span class="breakdown-label">{{ entry.key }}</span>
+                <div class="breakdown-bar-track">
+                  <div class="breakdown-bar-fill" [ngStyle]="{ width: entry.value + '%' }"></div>
+                </div>
+                <span class="breakdown-val">{{ entry.value | number:'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="data-pulse">Based on {{ cognitiveReport.cognitiveScore.dataPointsUsed }} data points</div>
+          </div>
+
+          <!-- Trends Card -->
+          <div class="report-card trends-card">
+            <!-- Trends Header (clickable) -->
+            <div class="trends-header" (click)="toggleTrends()" title="Click to expand/collapse trends">
+              <div class="card-label" style="margin-bottom: 0">Domain Trends (14-Day)</div>
+              <i class="pi toggle-chevron" 
+                [ngClass]="showAllTrends ? 'pi-chevron-up' : 'pi-chevron-down'"
+                [title]="showAllTrends ? 'Collapse trends' : 'Expand trends'"></i>
+            </div>
+
+            <!-- Trends Body (collapsible) -->
+            <div class="trends-body" [ngClass]="showAllTrends ? 'expanded' : 'collapsed'">
+              <div class="trends-list">
+                <div class="trend-item" *ngFor="let trend of cognitiveReport?.trends || []">
+                  <div class="trend-left">
+                    <i class="pi" [ngClass]="{
+                      'pi-bolt': trend.gameType === 'reflex',
+                      'pi-table': trend.gameType === 'memory',
+                      'pi-book': trend.gameType === 'verbal'
+                    }"></i>
+                    <span class="trend-game">{{ trend.gameType === 'reflex' ? 'Reflex' : (trend.gameType === 'memory' ? 'Memory' : 'Verbal') }}</span>
+                  </div>
+                  <div class="trend-indicator" [ngClass]="trend.trend">
+                    <i class="pi"
+                      [ngClass]="trend.trend === 'IMPROVING' ? 'pi-arrow-up-right' : (trend.trend === 'DECLINING' ? 'pi-arrow-down-right' : 'pi-minus')"></i>
+                    <span>{{ trend.trend === 'INSUFFICIENT_DATA' ? 'New' : trend.trend }}</span>
+                  </div>
+                  <div class="trend-change" *ngIf="trend.changePercent" [ngClass]="{
+                    'positive': trend.changePercent > 0,
+                    'negative': trend.changePercent < 0
+                  }">
+                    {{ trend.changePercent > 0 ? '+' : '' }}{{ trend.changePercent | number:'1.1-1' }}%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recommendation Card -->
+          <div class="report-card recommendation-card" *ngIf="cognitiveReport">
+            <div class="card-label">Clinical Recommendation</div>
+            <div class="rec-text">
+              "{{ cognitiveReport.recommendation || 'No recommendation available' }}"
+            </div>
+            <div class="rec-footer">
+              Auto-generated by Core Analysis Engine
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Collapsible Alerts Panel -->
+        <div class="right-column">
+          <div class="report-card alerts-panel">
+            <!-- Alert Summary Header (always visible) -->
+            <div class="alerts-header" (click)="toggleAlerts()" title="Click to expand/collapse alerts">
+              <div class="alerts-header-left">
+                <div class="card-label" style="margin-bottom: 0">System Alerts</div>
+                <div class="alert-count-badge" *ngIf="cognitiveReport && cognitiveReport.activeAlerts && cognitiveReport.activeAlerts.length > 0"
+                  [ngClass]="getAlertBadgeClass()">
+                  {{ getAlertCountLabel() }}
+                </div>
+              </div>
+              <div class="alerts-header-right">
+                <button class="clear-all-btn" *ngIf="cognitiveReport && cognitiveReport.activeAlerts && cognitiveReport.activeAlerts.length > 0"
+                  (click)="$event.stopPropagation(); dismissAllAlerts()" title="Dismiss all alerts">
+                  Clear All
+                </button>
+                <i class="pi toggle-chevron"
+                  [ngClass]="showAllAlerts ? 'pi-chevron-up' : 'pi-chevron-down'"
+                  [title]="showAllAlerts ? 'Collapse alerts' : 'Expand alerts'"
+                  *ngIf="cognitiveReport && cognitiveReport.activeAlerts && cognitiveReport.activeAlerts.length > 0"></i>
+              </div>
+            </div>
+
+            <!-- Collapsible Alert List -->
+            <div class="alerts-body" [ngClass]="{ 'expanded': showAllAlerts, 'collapsed': !showAllAlerts }">
+              <div class="empty-alerts" *ngIf="!cognitiveReport || !cognitiveReport.activeAlerts || cognitiveReport.activeAlerts.length === 0">
+                <i class="pi pi-check-circle"></i>
+                <span>System stable. No decline patterns detected.</span>
+              </div>
+              <div class="alerts-scroll-area" *ngIf="cognitiveReport && cognitiveReport.activeAlerts && cognitiveReport.activeAlerts.length > 0">
+                <div class="alert-item" *ngFor="let alert of cognitiveReport.activeAlerts"
+                  [ngClass]="alert.severity">
+                  <i class="pi pi-exclamation-triangle alert-icon"></i>
+                  <div class="alert-body">
+                    <strong>{{ alert.severity }} Alert</strong>
+                    <p>{{ alert.message }}</p>
+                  </div>
+                  <button class="alert-dismiss-btn" (click)="acknowledgeAlert(alert.id)" title="Dismiss alert">
+                    <i class="pi pi-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Premium Game Selection -->
+    <div class="dashboard-content" *ngIf="activeGame === 'none'">
+      <div class="game-grid-premium">
+        <div class="game-selector-card" (click)="startReflexGame()">
+          <div class="card-body">
             <i class="pi pi-bolt game-icon-blue"></i>
             <h2>Reaction Time</h2>
             <p>Test your visual reflexes.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="game-selector-card" (click)="startMemoryGame()">
-        <div class="card-body">
+        <div class="game-selector-card" (click)="startMemoryGame()">
+          <div class="card-body">
             <i class="pi pi-table game-icon-blue"></i>
             <h2>Sequence Memory</h2>
             <p>Remember an increasingly long pattern of button presses.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="game-selector-card" (click)="startVerbalGame()">
-        <span class="badge-new">New</span>
-        <div class="card-body">
+        <div class="game-selector-card" (click)="startVerbalGame()">
+          <span class="badge-new">New</span>
+          <div class="card-body">
             <i class="pi pi-book game-icon-blue"></i>
             <h2>Verbal Memory</h2>
             <p>Keep as many words in short term memory as possible.</p>
+          </div>
         </div>
-      </div>
 
-      <!-- Placeholder Cards -->
-      <div class="game-selector-card placeholder-card" *ngFor="let g of [1,2,3]">
-        <div class="card-body">
+        <!-- Placeholder Cards -->
+        <div class="game-selector-card placeholder-card" *ngFor="let g of [1,2,3]">
+          <div class="card-body">
             <i class="pi pi-lock game-icon-blue opacity-50"></i>
             <h2>Coming Soon</h2>
             <p>We are working on new cognitive challenges.</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Analytics Section -->
-    <div class="analytics-row mt-5" *ngIf="history.length > 0">
+      <!-- Analytics Section -->
+      <div class="analytics-row mt-5" *ngIf="history.length > 0">
         <div class="section-title-row">
-            <div class="section-title">
-                <i class="pi pi-chart-line"></i>
-                <h2>Performance Analytics</h2>
-            </div>
-            
-            <!-- Chart Switcher -->
-            <div class="chart-switcher">
-                <button [class.active]="activeChart === 'reflex'" (click)="switchChart('reflex')">Reaction</button>
-                <button [class.active]="activeChart === 'memory'" (click)="switchChart('memory')">Sequence</button>
-                <button [class.active]="activeChart === 'verbal'" (click)="switchChart('verbal')">Verbal</button>
-            </div>
+          <div class="section-title">
+            <i class="pi pi-chart-line"></i>
+            <h2>Performance Analytics</h2>
+          </div>
+
+          <!-- Chart Switcher -->
+          <div class="chart-switcher">
+            <button [class.active]="activeChart === 'reflex'" (click)="switchChart('reflex')">Reaction</button>
+            <button [class.active]="activeChart === 'memory'" (click)="switchChart('memory')">Sequence</button>
+            <button [class.active]="activeChart === 'verbal'" (click)="switchChart('verbal')">Verbal</button>
+          </div>
         </div>
 
         <div class="analytics-card-wrapper animate-fade-in">
-            <p-card>
-                <div class="chart-header">
-                    <h3>{{ activeChart === 'reflex' ? 'Reaction Time Distribution' : (activeChart === 'memory' ? 'Sequence Memory Performance' : 'Verbal Memory Statistics') }}</h3>
-                </div>
-                <div class="chart-container">
-                    <p-chart *ngIf="activeChart === 'reflex'" type="line" [data]="reflexChart" [options]="chartOptions" height="320px" />
-                    <p-chart *ngIf="activeChart === 'memory'" type="line" [data]="memoryChart" [options]="chartOptions" height="320px" />
-                    <p-chart *ngIf="activeChart === 'verbal'" type="line" [data]="verbalChart" [options]="chartOptions" height="320px" />
-                </div>
-            </p-card>
+          <p-card>
+            <div class="chart-header">
+              <h3>{{ activeChart === 'reflex' ? 'Reaction Time Distribution' : (activeChart === 'memory' ? 'Sequence
+                Memory Performance' : 'Verbal Memory Statistics') }}</h3>
+            </div>
+            <div class="chart-container">
+              <p-chart *ngIf="activeChart === 'reflex'" type="line" [data]="reflexChart" [options]="chartOptions"
+                height="320px" />
+              <p-chart *ngIf="activeChart === 'memory'" type="line" [data]="memoryChart" [options]="chartOptions"
+                height="320px" />
+              <p-chart *ngIf="activeChart === 'verbal'" type="line" [data]="verbalChart" [options]="chartOptions"
+                height="320px" />
+            </div>
+          </p-card>
         </div>
-    </div>
+      </div>
 
-    <!-- History Table -->
-    <div class="history-section mt-5">
-      <div class="section-title">
+      <!-- History Table -->
+      <div class="history-section mt-5">
+        <div class="section-title">
           <i class="pi pi-history"></i>
           <h2>Recent Activity</h2>
-      </div>
-      <p-card>
-        <p-table [value]="history" [rows]="10" [paginator]="true" styleClass="p-datatable-sm performance-table">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Test</th>
-              <th>Score</th>
-              <th>Percentile</th>
-              <th>Date</th>
-              <th style="width: 60px"></th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-activity>
-            <tr>
-              <td>
-                <span class="test-label-flat" [ngClass]="activity.gameType">
-                   {{ activity.gameType === 'reflex' ? 'Reaction Time' : (activity.gameType === 'memory' ? 'Sequence Memory' : 'Verbal Memory') }}
-                </span>
-              </td>
-              <td class="score-cell-modern">{{ activity.score }}{{ activity.gameType === 'reflex' ? 'ms' : '' }}</td>
-              <td>
-                <div
-                  class="pct-flex-container"
-                  [ngClass]="getPctClass(activity.score, activity.gameType)"
-                  [ngStyle]="{ display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'nowrap', color: getPctColor(activity.score, activity.gameType) }"
-                >
-                  <span class="pct-bar-label" [ngStyle]="{ minWidth: '56px', textAlign: 'right', lineHeight: '1' }">
-                    {{ getPercentile(activity.score, activity.gameType) }}
+        </div>
+        <p-card>
+          <p-table [value]="history" [rows]="10" [paginator]="true" styleClass="p-datatable-sm performance-table">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Test</th>
+                <th>Score</th>
+                <th>Percentile</th>
+                <th>Date</th>
+                <th style="width: 60px"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-activity>
+              <tr>
+                <td>
+                  <span class="test-label-flat" [ngClass]="activity.gameType">
+                    {{ activity.gameType === 'reflex' ? 'Reaction Time' : (activity.gameType === 'memory' ? 'Sequence
+                    Memory' : 'Verbal Memory') }}
                   </span>
-                  <div
-                    class="pct-bar"
-                    [ngStyle]="{ height: '2px', width: '140px', backgroundColor: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }"
-                  >
-                    <div
-                      class="pct-bar-fill"
-                      [ngStyle]="{ height: '100%', width: (getPercentileRaw(activity.score, activity.gameType) + '%'), backgroundColor: getPctColor(activity.score, activity.gameType), borderRadius: '999px' }"
-                    ></div>
+                </td>
+                <td class="score-cell-modern">{{ activity.score }}{{ activity.gameType === 'reflex' ? 'ms' : '' }}</td>
+                <td>
+                  <div class="pct-flex-container" [ngClass]="getPctClass(activity.score, activity.gameType)"
+                    [ngStyle]="{ display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'nowrap', color: getPctColor(activity.score, activity.gameType) }">
+                    <span class="pct-bar-label" [ngStyle]="{ minWidth: '56px', textAlign: 'right', lineHeight: '1' }">
+                      {{ getPercentile(activity.score, activity.gameType) }}
+                    </span>
+                    <div class="pct-bar"
+                      [ngStyle]="{ height: '2px', width: '140px', backgroundColor: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }">
+                      <div class="pct-bar-fill"
+                        [ngStyle]="{ height: '100%', width: (getPercentileRaw(activity.score, activity.gameType) + '%'), backgroundColor: getPctColor(activity.score, activity.gameType), borderRadius: '999px' }">
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
 
-              <td class="date-modern">{{ activity.timestamp | date:'MMM d, y, h:mm a' }}</td>
-              <td><p-button icon="pi pi-trash" styleClass="p-button-text p-button-danger p-button-sm" (onClick)="deleteScore(activity.id)" /></td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
-    </div>
+                <td class="date-modern">{{ activity.timestamp | date:'MMM d, y, h:mm a' }}</td>
+                <td><p-button icon="pi pi-trash" styleClass="p-button-text p-button-danger p-button-sm"
+                    (onClick)="deleteScore(activity.id)" /></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      </div>
     </div>
   </div>
 
@@ -143,19 +299,15 @@
   <!-- 1. Sequence Memory -->
   <div class="full-game-overlay memory-theme" *ngIf="activeGame === 'memory'">
     <div class="game-ui-header">
-       <span class="ui-lvl">Level | {{ memoryLevel }}</span>
-       <button class="ui-close" (click)="exitGame()"><i class="pi pi-times"></i></button>
+      <span class="ui-lvl">Level | {{ memoryLevel }}</span>
+      <button class="ui-close" (click)="$event.stopPropagation(); exitGame()"><i class="pi pi-times"></i></button>
     </div>
 
     <div class="memory-board-container" *ngIf="!showResultScreen">
-        <div class="m-grid">
-            <div 
-              *ngFor="let i of [0,1,2,3,4,5,6,7,8]" 
-              class="m-tile" 
-              [class.m-active]="activeMemoryButton === i || userActiveButton === i"
-              (click)="handleMemoryClick(i)"
-            ></div>
-        </div>
+      <div class="m-grid">
+        <div *ngFor="let i of [0,1,2,3,4,5,6,7,8]" class="m-tile"
+          [class.m-active]="activeMemoryButton === i || userActiveButton === i" (click)="handleMemoryClick(i)"></div>
+      </div>
     </div>
 
     <!-- Result Overlay -->
@@ -167,14 +319,14 @@
         </div>
         <h1 class="res-hero">Level {{ finalMemoryLevel }}</h1>
         <div class="res-stat">
-            <label>Percentile</label>
-            <div class="val">{{ getPercentile(finalMemoryLevel, 'memory') }}</div>
+          <label>Percentile</label>
+          <div class="val">{{ getPercentile(finalMemoryLevel, 'memory') }}</div>
         </div>
         <div class="res-actions">
-            <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
-                <i class="pi pi-spin pi-spinner" *ngIf="isSaving"></i> {{ isSaving ? 'Saving...' : 'Save score' }}
-            </button>
-            <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
+          <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
+            <i class="pi pi-spin pi-spinner" *ngIf="isSaving"></i> {{ isSaving ? 'Saving...' : 'Save score' }}
+          </button>
+          <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
         </div>
       </div>
     </div>
@@ -183,22 +335,22 @@
   <!-- 2. Verbal Memory -->
   <div class="full-game-overlay verbal-theme" *ngIf="activeGame === 'verbal'">
     <div class="game-ui-header">
-        <div class="ui-stats-premium">
-            <div class="lives-container">
-                <i class="pi pi-heart-fill heart-icon" *ngFor="let h of [1,2,3]" [class.lost]="lives < h"></i>
-            </div>
-            <div class="score-divider"></div>
-            <div class="score-label">Score | <b>{{ verbalScore }}</b></div>
+      <div class="ui-stats-premium">
+        <div class="lives-container">
+          <i class="pi pi-heart-fill heart-icon" *ngFor="let h of [1,2,3]" [class.lost]="lives < h"></i>
         </div>
-        <button class="ui-close" (click)="exitGame()"><i class="pi pi-times"></i></button>
+        <div class="score-divider"></div>
+        <div class="score-label">Score | <b>{{ verbalScore }}</b></div>
+      </div>
+      <button class="ui-close" (click)="$event.stopPropagation(); exitGame()"><i class="pi pi-times"></i></button>
     </div>
 
     <div class="word-stage" *ngIf="!showResultScreen">
-        <h1 class="big-word animate-pop">{{ currentWord }}</h1>
-        <div class="word-choices">
-            <button class="choice-btn c-seen" (click)="handleVerbalAnswer('seen')">SEEN</button>
-            <button class="choice-btn c-new" (click)="handleVerbalAnswer('new')">NEW</button>
-        </div>
+      <h1 class="big-word animate-pop">{{ currentWord }}</h1>
+      <div class="word-choices">
+        <button class="choice-btn c-seen" (click)="handleVerbalAnswer('seen')">SEEN</button>
+        <button class="choice-btn c-new" (click)="handleVerbalAnswer('new')">NEW</button>
+      </div>
     </div>
 
     <!-- Verbal Result -->
@@ -210,46 +362,48 @@
         </div>
         <h1 class="res-hero">{{ verbalScore }} Words</h1>
         <div class="res-stat">
-            <label>Percentile</label>
-            <div class="val">{{ getPercentile(verbalScore, 'verbal') }}</div>
+          <label>Percentile</label>
+          <div class="val">{{ getPercentile(verbalScore, 'verbal') }}</div>
         </div>
         <div class="res-actions">
-            <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
-                <i class="pi pi-spin pi-spinner" *ngIf="isSaving"></i> {{ isSaving ? 'Saving...' : 'Save score' }}
-            </button>
-            <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
+          <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
+            <i class="pi pi-spin pi-spinner" *ngIf="isSaving"></i> {{ isSaving ? 'Saving...' : 'Save score' }}
+          </button>
+          <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 3. Reaction Time -->
-  <div class="full-game-overlay reflex-theme" *ngIf="activeGame === 'reflex'" [ngClass]="reflexState" (click)="handleReflexClick()">
+  <div class="full-game-overlay reflex-theme" *ngIf="activeGame === 'reflex'" [ngClass]="reflexState"
+    (click)="handleReflexClick()">
     <div class="game-ui-header">
-       <span class="ui-lvl">Reaction Time — Trial {{ reflexAttempts.length + (reflexState === 'feedback' ? 0 : 1) }} / 5</span>
-       <button class="ui-close" (click)="$event.stopPropagation(); exitGame()"><i class="pi pi-times"></i></button>
+      <span class="ui-lvl">Reaction Time — Trial {{ reflexAttempts.length + (reflexState === 'feedback' ? 0 : 1) }} /
+        5</span>
+      <button class="ui-close" (click)="$event.stopPropagation(); exitGame()"><i class="pi pi-times"></i></button>
     </div>
     <div class="reflex-stage" *ngIf="!showResultScreen">
-        <ng-container *ngIf="reflexState === 'waiting'">
-            <div class="dot-spinner"><span></span><span></span><span></span></div>
-            <h2>Wait for green</h2>
-        </ng-container>
-        <ng-container *ngIf="reflexState === 'ready'">
-            <i class="pi pi-bolt hero-icon"></i>
-            <h2>CLICK!</h2>
-        </ng-container>
-        <ng-container *ngIf="reflexState === 'too-early'">
-            <i class="pi pi-exclamation-circle hero-icon"></i>
-            <h2>Too soon!</h2>
-            <p>Click to try again.</p>
-        </ng-container>
-        <ng-container *ngIf="reflexState === 'feedback'">
-            <h1 class="hero-ms">{{ lastAttemptResult }}ms</h1>
-            <p>Click to continue</p>
-        </ng-container>
-        <div class="reflex-footer" *ngIf="reflexState !== 'feedback'">
-             Trial {{ reflexAttempts.length + 1 }} / {{ maxReflexAttempts }}
-        </div>
+      <ng-container *ngIf="reflexState === 'waiting'">
+        <div class="dot-spinner"><span></span><span></span><span></span></div>
+        <h2>Wait for green</h2>
+      </ng-container>
+      <ng-container *ngIf="reflexState === 'ready'">
+        <i class="pi pi-bolt hero-icon"></i>
+        <h2>CLICK!</h2>
+      </ng-container>
+      <ng-container *ngIf="reflexState === 'too-early'">
+        <i class="pi pi-exclamation-circle hero-icon"></i>
+        <h2>Too soon!</h2>
+        <p>Click to try again.</p>
+      </ng-container>
+      <ng-container *ngIf="reflexState === 'feedback'">
+        <h1 class="hero-ms">{{ lastAttemptResult }}ms</h1>
+        <p>Click to continue</p>
+      </ng-container>
+      <div class="reflex-footer" *ngIf="reflexState !== 'feedback'">
+        Trial {{ reflexAttempts.length + 1 }} / {{ maxReflexAttempts }}
+      </div>
     </div>
 
     <!-- Reflex Result -->
@@ -261,14 +415,14 @@
         </div>
         <h1 class="res-hero">{{ reflexAverage }}ms</h1>
         <div class="res-stat">
-            <label>Percentile</label>
-            <div class="val text-success">{{ getPercentile(reflexAverage, 'reflex') }}</div>
+          <label>Percentile</label>
+          <div class="val text-success">{{ getPercentile(reflexAverage, 'reflex') }}</div>
         </div>
         <div class="res-actions">
-            <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
-                {{ isSaving ? 'Saving...' : 'Save score' }}
-            </button>
-            <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
+          <button class="btn-p btn-blue" (click)="saveScore()" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save score' }}
+          </button>
+          <button class="btn-p btn-ghost" (click)="tryAgain()">Try again</button>
         </div>
       </div>
     </div>

@@ -6,8 +6,24 @@
   <component name="ChangeListManager">
     <list default="true" id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/alzheimer-app/doctor-portal/doctor-patients.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/alzheimer-app/doctor-portal/doctor-patients.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/alzheimer-app/doctor-portal/doctor-patients.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/alzheimer-app/doctor-portal/doctor-patients.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/RabbitMQConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/RabbitMQConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveActivityService.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/service/CognitiveActivityService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/cognitive.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/cognitive.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +56,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JUnit.CognitiveActivityControllerTest.executor": "Run",
+    "JUnit.CognitiveActivityServiceTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -57,7 +74,7 @@
     "Spring Boot.UserServiceApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Rebasing main",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -92,9 +109,9 @@
         <entry key="SpringBootApplicationConfigurationType">
           <value>
             <map>
-              <entry key="AlzheimerAppApplication" value="STOPPED" />
-              <entry key="ApiGatewayApplication" value="FAILED" />
-              <entry key="CognitiveServiceApplication" value="FAILED" />
+              <entry key="AlzheimerAppApplication" value="FAILED" />
+              <entry key="ApiGatewayApplication" value="STOPPED" />
+              <entry key="CognitiveServiceApplication" value="STOPPED" />
               <entry key="DiscoveryServerApplication" value="FAILED" />
               <entry key="PatientServiceApplication" value="FAILED" />
               <entry key="UserServiceApplication" value="FAILED" />
@@ -200,10 +217,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.CognitiveServiceApplication" />
+        <item itemvalue="Spring Boot.ApiGatewayApplication" />
+        <item itemvalue="Spring Boot.UserServiceApplication" />
         <item itemvalue="JUnit.CognitiveActivityServiceTest" />
         <item itemvalue="JUnit.CognitiveActivityControllerTest" />
-        <item itemvalue="Spring Boot.UserServiceApplication" />
-        <item itemvalue="Spring Boot.ApiGatewayApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -218,7 +235,7 @@
       <workItem from="1776272778224" duration="4454000" />
       <workItem from="1776288263735" duration="4907000" />
       <workItem from="1776295193072" duration="13768000" />
-      <workItem from="1776708231907" duration="2020000" />
+      <workItem from="1776708231907" duration="8811000" />
     </task>
     <servers />
   </component>

@@ -16,8 +16,9 @@ import { TopbarComponent } from '../topbar/topbar.component';
 })
 export class AppShellComponent {
   sidebarCollapsed = true;
-  readonly sidebarWidth = '280px';
-  readonly sidebarCollapsedWidth = '72px';
+  /** Keep in sync with `--sidebar-width` / `--sidebar-collapsed-width` in global styles */
+  readonly sidebarWidth = 'var(--sidebar-width)';
+  readonly sidebarCollapsedWidth = 'var(--sidebar-collapsed-width)';
 
   onSidebarToggle(collapsed: boolean): void {
     this.sidebarCollapsed = collapsed;

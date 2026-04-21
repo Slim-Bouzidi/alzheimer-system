@@ -15,8 +15,8 @@ import { UserCreateDialogComponent } from '../../features/manage-users/user-crea
   styleUrl: './topbar.component.scss',
 })
 export class TopbarComponent {
-  /** Left offset (e.g. '280px' or '72px') so topbar stays in sync with sidebar expand/collapse */
-  sidebarOffset = input<string>('280px');
+  /** Left offset; matches `--sidebar-width` / `--sidebar-collapsed-width` from app shell */
+  sidebarOffset = input<string>('var(--sidebar-width)');
 
   @HostBinding('style.left') get leftOffset(): string {
     return this.sidebarOffset();
