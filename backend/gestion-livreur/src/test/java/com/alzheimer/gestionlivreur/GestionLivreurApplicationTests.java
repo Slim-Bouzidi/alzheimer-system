@@ -1,0 +1,12 @@
+package com.alzheimer.gestionlivreur;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class GestionLivreurApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+}

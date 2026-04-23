@@ -12,5 +12,8 @@
         <module>discovery-server</module>
         <module>patient-service</module>
         <module>user-service</module>
+        <module>AlzheimerApp</module>
+        <module>gestion-patient</module>
+        <module>gestion-livreur</module>
     </modules>
 </project>

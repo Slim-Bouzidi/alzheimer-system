@@ -13,8 +13,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/public/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/patients").permitAll() // Allow User Service to create patients
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer()

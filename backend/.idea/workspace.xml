@@ -5,11 +5,281 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/AlertController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/AlertController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/AvailabilityController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/AvailabilityController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/DispatchPlannerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/DispatchPlannerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/InterventionReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/InterventionReportController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/MissionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/MissionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/MissionEmailActionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/MissionEmailActionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NetworkDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NetworkDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NetworkKpiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NetworkKpiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/PatientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/PatientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/PatientSupportLinkController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/PatientSupportLinkController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SkillController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SkillController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SupportMemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SupportMemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SupportNetworkEngineController.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/java/com/alzheimer/supportnetwork/controller/SupportNetworkEngineController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/AlzheimerAppApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/ArticleController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/CommentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/EmergencyContactController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/MedicalRecordController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/PatientController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/controllers/TreatmentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/dtos/EmergencyContactDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/dtos/MedicalRecordDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/dtos/TreatmentDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/Article.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/Comment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/EmergencyContact.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/MedicalRecord.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/Patient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/TargetAudience.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/entities/Treatment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/ArticleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/CommentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/EmergencyContactRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/MedicalRecordRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/PatientRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/repositories/TreatmentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/ArticleServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/CommentServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/EmailService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/EmergencyContactServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/MedicalRecordServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/PatientAlertService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/PatientServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/PdfService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/implementing/TreatmentServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/ArticleService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/CommentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/IEmergencyContactService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/IMedicalRecordService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/IPatientService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/java/org/example/alzheimerapp/services/interfaces/ITreatmentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/test/java/com/alzheimer/supportnetwork/TestSpringBootConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/AlzheimerApp/src/test/java/com/alzheimer/supportnetwork/TestSpringBootConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AlzheimerApp/src/test/java/org/example/alzheimerapp/AlzheimerAppApplicationTests.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/java/com/alzheimer/cognitiveservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/CognitiveServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/CognitiveServiceApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/controller/CognitiveActivityController.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/controller/CognitiveActivityController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest$ActivityRequestBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest$ActivityRequestBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse$ActivityResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse$ActivityResponseBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity$CognitiveActivityBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity$CognitiveActivityBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/RestTemplateConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/RestTemplateConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/java/com/alzheimer/patientservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/patient-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/patient-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/entity/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/alzheimer/userservice/entity/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/.editorconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/.vscode/extensions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/.vscode/tasks.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/angular.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/public/images/dashboard-preview.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/public/images/healthcare-care.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.component.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/app.routes.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/auth.interceptor.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/guards/role.guard.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/models/patient.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/models/user-type.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/services/clinical-metrics.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/services/patient.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/services/theme.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/core/services/user-type.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/clinical-reports/clinical-form/clinical-form.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/clinical-reports/report-list/report-list.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/landing/landing.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/landing/landing.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/landing/landing.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/login/login.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/login/login.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/login/login.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/manage-users/manage-users.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/manage-users/manage-users.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/manage-users/manage-users.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/manage-users/user-create-dialog/user-create-dialog.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patient-dashboard/patient-dashboard.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patients/patient-list/patient-list.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patients/patient-list/patient-list.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/patients/patient-list/patient-list.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/profile/profile.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/registration/registration.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/registration/registration.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/registration/registration.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-dialog/user-type-dialog.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-dialog/user-type-dialog.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-dialog/user-type-dialog.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-list/user-type-list.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-list/user-type-list.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/features/user-types/user-type-list/user-type-list.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/keycloak.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/app-shell/app-shell.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/sidebar/sidebar.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/layout/topbar/topbar.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/auth.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/cognitive.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/patient.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/services/user.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/app/shared/components/placeholder/placeholder.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/main.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/src/styles/_variables.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/tsconfig.app.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular/tsconfig.spec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/GUIDE-DEMARRAGE-BACKEND.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/entity-patient-example.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/patient-controller-example.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/patient-repository-example.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/proxy.conf.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/proxy.conf.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/auth/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/core/support-network-headers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/core/support-network-headers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/dashboard/dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/dashboard/dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/dashboard/dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/dashboard/dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-appointments.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-articles.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-articles.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-articles.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-articles.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard-simple.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard-simple.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard-simple.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard-simple.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-patients.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-patients.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-patients.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-patients.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-report-create.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-report-create.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-report-create.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-report-create.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-reports.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-reports.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-reports.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-reports.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-settings.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-settings.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-settings.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/doctor-settings.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/doctor/medical-agenda.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/logistics/route-map/route-map.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/logistics/route-map/route-map.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/logistics/routes/route-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/logistics/routes/route-list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/manage-users/manage-users.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/manage-users/manage-users.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/manage-users/user-create-dialog/user-create-dialog.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/features/manage-users/user-create-dialog/user-create-dialog.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/interceptors/support-network-api.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/interceptors/support-network-api.interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/keycloak.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/keycloak.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/layout/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/layout/sidebar/sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/layout/topbar/topbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/layout/topbar/topbar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-chatbot.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-chatbot.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-layout.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/livreur/livreur-layout.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/patient/patient-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/article.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/article.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/assignment.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/assignment.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/dashboard.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/dashboard.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/delivery-task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/delivery-task.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/emergency-contact.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/emergency-contact.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/location.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/location.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/meal-slot.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/meal-slot.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/medical-record.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/medical-record.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/members.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/members.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/mission.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/mission.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/notification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/notification.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/patient-support-link.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/patient-support-link.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/patient.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/patient.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/rappel.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/rapport.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/rapport.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/rendez-vous.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/rendez-vous.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/route-stop.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/route-stop.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/route.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/route.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/shift.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/shift.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/staff.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/staff.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/traitement.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/treatment.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/treatment.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/websocket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/services/websocket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/placeholder/placeholder.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/shared/sidebar/sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/components/patient-tracking-panel/patient-tracking-panel.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/components/patient-tracking-panel/patient-tracking-panel.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/fiche-transmission-hebdo.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/fiche-transmission-hebdo.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/my-missions-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/my-missions-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/network-dashboard-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/network-dashboard-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/network-members-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/network-members-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/patient-network-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/patient-network-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-notifications-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-notifications-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-parametres-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-parametres-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-patients-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-patients-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-profil-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-profil-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-medicaments-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-medicaments-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-rendez-vous-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-rendez-vous-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-repas-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rappels-repas-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rapports-hebdo-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rapports-hebdo-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rapports-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-rapports-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-suivi-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/pages/soignant-suivi-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant-dashboard.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant-layout.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant-layout.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/soignant/soignant.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/app/test-page/test-page.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/assets/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/assets/i18n/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/assets/i18n/fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/assets/i18n/fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/environments/environment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/alzheimer-angular2/src/styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../keycloak/realm-config/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../keycloak/realm-config/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../keycloak/realm-config/alzheimer-realm.json" beforeDir="false" afterPath="$PROJECT_DIR$/../keycloak/realm-config/alzheimer-realm.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,15 +324,19 @@
     "Spring Boot.CognitiveServiceApplication.executor": "Run",
     "Spring Boot.DiscoveryServerApplication (1).executor": "Run",
     "Spring Boot.DiscoveryServerApplication.executor": "Run",
+    "Spring Boot.GestionLivreurApplication.executor": "Run",
+    "Spring Boot.GestionPatientApplication.executor": "Run",
     "Spring Boot.PatientServiceApplication.executor": "Run",
+    "Spring Boot.SupportNetworkApplication.executor": "Run",
     "Spring Boot.UserServiceApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.codeium.enabled": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sliim/Desktop/alzheimer-system/backend",
+    "last_opened_file_path": "C:/Users/DELL/Desktop/alzheimer-system/backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -73,6 +347,9 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\sliim\Desktop\alzheimer-system\backend\cognitive-service\src\main" />
@@ -88,23 +365,8 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
-    <option name="configurationStatuses">
-      <map>
-        <entry key="SpringBootApplicationConfigurationType">
-          <value>
-            <map>
-              <entry key="ApiGatewayApplication" value="FAILED" />
-              <entry key="CognitiveServiceApplication" value="STOPPED" />
-              <entry key="DiscoveryServerApplication" value="FAILED" />
-              <entry key="PatientServiceApplication" value="STOPPED" />
-              <entry key="UserServiceApplication" value="STOPPED" />
-            </map>
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ApiGatewayApplication">
+  <component name="RunManager" selected="Spring Boot.SupportNetworkApplication">
     <configuration name="AlzheimerAppApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="AlzheimerApp" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.alzheimerapp.AlzheimerAppApplication" />
@@ -113,7 +375,7 @@
       </method>
     </configuration>
     <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="api-gateway (1)" />
+      <module name="api-gateway" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.apigateway.ApiGatewayApplication" />
       <extension name="coverage">
         <pattern>
@@ -126,7 +388,7 @@
       </method>
     </configuration>
     <configuration name="CognitiveServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="cognitive-service (1)" />
+      <module name="cognitive-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.cognitiveservice.CognitiveServiceApplication" />
       <extension name="coverage">
         <pattern>
@@ -139,7 +401,7 @@
       </method>
     </configuration>
     <configuration name="DiscoveryServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="discovery-server (2)" />
+      <module name="discovery-server" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.discovery.DiscoveryServerApplication" />
       <extension name="coverage">
         <pattern>
@@ -151,9 +413,30 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="GestionLivreurApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="gestion-livreur" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.gestionlivreur.GestionLivreurApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GestionPatientApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="gestion-patient" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.gestionpatient.GestionPatientApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="PatientServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="patient-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.patientservice.PatientServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SupportNetworkApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="AlzheimerApp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.alzheimer.supportnetwork.SupportNetworkApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -173,21 +456,33 @@
     </configuration>
     <list>
       <item itemvalue="Spring Boot.AlzheimerAppApplication" />
+      <item itemvalue="Spring Boot.GestionLivreurApplication" />
+      <item itemvalue="Spring Boot.GestionPatientApplication" />
       <item itemvalue="Spring Boot.PatientServiceApplication" />
+      <item itemvalue="Spring Boot.SupportNetworkApplication" />
       <item itemvalue="Spring Boot.ApiGatewayApplication" />
-      <item itemvalue="Spring Boot.UserServiceApplication" />
       <item itemvalue="Spring Boot.CognitiveServiceApplication" />
       <item itemvalue="Spring Boot.DiscoveryServerApplication" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.ApiGatewayApplication" />
-        <item itemvalue="Spring Boot.UserServiceApplication" />
-        <item itemvalue="Spring Boot.DiscoveryServerApplication" />
         <item itemvalue="Spring Boot.CognitiveServiceApplication" />
+        <item itemvalue="Spring Boot.DiscoveryServerApplication" />
+        <item itemvalue="Spring Boot.UserServiceApplication" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="723a5eec-6b4a-455b-bf5b-04e357408e2d" name="Changes" comment="" />
@@ -199,6 +494,12 @@
       <workItem from="1776272778224" duration="4454000" />
       <workItem from="1776288263735" duration="4907000" />
       <workItem from="1776295193072" duration="4358000" />
+      <workItem from="1776597171286" duration="6834000" />
+      <workItem from="1776808053286" duration="1631000" />
+      <workItem from="1776817614175" duration="26000" />
+      <workItem from="1776817877714" duration="25000" />
+      <workItem from="1776849188751" duration="2363000" />
+      <workItem from="1776888211244" duration="5889000" />
     </task>
     <servers />
   </component>

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/network")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PatientSupportLinkController {
     private static final Logger log = LoggerFactory.getLogger(PatientSupportLinkController.class);
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 /** HTTP API for Best Intervenants; business rules live in {@link SupportNetworkEngineService} (SSOT). */
 @RestController
 @RequestMapping("/api/engine")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SupportNetworkEngineController {
 
     private final SupportNetworkEngineService supportNetworkEngineService;

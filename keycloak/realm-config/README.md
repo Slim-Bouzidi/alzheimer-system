@@ -16,12 +16,12 @@ This directory contains the Keycloak realm configuration for the Alzheimer Suppo
 
 ## Clients
 
-### 1. alzheimer-angular-client (Public Client)
+### 1. alzheimer-frontend (Public Client)
 
 **Purpose**: Angular frontend application authentication
 
 **Configuration**:
-- Client ID: `alzheimer-angular-client`
+- Client ID: `alzheimer-frontend`
 - Access Type: Public
 - Standard Flow: Enabled (Authorization Code Flow)
 - Direct Access Grants: Disabled
@@ -59,7 +59,9 @@ The following realm roles are configured:
 1. **ADMIN**: Administrator role with full system access
 2. **DOCTOR**: Doctor role with access to patient medical data
 3. **CAREGIVER**: Caregiver role with access to patient care information
-4. **PATIENT**: Patient role with access to own data
+4. **SOIGNANT**: Care coordination role for agenda and monitoring flows
+5. **LIVREUR**: Logistics role for delivery and route operations
+6. **PATIENT**: Patient role with access to own data
 
 ## Import Instructions
 
@@ -87,6 +89,8 @@ keycloak:
 ```
 
 The `--import-realm` flag will automatically import all JSON files from `/opt/keycloak/data/import` on startup.
+
+Important: if your Keycloak container already uses a persisted database or Docker volume, `--import-realm` will not overwrite the existing `alzheimer-realm`. In that case use the provisioning script below against the live realm.
 
 ### Method 3: Import via Keycloak CLI
 
@@ -133,6 +137,23 @@ export KEYCLOAK_ADMIN_SECRET="<generated-secret>"
 # 2. Login Theme dropdown should show "mytheme"
 # 3. If not visible, restart Keycloak to reload themes
 ```
+
+### 4. Provision Demo Accounts on an Existing Realm
+
+Use the PowerShell helper when the realm already exists and you need the demo users and missing roles to be recreated or repaired in place:
+
+```powershell
+./provision-demo-users.ps1
+```
+
+This script is idempotent. It ensures the full application role set exists and provisions these accounts:
+
+- `admin` / `admin123` -> `ADMIN`
+- `doctor` / `doctor123` -> `DOCTOR`
+- `soignant` / `soignant123` -> `SOIGNANT`
+- `aidant` / `aidant123` -> `CAREGIVER`
+- `patient` / `patient123` -> `PATIENT`
+- `livreur` / `livreur123` -> `LIVREUR`
 
 ## Testing the Configuration
 

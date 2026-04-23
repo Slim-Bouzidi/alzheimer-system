@@ -15,7 +15,7 @@ import java.util.List;
 /** HTTP API for dispatch plans; business rules live in {@link AlertDispatchPlannerService} (SSOT). */
 @RestController
 @RequestMapping("/api/dispatch")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class DispatchPlannerController {
 
     private final AlertDispatchPlannerService dispatchPlannerService;

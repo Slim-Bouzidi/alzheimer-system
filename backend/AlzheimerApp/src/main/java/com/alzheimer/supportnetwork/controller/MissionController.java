@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/missions")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class MissionController {
     private static final Logger log = LoggerFactory.getLogger(MissionController.class);
 

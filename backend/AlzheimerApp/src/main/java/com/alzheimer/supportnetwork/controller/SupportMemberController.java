@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SupportMemberController {
     private static final Logger log = LoggerFactory.getLogger(SupportMemberController.class);
 

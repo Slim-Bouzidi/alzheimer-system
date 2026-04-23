@@ -9,7 +9,7 @@
 
     @RestController
     @RequestMapping("/api/availability")
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "http://localhost:4200")
     public class AvailabilityController {
 
         private final AvailabilityService service;

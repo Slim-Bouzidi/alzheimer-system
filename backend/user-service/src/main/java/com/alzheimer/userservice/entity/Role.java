@@ -4,5 +4,7 @@ public enum Role {
     ADMIN,
     DOCTOR,
     CAREGIVER,
-    PATIENT
+    PATIENT,
+    SOIGNANT,
+    LIVREUR
 }

@@ -7,18 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="cognitive-service" />
+        <module name="gestion-livreur" />
+        <module name="discovery-server" />
         <module name="discovery-server (2)" />
         <module name="api-gateway (1)" />
         <module name="AlzheimerApp" />
+        <module name="api-gateway" />
+        <module name="gestion-patient" />
         <module name="patient-service" />
         <module name="user-service" />
         <module name="cognitive-service (1)" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="api-gateway" target="17" />
-      <module name="discovery-server" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -29,6 +30,8 @@
       <module name="cognitive-service (1)" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="discovery-server (2)" options="-parameters" />
+      <module name="gestion-livreur" options="-parameters" />
+      <module name="gestion-patient" options="-parameters" />
       <module name="patient-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
