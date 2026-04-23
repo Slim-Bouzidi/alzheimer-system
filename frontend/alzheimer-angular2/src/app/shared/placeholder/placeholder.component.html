@@ -1,8 +1,48 @@
-<div class="placeholder-page">
-  <div class="placeholder-card">
-    <span class="placeholder-icon">🚧</span>
-    <h1>{{ title }}</h1>
-    <p>{{ 'PLACEHOLDER.UNDER_CONSTRUCTION' | translate }}</p>
-    <a [routerLink]="backLink" class="btn-back">{{ 'PLACEHOLDER.BACK' | translate }}</a>
+<div class="workspace-layout">
+  <app-sidebar [role]="sidebarRole"></app-sidebar>
+
+  <div class="workspace-main">
+    <header class="workspace-topbar">
+      <div>
+        <p class="workspace-kicker">Espace sécurisé</p>
+        <h1>{{ title }}</h1>
+        <p class="workspace-subtitle">{{ workspace.subtitle }}</p>
+      </div>
+
+      <div class="workspace-actions-top">
+        <button type="button" class="btn-ghost" (click)="goBack()">Retour</button>
+        <button type="button" class="btn-primary" (click)="logout()">Déconnexion</button>
+      </div>
+    </header>
+
+    <main class="workspace-content">
+      <section class="workspace-hero">
+        <div class="hero-icon">
+          <i class="pi" [ngClass]="workspace.icon"></i>
+        </div>
+        <div>
+          <h2>{{ title }}</h2>
+          <p>{{ workspace.subtitle }}</p>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <article class="workspace-card">
+          <h3>Points clés</h3>
+          <ul>
+            <li *ngFor="let item of workspace.highlights">{{ item }}</li>
+          </ul>
+        </article>
+
+        <article class="workspace-card">
+          <h3>Actions rapides</h3>
+          <div class="action-list">
+            <a *ngFor="let action of workspace.actions" [routerLink]="action.route" class="action-link">
+              {{ action.label }}
+            </a>
+          </div>
+        </article>
+      </section>
+    </main>
   </div>
 </div>

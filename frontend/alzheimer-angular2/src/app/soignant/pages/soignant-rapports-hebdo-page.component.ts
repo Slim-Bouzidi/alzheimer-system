@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SoignantService } from '../soignant.service';
 import { RapportHebdomadaire } from '../../models/rapport-hebdo.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-rapports-hebdo-page',
@@ -16,7 +17,7 @@ import { RapportHebdomadaire } from '../../models/rapport-hebdo.model';
 export class SoignantRapportsHebdoPageComponent implements OnInit {
   rapports: RapportHebdomadaire[] = [];
 
-  constructor(private soignantService: SoignantService, private router: Router) {}
+  constructor(private soignantService: SoignantService, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.rapports = this.soignantService.getRapportsHebdomadaires();
@@ -28,5 +29,5 @@ export class SoignantRapportsHebdoPageComponent implements OnInit {
     });
   }
 
-  logout(): void { this.router.navigate(['/test']); }
+  async logout(): Promise<void> { await this.authService.logout(); }
 }

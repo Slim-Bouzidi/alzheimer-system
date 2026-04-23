@@ -192,7 +192,6 @@ export class NetworkMembersPageComponent implements OnInit, OnDestroy {
     this.loadMembers();
     this.wsSubscriptions.push(
       this.websocketService.onMissionUpdate().subscribe((event) => {
-        console.log('🔄 WS Mission update:', event);
         this.showSuccess(this.translate.instant('COMMON.NEW_UPDATE_RECEIVED'));
         this.toastr.success('Members updated');
         this.loadMembers();
@@ -200,7 +199,6 @@ export class NetworkMembersPageComponent implements OnInit, OnDestroy {
     );
     this.wsSubscriptions.push(
       this.websocketService.onNotification().subscribe((event) => {
-        console.log('📩 WS notification:', event);
         const txt =
           event && typeof event === 'object' && 'message' in (event as Record<string, unknown>)
             ? String((event as Record<string, unknown>)['message'] ?? 'New notification')

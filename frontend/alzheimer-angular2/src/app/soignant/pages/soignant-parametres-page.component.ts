@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-parametres-page',
@@ -23,6 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['../soignant-pages.css']
 })
 export class SoignantParametresPageComponent {
-  constructor(private router: Router) {}
-  logout(): void { this.router.navigate(['/test']); }
+  constructor(private router: Router, private authService: AuthService) {}
+  async logout(): Promise<void> { await this.authService.logout(); }
 }

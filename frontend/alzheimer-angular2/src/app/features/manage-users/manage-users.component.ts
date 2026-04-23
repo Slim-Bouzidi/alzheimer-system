@@ -248,7 +248,6 @@ export class ManageUsersComponent implements OnInit {
     this.errorMessage.set(null);
     this.patientService.getAll().subscribe({
       next: (data: any) => {
-        console.log('API Response received:', data);
         const mapped: DirectoryUser[] = (Array.isArray(data) ? data : []).map((p: any, index: number) => ({
           id: p.id ? p.id.toString() : 'Unknown',
           code: p.patientCode,
@@ -269,7 +268,7 @@ export class ManageUsersComponent implements OnInit {
       error: (err: any) => {
         console.error('Patient API Error:', err);
         const msg = err.status === 0
-          ? 'Cannot connect to the patient microservice. Is it running on http://localhost:8080?'
+          ? 'Cannot connect to the API gateway. Make sure the gateway and its downstream services are running.'
           : `API Error: ${err.message || 'Unknown error'}`;
         this.errorMessage.set(msg);
         this.loading.set(false);

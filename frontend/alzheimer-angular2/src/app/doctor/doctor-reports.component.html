@@ -1,28 +1,5 @@
-<div class="dashboard-layout">
-    <!-- Sidebar -->
-    <!-- Sidebar -->
-    <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
-
-    <!-- Main Content Wrapper -->
-    <div class="main-wrapper">
-        <!-- Topbar -->
-        <header class="topbar">
-            <h1 class="page-title-small">{{ 'DOCTOR_REPORTS.MEDICAL_REPORTS' | translate }}</h1>
-
-            <div class="topbar-actions">
-                <button class="icon-btn notice-btn">
-                    <span class="icon">🔔</span>
-                    <span class="badge-dot"></span>
-                </button>
-                <button class="btn btn-logout" (click)="logout()">
-                    <span>Déconnexion</span>
-                    <span class="icon">🚪</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Reports Content -->
-        <main class="content-area reports-content">
+<!-- Reports Content -->
+<main class="content-area reports-content">
 
             <!-- Stats Overview -->
             <div class="stats-grid">
@@ -117,7 +94,7 @@
                             <tr *ngFor="let r of rapportsSuivi">
                                 <td><strong>{{ r.patientPrenom }} {{ r.patientNom }}</strong></td>
                                 <td>{{ r.dateCreation | date:'dd/MM/yyyy HH:mm' }}</td>
-                                <td>{{ r.luParSoignant ? 'Oui' : 'Non' }}</td>
+                                <td>{{ r.luParSoignant ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -211,6 +188,4 @@
                 </div>
             </div>
 
-        </main>
-    </div>
-</div>
+</main>

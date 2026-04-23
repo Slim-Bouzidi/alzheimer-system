@@ -14,21 +14,18 @@ export class NotificationService {
   constructor(private http: HttpClient) {}
 
   getMemberNotifications(memberId: number): Observable<SupportNotification[]> {
-    console.log('Calling API:', `${this.baseUrl}/${memberId}`);
     return this.http.get<SupportNotification[]>(`${this.baseUrl}/${memberId}`, {
       headers: supportNetworkHttpHeaders(),
     });
   }
 
   markAsRead(id: number): Observable<SupportNotification> {
-    console.log('Calling API:', `${this.baseUrl}/${id}/read`);
     return this.http.patch<SupportNotification>(`${this.baseUrl}/${id}/read`, {}, {
       headers: supportNetworkHttpHeaders(),
     });
   }
 
   getUnreadCount(memberId: number): Observable<{ memberId: number; unreadCount: number }> {
-    console.log('Calling API:', `${this.baseUrl}/unread-count/${memberId}`);
     return this.http.get<{ memberId: number; unreadCount: number }>(`${this.baseUrl}/unread-count/${memberId}`, {
       headers: supportNetworkHttpHeaders(),
     });

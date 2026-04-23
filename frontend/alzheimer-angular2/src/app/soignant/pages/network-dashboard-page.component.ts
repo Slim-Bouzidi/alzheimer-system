@@ -35,14 +35,12 @@ export class NetworkDashboardPageComponent implements OnInit, OnDestroy {
     this.refresh();
     this.wsSubscriptions.push(
       this.websocketService.onMissionUpdate().subscribe((event) => {
-        console.log('🔄 WS Mission update:', event);
         this.toastr.success('Dashboard updated');
         this.refresh();
       })
     );
     this.wsSubscriptions.push(
       this.websocketService.onNotification().subscribe((event) => {
-        console.log('📩 WS notification:', event);
         const txt =
           event && typeof event === 'object' && 'message' in (event as Record<string, unknown>)
             ? String((event as Record<string, unknown>)['message'] ?? 'New notification')
@@ -52,7 +50,6 @@ export class NetworkDashboardPageComponent implements OnInit, OnDestroy {
     );
     this.wsSubscriptions.push(
       this.websocketService.onDispatchUpdate().subscribe((event) => {
-        console.log('📩 WS dispatch update:', event);
         this.toastr.success('Dispatch updated');
         this.refresh();
       })

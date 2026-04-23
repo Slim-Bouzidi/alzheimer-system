@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client/dist/sockjs';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -14,13 +14,19 @@ export class WebSocketService {
   private readonly notifications$ = new Subject<unknown>();
   private readonly dispatchUpdates$ = new Subject<unknown>();
   private connected = false;
+  private connectionDisabled = false;
+  private hasConnectedAtLeastOnce = false;
+  private warnedUnavailable = false;
 
   private readonly wsUrl =
     (environment as { supportNetworkWebSocketUrl?: string }).supportNetworkWebSocketUrl ??
-    'http://localhost:8082/ws';
+    '/ws';
 
   connect(): void {
     if (typeof window === 'undefined') {
+      return;
+    }
+    if (this.connectionDisabled) {
       return;
     }
     if (this.client?.active) return;
@@ -32,7 +38,7 @@ export class WebSocketService {
         heartbeatOutgoing: 10000,
         onConnect: () => {
           this.connected = true;
-          console.log('📡 WS connected');
+          this.hasConnectedAtLeastOnce = true;
           this.activeTopicSubscriptions.clear();
           this.pendingTopics.forEach((topic) => {
             try {
@@ -43,10 +49,10 @@ export class WebSocketService {
           });
         },
         onStompError: () => {
-          this.connected = false;
+          this.handleConnectionLoss();
         },
         onWebSocketClose: () => {
-          this.connected = false;
+          this.handleConnectionLoss();
         },
       });
       this.client.activate();
@@ -107,7 +113,6 @@ export class WebSocketService {
         } catch {
           payload = msg.body;
         }
-        console.log('📩 WS message received:', payload);
         try {
           stream.next(payload);
           this.emitGlobalEvent(topic, payload);
@@ -132,6 +137,24 @@ export class WebSocketService {
     }
     if (topic.startsWith('/topic/dispatch/')) {
       this.dispatchUpdates$.next(payload);
+    }
+  }
+
+  private handleConnectionLoss(): void {
+    this.connected = false;
+    if (this.hasConnectedAtLeastOnce || this.connectionDisabled) {
+      return;
+    }
+
+    this.connectionDisabled = true;
+    this.activeTopicSubscriptions.clear();
+    if (!this.warnedUnavailable) {
+      console.warn('[WS] realtime endpoint unavailable; reload after the support-network backend is running.');
+      this.warnedUnavailable = true;
+    }
+    if (this.client) {
+      void this.client.deactivate();
+      this.client = null;
     }
   }
 }

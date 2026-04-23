@@ -9,6 +9,7 @@ import { WebSocketService } from '../../services/websocket.service';
 import { NotificationService } from '../../services/notification.service';
 import { SupportNotification } from '../../models/support-notification.model';
 import { TablePaginationComponent } from '../../shared/components/table-pagination/table-pagination.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-notifications-page',
@@ -30,7 +31,8 @@ export class SoignantNotificationsPageComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private websocketService: WebSocketService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -45,7 +47,6 @@ export class SoignantNotificationsPageComponent implements OnInit, OnDestroy {
         if (memberId == null || memberId !== this.selectedMemberId) {
           return;
         }
-        console.log('📩 WS notification:', event);
         this.toastr.info('New notification');
         this.loadNotifications();
       })
@@ -91,7 +92,7 @@ export class SoignantNotificationsPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  logout(): void { this.router.navigate(['/test']); }
+  async logout(): Promise<void> { await this.authService.logout(); }
 
   get pagedNotifications(): SupportNotification[] {
     const start = (this.currentPage - 1) * this.pageSize;

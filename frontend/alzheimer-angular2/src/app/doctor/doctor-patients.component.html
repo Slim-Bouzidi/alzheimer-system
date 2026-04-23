@@ -1,27 +1,5 @@
-<div class="dashboard-layout">
-    <!-- Sidebar -->
-    <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
-
-    <!-- Main Content Wrapper -->
-    <div class="main-wrapper">
-        <!-- Topbar -->
-        <header class="topbar">
-            <h1 class="page-title-small">{{ 'DOCTOR.PATIENT_MANAGEMENT' | translate }}</h1>
-
-            <div class="topbar-actions">
-                <button class="icon-btn notice-btn">
-                    <span class="icon">🔔</span>
-                    <span class="badge-dot"></span>
-                </button>
-                <button class="btn btn-logout" (click)="logout()">
-                    <span>Déconnexion</span>
-                    <span class="icon">🚪</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Patients Content -->
-        <main class="content-area patients-content">
+<!-- Patients Content -->
+<main class="content-area patients-content">
 
             <!-- Action Bar -->
             <div class="action-bar">
@@ -32,11 +10,11 @@
                 </div>
 
                 <div class="sort-container" style="margin-left: auto; margin-right: 15px;">
-                    <label for="sortSelect" style="margin-right: 5px; font-weight: bold;">Trier par : </label>
+                    <label for="sortSelect" style="margin-right: 5px; font-weight: bold;">{{ 'COMMON.SORT_BY' | translate }}</label>
                     <select id="sortSelect" class="sort-select" (change)="onSortChange($event)"
                         style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                        <option value="default">Défaut</option>
-                        <option value="status">Statut</option>
+                        <option value="default">{{ 'COMMON.DEFAULT_OPTION' | translate }}</option>
+                        <option value="status">{{ 'DOCTOR.PATIENT_STATUS' | translate }}</option>
                     </select>
                 </div>
 
@@ -57,37 +35,37 @@
                     <div class="modal-body">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>First Name</label>
-                                <input type="text" [(ngModel)]="newPatient.firstName" placeholder="First name">
+                                <label>{{ 'DOCTOR.FIRST_NAME' | translate }}</label>
+                                <input type="text" [(ngModel)]="newPatient.firstName" [placeholder]="'DOCTOR.FIRST_NAME_PLACEHOLDER' | translate">
                             </div>
                             <div class="form-group">
-                                <label>Last Name</label>
-                                <input type="text" [(ngModel)]="newPatient.lastName" placeholder="Last name">
+                                <label>{{ 'DOCTOR.LAST_NAME' | translate }}</label>
+                                <input type="text" [(ngModel)]="newPatient.lastName" [placeholder]="'DOCTOR.LAST_NAME_PLACEHOLDER' | translate">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Date of Birth</label>
+                                <label>{{ 'DOCTOR.DATE_OF_BIRTH' | translate }}</label>
                                 <input type="date" [(ngModel)]="newPatient.dateOfBirth">
                             </div>
                             <div class="form-group">
-                                <label>Gender</label>
+                                <label>{{ 'DOCTOR.GENDER' | translate }}</label>
                                 <select [(ngModel)]="newPatient.gender">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
+                                    <option value="Male">{{ 'DOCTOR.GENDER_MALE' | translate }}</option>
+                                    <option value="Female">{{ 'DOCTOR.GENDER_FEMALE' | translate }}</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Phone</label>
-                                <input type="text" [(ngModel)]="newPatient.phone" placeholder="Phone number">
+                                <label>{{ 'DOCTOR.PHONE' | translate }}</label>
+                                <input type="text" [(ngModel)]="newPatient.phone" [placeholder]="'DOCTOR.PHONE_PLACEHOLDER' | translate">
                             </div>
                             <div class="form-group">
-                                <label>Address</label>
-                                <input type="text" [(ngModel)]="newPatient.address" placeholder="Address">
+                                <label>{{ 'DOCTOR.ADDRESS' | translate }}</label>
+                                <input type="text" [(ngModel)]="newPatient.address" [placeholder]="'DOCTOR.ADDRESS_PLACEHOLDER' | translate">
                             </div>
                         </div>
 
@@ -95,15 +73,15 @@
                             <div class="form-group">
                                 <label>
                                     <input type="checkbox" [(ngModel)]="newPatient.familyHistoryAlzheimer">
-                                    Family History of Alzheimer
+                                    {{ 'DOCTOR.FAMILY_HISTORY_ALZHEIMER' | translate }}
                                 </label>
                             </div>
                             <div class="form-group">
-                                <label>Status</label>
+                                <label>{{ 'DOCTOR.PATIENT_STATUS' | translate }}</label>
                                 <select [(ngModel)]="newPatient.status">
-                                    <option value="stable">Stable</option>
-                                    <option value="surveillance">Surveillance</option>
-                                    <option value="high-risk">High Risk</option>
+                                    <option value="stable">{{ 'DOCTOR.STATUS_STABLE' | translate }}</option>
+                                    <option value="attention">{{ 'DOCTOR.STATUS_MONITORING' | translate }}</option>
+                                    <option value="high-risk">{{ 'DOCTOR.STATUS_HIGH_RISK' | translate }}</option>
                                 </select>
                             </div>
                         </div>
@@ -151,13 +129,13 @@
                             </button>
                             <div class="status-dropdown-menu" *ngIf="patient.showStatusDropdown">
                                 <button class="status-option" (click)="updatePatientStatus(patient, 'stable')">
-                                    Stable
+                                    {{ 'DOCTOR.STATUS_STABLE' | translate }}
                                 </button>
                                 <button class="status-option" (click)="updatePatientStatus(patient, 'attention')">
-                                    Surveillance
+                                    {{ 'DOCTOR.STATUS_MONITORING' | translate }}
                                 </button>
                                 <button class="status-option" (click)="updatePatientStatus(patient, 'high-risk')">
-                                    High Risk
+                                    {{ 'DOCTOR.STATUS_HIGH_RISK' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -169,7 +147,7 @@
                             {{ patient.dateNaissance }}
                         </p>
                         <p class="patient-meta" *ngIf="patient.gender">
-                            {{ patient.gender === 'M' ? 'Male' : (patient.gender === 'F' ? 'Female' : patient.gender) }}
+                            {{ getGenderLabel(patient.gender) }}
                         </p>
                         <p class="patient-phone" *ngIf="patient.numeroDeTelephone">
                             📞 {{ patient.numeroDeTelephone }}
@@ -683,6 +661,4 @@
                 </div>
             </div>
 
-        </main>
-    </div>
-</div>
+</main>

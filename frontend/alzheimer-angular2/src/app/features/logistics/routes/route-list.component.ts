@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import { RouteService, RouteResponse, RouteRequest, RouteStatus, RouteStopResponse, RouteStopRequest } from '../../../services/route.service';
 import { StaffService } from '../../../services/staff.service';
 import { MealSlotService } from '../../../services/meal-slot.service';
@@ -81,7 +82,7 @@ export class RouteListComponent implements OnInit {
         this.slotService.getAll().subscribe(data => {
             this.slotOptions = data.map(s => ({ label: `${s.mealType} - ${s.time}`, value: String(s.id) }));
         });
-        this.http.get<any[]>('http://localhost:8082/patient-service/api/patients').subscribe((data: any) => {
+        this.http.get<any[]>(`${environment.apiUrl}/delivery-patients`).subscribe((data: any) => {
             const rows: any[] = Array.isArray(data)
                 ? data
                 : (Array.isArray(data?.content) ? data.content : []);

@@ -1,16 +1,14 @@
-<div class="dashboard-layout report-create-page">
-  <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
-
-  <div class="main-wrapper">
-    <header class="topbar">
-      <h1 class="page-title">{{ 'DOCTOR_REPORT_CREATE.PAGE_TITLE' | translate }}</h1>
-      <div class="topbar-actions">
-        <button type="button" class="btn-outline" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
-        <button type="button" class="btn btn-logout" (click)="logout()">Déconnexion</button>
+<main class="content-area report-create-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">{{ 'DOCTOR_REPORT_CREATE.PAGE_TITLE' | translate }}</h1>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="btn-outline" (click)="cancel()">{{ 'COMMON.CANCEL' | translate }}</button>
+          <button type="button" class="btn btn-logout" (click)="logout()">{{ 'COMMON.LOGOUT' | translate }}</button>
+        </div>
       </div>
-    </header>
 
-    <main class="content-area report-create-content">
       <!-- Indicateur de progression (structure logique du formulaire) -->
       <nav class="form-steps" aria-label="Étapes du rapport">
         <ol class="form-steps-list">
@@ -244,6 +242,4 @@
           </div>
         </div>
       </form>
-    </main>
-  </div>
-</div>
+</main>

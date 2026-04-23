@@ -6,6 +6,7 @@ import { RapportSuiviService } from '../../services/rapport-suivi.service';
 import { RapportSuiviStructure, StatutDirectiveSuivi } from '../../models/rapport-suivi-structure.model';
 import { FicheTransmission } from '../../models/fiche-transmission.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-fiche-transmission-hebdo',
@@ -35,7 +36,8 @@ export class FicheTransmissionHebdoComponent implements OnInit {
     private rapportSuiviService: RapportSuiviService,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
     this.soignantConnecte.role = this.translate.instant('FICHE_TRANSMISSION.ROLE_NURSE');
     this.ficheForm = this.createForm();
@@ -241,9 +243,8 @@ export class FicheTransmissionHebdoComponent implements OnInit {
     
     // Simuler la sauvegarde
     setTimeout(() => {
-      console.log('Fiche de transmission sauvegardée:', this.ficheForm.value);
       this.sauvegardeEnCours = false;
-      this.router.navigate(['/soignant/rapports-hebdo']);
+      this.router.navigate(['/soignant-rapports-hebdo']);
     }, 1500);
   }
 
@@ -254,11 +255,11 @@ export class FicheTransmissionHebdoComponent implements OnInit {
   }
 
   retourListe(): void {
-    this.router.navigate(['/soignant/rapports-hebdo']);
+    this.router.navigate(['/soignant-rapports-hebdo']);
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 
   getStatutClass(statut: StatutDirectiveSuivi): string {

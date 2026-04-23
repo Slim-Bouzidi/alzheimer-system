@@ -27,16 +27,14 @@ export interface Rapport {
 
 @Injectable({ providedIn: 'root' })
 export class RapportService {
-  private baseUrl = `${environment.apiUrl}/rapports`;
+  private baseUrl = `${environment.apiUrl}/reports`;
 
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
     });
   }
 

@@ -211,7 +211,6 @@ export class PatientTrackingPanelComponent implements OnInit, OnDestroy, OnChang
      */
     onRemplirSuivi(): void {
         // TODO: Open modal with daily tracking form
-        console.log('Opening daily tracking form for patient:', this.patientId);
     }
 
     /**
@@ -219,7 +218,6 @@ export class PatientTrackingPanelComponent implements OnInit, OnDestroy, OnChang
      */
     onVoirProfil(): void {
         // TODO: Navigate to patient profile page
-        console.log('Navigate to patient profile:', this.patientId);
     }
 
     /**
@@ -231,7 +229,6 @@ export class PatientTrackingPanelComponent implements OnInit, OnDestroy, OnChang
         if (confirm(this.translate.instant('SOIGNANT.CONFIRM_TREAT_ALERT'))) {
             this.soignantService.traiterAlerte(alerteId, this.patientId).subscribe(() => {
                 // The list will auto-refresh via the reactive subscription in loadPatientData
-                console.log('Alerte traitée:', alerteId);
             });
         }
     }
@@ -240,7 +237,6 @@ export class PatientTrackingPanelComponent implements OnInit, OnDestroy, OnChang
      * Handle quick actions
      */
     onQuickAction(action: string): void {
-        console.log(`Action rapide déclenchée: ${action} pour le patient`, this.patientId);
         // Implement specific navigation or modals based on action
         if (action === 'appel') {
             alert(this.translate.instant('SOIGNANT.CALL_PATIENT_SIMULATED', { name: this.patient?.nom }));

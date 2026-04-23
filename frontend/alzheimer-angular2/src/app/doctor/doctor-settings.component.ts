@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-doctor-settings',
     standalone: true,
-    imports: [CommonModule, SidebarComponent, TranslateModule],
+    imports: [CommonModule, TranslateModule],
     templateUrl: './doctor-settings.component.html',
     styleUrls: ['./doctor-settings.component.css']
 })
-export class DoctorSettingsComponent {
+export class DoctorSettingsComponent implements OnInit {
 
-    constructor(private router: Router, private translate: TranslateService) {
+    constructor(
+        private router: Router,
+        private translate: TranslateService,
+        private authService: AuthService
+    ) {
         this.userInfo.specialization = this.translate.instant('DOCTOR.SPECIALIZATION_GERIATRICS');
         this.securitySettings.lastPasswordChange = this.translate.instant('DOCTOR.LAST_PASSWORD_CHANGE_3_MONTHS');
     }
@@ -23,7 +27,7 @@ export class DoctorSettingsComponent {
     userInfo = {
         name: 'Dr. Marie Martin',
         email: 'marie.martin@medassist.com',
-        specialization: 'Gériatrie',
+        specialization: 'Geriatrics',
         license: 'MD-12345-FR'
     };
 
@@ -36,10 +40,23 @@ export class DoctorSettingsComponent {
 
     securitySettings = {
         twoFactor: true,
-        lastPasswordChange: 'Il y a 3 mois'
+        lastPasswordChange: '3 months ago'
     };
 
-    logout(): void {
-        this.router.navigate(['/test']);
+    ngOnInit(): void {
+        const profile = this.authService.getCurrentUser();
+        const fullName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ').trim();
+
+        if (fullName) {
+            this.userInfo.name = `Dr. ${fullName}`;
+        }
+
+        if (profile?.email) {
+            this.userInfo.email = profile.email;
+        }
+    }
+
+    async logout(): Promise<void> {
+        await this.authService.logout();
     }
 }

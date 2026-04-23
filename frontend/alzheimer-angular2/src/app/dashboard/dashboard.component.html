@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="user-info">
         <h1>{{ 'DASHBOARD.WELCOME' | translate }} {{ currentUser.firstName }} {{ currentUser.lastName }}</h1>
-        <p class="role-badge">{{ getRoleDisplayName(currentUser.role) }}</p>
+        <p class="role-badge">{{ getRoleDisplayName() }}</p>
       </div>
       <div class="header-actions">
         <button (click)="navigateToProfile()" class="btn btn-secondary">
@@ -128,7 +128,7 @@
       <div class="actions-section">
         <h3>{{ 'DASHBOARD.QUICK_ACTIONS' | translate }}</h3>
         <div class="action-cards">
-          <div class="action-card" *ngIf="currentUser.role === UserRole.ADMIN">
+          <div class="action-card" *ngIf="authService.isAdmin()">
             <div class="action-icon">⚙️</div>
             <h4>{{ 'DASHBOARD.USER_MANAGEMENT' | translate }}</h4>
             <p>{{ 'DASHBOARD.USER_MANAGEMENT_DESC' | translate }}</p>
@@ -136,21 +136,21 @@
           </div>
 
           <div class="action-card"
-            *ngIf="currentUser.role === UserRole.AIDANT || currentUser.role === UserRole.SOIGNANT">
+            *ngIf="authService.isCaregiver() || authService.isSoignant()">
             <div class="action-icon">❤️</div>
             <h4>{{ 'DASHBOARD.PATIENT_MONITORING' | translate }}</h4>
             <p>{{ 'DASHBOARD.PATIENT_MONITORING_DESC' | translate }}</p>
             <button class="btn btn-primary">{{ 'COMMON.MONITOR' | translate }}</button>
           </div>
 
-          <div class="action-card" *ngIf="currentUser.role === UserRole.SOIGNANT">
+          <div class="action-card" *ngIf="authService.isSoignant()">
             <div class="action-icon">⚕️</div>
             <h4>{{ 'DASHBOARD.MEDICAL_REPORTS' | translate }}</h4>
             <p>{{ 'DASHBOARD.MEDICAL_REPORTS_DESC' | translate }}</p>
             <button class="btn btn-primary">{{ 'COMMON.VIEW' | translate }}</button>
           </div>
 
-          <div class="action-card" *ngIf="currentUser.role === UserRole.DOCTEUR">
+          <div class="action-card" *ngIf="authService.isDoctor()">
             <div class="action-icon">📋</div>
             <h4>{{ 'DASHBOARD.MEDICAL_REPORTS' | translate }}</h4>
             <p>{{ 'DASHBOARD.MEDICAL_REPORTS_DESC' | translate }}</p>

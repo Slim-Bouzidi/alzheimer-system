@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SoignantService } from '../soignant.service';
 import { PatientSoignant } from '../../models/patient-soignant.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-patients-page',
@@ -15,7 +16,7 @@ import { PatientSoignant } from '../../models/patient-soignant.model';
 export class SoignantPatientsPageComponent implements OnInit {
   patients: PatientSoignant[] = [];
 
-  constructor(private soignantService: SoignantService, private router: Router) {}
+  constructor(private soignantService: SoignantService, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.patients = this.soignantService.getPatientsAssignes();
@@ -25,7 +26,7 @@ export class SoignantPatientsPageComponent implements OnInit {
     return s === 'eleve' ? 'risque-eleve' : s === 'moyen' ? 'risque-moyen' : 'risque-faible';
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

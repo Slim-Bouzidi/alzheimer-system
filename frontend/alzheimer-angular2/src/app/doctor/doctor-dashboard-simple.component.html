@@ -1,47 +1,20 @@
-<div class="dashboard-layout">
-  <!-- Sidebar -->
-  <app-sidebar [role]="'DOCTEUR'" [userName]="'Dr. Marc Lefebvre'" [userRole]="'Médecin Référent'"></app-sidebar>
-
-  <!-- Main Content Wrapper -->
-  <div class="main-wrapper">
-    <!-- Top Navbar -->
-    <header class="topbar">
-      <div class="search-container">
-        <span class="search-icon">🔍</span>
-        <input type="text" [placeholder]="'DOCTOR.SEARCH_PATIENT' | translate" class="search-input">
-      </div>
-
-      <div class="topbar-actions">
-        <button class="icon-btn notice-btn">
-          <span class="icon">🔔</span>
-          <span class="badge-dot"></span>
-        </button>
-        <button class="icon-btn">
-          <span class="icon">📩</span>
-        </button>
-        <button class="btn btn-logout" (click)="logout()">
-          <span>{{ 'COMMON.LOGOUT' | translate }}</span>
-          <span class="icon">🚪</span>
-        </button>
-      </div>
-    </header>
-
-    <!-- Dashboard Content -->
-    <main class="content-area">
+<!-- Dashboard Content -->
+<main class="content-area">
       <div class="page-header">
         <div>
           <h1 class="page-title">{{ 'DOCTOR.OVERVIEW' | translate }}</h1>
           <p class="page-subtitle">{{ currentDate | date:'fullDate' }}</p>
         </div>
         <button class="btn btn-primary">
-          <span>+</span> {{ 'DOCTOR.NEW_PATIENT' | translate }}
+          <i class="pi pi-plus"></i>
+          <span>{{ 'DOCTOR.NEW_PATIENT' | translate }}</span>
         </button>
       </div>
 
       <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-icon primary-bg">👥</div>
+          <div class="stat-icon primary-bg"><i class="pi pi-users"></i></div>
           <div class="stat-details">
             <span class="stat-label">{{ 'DOCTOR.TOTAL_PATIENTS' | translate }}</span>
             <span class="stat-value">{{ medicalStats.totalPatients }}</span>
@@ -50,7 +23,7 @@
         </div>
 
         <div class="stat-card">
-          <div class="stat-icon success-bg">📅</div>
+          <div class="stat-icon success-bg"><i class="pi pi-calendar"></i></div>
           <div class="stat-details">
             <span class="stat-label">{{ 'DOCTOR.APPOINTMENTS' | translate }}</span>
             <span class="stat-value">{{ medicalStats.upcomingAppointments }}</span>
@@ -142,7 +115,7 @@
                         <option value="">{{ 'DOCTOR.ASSIGN' | translate }}</option>
                         <option *ngFor="let s of availableCaregivers" [value]="s.id">{{ s.firstName }} {{ s.lastName }}</option>
                       </select>
-                      <button class="icon-btn-sm" (click)="onSendInstructions(patient.id)" [title]="'DOCTOR.SEND_INSTRUCTIONS' | translate">📝</button>
+                      <button class="icon-btn-sm" (click)="onSendInstructions(patient.id)" [title]="'DOCTOR.SEND_INSTRUCTIONS' | translate"><i class="pi pi-file-edit"></i></button>
                     </div>
                   </td>
                 </tr>
@@ -181,19 +154,17 @@
       <!-- Quick Actions -->
       <section class="quick-actions-section">
         <div class="action-card">
-          <div class="action-icon">🔔</div>
+          <div class="action-icon"><i class="pi pi-bell"></i></div>
           <h4>{{ 'DOCTOR.CUSTOM_ALERTS' | translate }}</h4>
           <p>{{ 'DOCTOR.CUSTOM_ALERTS_DESC' | translate }}</p>
           <button class="btn btn-primary">{{ 'COMMON.CONFIGURE' | translate }}</button>
         </div>
 
         <div class="action-card">
-          <div class="action-icon">📚</div>
+          <div class="action-icon"><i class="pi pi-book"></i></div>
           <h4>{{ 'DOCTOR.KNOWLEDGE_BASE' | translate }}</h4>
           <p>{{ 'DOCTOR.KNOWLEDGE_BASE_DESC' | translate }}</p>
           <button class="btn btn-primary">{{ 'COMMON.CONSULT' | translate }}</button>
         </div>
       </section>
-    </main>
-  </div>
-</div>
+</main>

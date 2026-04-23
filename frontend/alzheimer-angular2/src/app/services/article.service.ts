@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Article } from '../models/article.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ArticleService {
-    private apiUrl = 'http://localhost:8081/api/articles';
+    private apiUrl = `${environment.apiUrl}/articles`;
 
     constructor(private http: HttpClient) { }
 
@@ -20,17 +21,14 @@ export class ArticleService {
     }
 
     createArticle(article: Article): Observable<Article> {
-        const headers = new HttpHeaders().set('Role', 'Doctor');
-        return this.http.post<Article>(this.apiUrl, article, { headers });
+        return this.http.post<Article>(this.apiUrl, article);
     }
 
     updateArticle(article: Article): Observable<Article> {
-        const headers = new HttpHeaders().set('Role', 'Doctor');
-        return this.http.put<Article>(this.apiUrl, article, { headers });
+        return this.http.put<Article>(this.apiUrl, article);
     }
 
     deleteArticle(id: number): Observable<any> {
-        const headers = new HttpHeaders().set('Role', 'Doctor');
-        return this.http.delete(`${this.apiUrl}/${id}`, { headers, responseType: 'text' });
+        return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
     }
 }

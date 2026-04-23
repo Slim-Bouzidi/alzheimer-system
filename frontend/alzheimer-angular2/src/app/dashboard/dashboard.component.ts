@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { AuthService } from '../auth/auth.service';
-import { User, UserRole } from '../models/user.model';
+import { AuthService, UserProfile } from '../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,9 +17,6 @@ import { User, UserRole } from '../models/user.model';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-  currentUser: User | null = null;
-  UserRole = UserRole;
-
   day: string = '';
   monthYear: string = '';
   weekday: string = '';
@@ -28,18 +24,17 @@ export class DashboardComponent implements OnInit {
   greeting: string = '';
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     private translate: TranslateService
   ) { }
 
-  ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
-    this.updateDateTime();
+  get currentUser(): UserProfile | null {
+    return this.authService.getCurrentUser();
+  }
 
-    if (!this.currentUser) {
-      this.router.navigate(['/login']);
-    }
+  ngOnInit(): void {
+    this.updateDateTime();
   }
 
   private updateDateTime(): void {
@@ -55,19 +50,14 @@ export class DashboardComponent implements OnInit {
     else this.greeting = this.translate.instant('DASHBOARD.GREETING_EVENING');
   }
 
-  getRoleDisplayName(role: UserRole): string {
-    switch (role) {
-      case UserRole.ADMIN:
-        return this.translate.instant('ROLES.ADMIN');
-      case UserRole.AIDANT:
-        return this.translate.instant('ROLES.AIDANT');
-      case UserRole.SOIGNANT:
-        return this.translate.instant('ROLES.SOIGNANT');
-      case UserRole.PATIENT:
-        return this.translate.instant('ROLES.PATIENT');
-      default:
-        return this.translate.instant('ROLES.UNKNOWN');
-    }
+  getRoleDisplayName(): string {
+    if (this.authService.isAdmin()) return this.translate.instant('ROLES.ADMIN');
+    if (this.authService.isDoctor()) return this.translate.instant('ROLES.DOCTOR');
+    if (this.authService.isCaregiver()) return this.translate.instant('ROLES.CAREGIVER');
+    if (this.authService.isSoignant()) return this.translate.instant('ROLES.SOIGNANT');
+    if (this.authService.isLivreur()) return this.translate.instant('ROLES.LIVREUR');
+    if (this.authService.isPatient()) return this.translate.instant('ROLES.PATIENT');
+    return this.translate.instant('ROLES.UNKNOWN');
   }
 
   navigateToProfile(): void {
@@ -78,8 +68,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/settings']);
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

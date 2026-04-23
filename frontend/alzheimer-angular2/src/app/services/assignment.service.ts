@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -23,7 +24,7 @@ export interface AssignmentRequest {
 
 @Injectable({ providedIn: 'root' })
 export class AssignmentService {
-    private api = 'http://localhost:8082/patient-service/api/assignments';
+    private api = `${environment.apiUrl}/assignments`;
 
     constructor(private http: HttpClient) { }
 

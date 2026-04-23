@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { RapportSuiviService } from '../services/rapport-suivi.service';
 import {
   RapportSuiviStructure,
@@ -11,6 +10,7 @@ import {
   MomentPrise
 } from '../models/rapport-suivi-structure.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../services/auth.service';
 
 interface PatientOption {
   id: string;
@@ -21,7 +21,7 @@ interface PatientOption {
 @Component({
   selector: 'app-doctor-report-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './doctor-report-create.component.html',
   styleUrls: ['./doctor-report-create.component.css']
 })
@@ -66,13 +66,19 @@ export class DoctorReportCreateComponent {
   constructor(
     private router: Router,
     private rapportSuiviService: RapportSuiviService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
     const today = new Date();
     this.dateDebut = this.formatDateForInput(today);
     const fin = new Date(today);
     fin.setDate(fin.getDate() + 6);
     this.dateFin = this.formatDateForInput(fin);
+    const profile = this.authService.getCurrentUser();
+    const fullName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ').trim();
+    if (fullName) {
+      this.medecinNom = `Dr. ${fullName}`;
+    }
     this.traitements[0].attentesSuivi = this.translate.instant('DOCTOR_REPORT_CREATE.DEFAULT_MONITORING_EXPECTATION');
     this.attentesGenerales = this.translate.instant('DOCTOR_REPORT_CREATE.DEFAULT_GENERAL_EXPECTATION');
   }
@@ -257,7 +263,7 @@ export class DoctorReportCreateComponent {
     this.router.navigate(['/doctor-reports']);
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

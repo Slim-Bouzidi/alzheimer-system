@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
 import { AppShellComponent } from './layout/app-shell/app-shell.component';
+import { keycloakAuthGuard } from './core/guards/keycloak-auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+
+const ADMIN_ROLES = ['ADMIN'];
 
 export const routes: Routes = [
   {
     path: '',
     component: AppShellComponent,
+    canActivate: [keycloakAuthGuard, roleGuard],
+    data: { roles: ADMIN_ROLES },
     children: [
       { path: '', redirectTo: 'manage-users', pathMatch: 'full' },
       {
@@ -81,8 +87,17 @@ export const routes: Routes = [
       },
       {
         path: 'clinical-reports',
-        loadComponent: () => import('./shared/components/placeholder/placeholder.component').then(m => m.PlaceholderComponent),
-        data: { title: 'Clinical Reports', icon: 'pi-file' }
+        loadComponent: () =>
+          import('./features/clinical-reports/report-list/report-list.component').then(
+            m => m.ReportListComponent
+          ),
+      },
+      {
+        path: 'clinical-reports/new',
+        loadComponent: () =>
+          import('./features/clinical-reports/clinical-form/clinical-form.component').then(
+            m => m.ClinicalFormComponent
+          ),
       },
       {
         path: 'settings',

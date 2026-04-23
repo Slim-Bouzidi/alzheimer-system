@@ -1,0 +1,27 @@
+<div class="doctor-layout">
+  <app-sidebar [role]="'DOCTEUR'" [userName]="doctorName" [userRole]="doctorRole"></app-sidebar>
+
+  <div class="doctor-main">
+    <header class="doctor-topbar">
+      <div class="topbar-copy">
+        <p class="workspace-kicker">Espace securise</p>
+        <h1>{{ pageTitle }}</h1>
+        <p>{{ pageSubtitle }}</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="identity-chip">
+          <span class="identity-name">{{ doctorName }}</span>
+          <span class="identity-role">{{ doctorRole }}</span>
+        </div>
+
+        <button class="logout-btn" type="button" (click)="logout()">
+          <span>Deconnexion</span>
+          <i class="pi pi-sign-out"></i>
+        </button>
+      </div>
+    </header>
+
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<main class="content-area alerts-content">
+            <div class="stats-grid">
+                <div class="stat-card card">
+                    <div class="stat-icon danger-bg"><i class="pi pi-bell"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_ALERTS.ACTIVE_ALERTS' | translate }}</span>
+                        <span class="stat-value">{{ activeAlertsCount }}</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card">
+                    <div class="stat-icon warning-bg"><i class="pi pi-exclamation-triangle"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_ALERTS.URGENT_ALERTS' | translate }}</span>
+                        <span class="stat-value">{{ urgentAlertsCount }}</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card">
+                    <div class="stat-icon info-bg"><i class="pi pi-heart"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_ALERTS.FOLLOW_UP_REQUIRED' | translate }}</span>
+                        <span class="stat-value">{{ followUpCount }}</span>
+                    </div>
+                </div>
+
+                <div class="stat-card card">
+                    <div class="stat-icon primary-bg"><i class="pi pi-clock"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">{{ 'DOCTOR_ALERTS.LAST_24H' | translate }}</span>
+                        <span class="stat-value">{{ alerts.length }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card filters-card">
+                <div class="filters-row">
+                    <div class="search-box">
+                        <i class="pi pi-search search-icon"></i>
+                        <input
+                            type="text"
+                            [(ngModel)]="searchQuery"
+                            [placeholder]="'DOCTOR_ALERTS.SEARCH_PLACEHOLDER' | translate"
+                        >
+                    </div>
+
+                    <div class="filter-tabs">
+                        <button class="filter-tab" type="button" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">
+                            {{ 'DOCTOR_ALERTS.FILTER_ALL' | translate }}
+                        </button>
+                        <button class="filter-tab" type="button" [class.active]="activeFilter === 'urgent'" (click)="setFilter('urgent')">
+                            {{ 'DOCTOR_ALERTS.FILTER_URGENT' | translate }}
+                        </button>
+                        <button class="filter-tab" type="button" [class.active]="activeFilter === 'warning'" (click)="setFilter('warning')">
+                            {{ 'DOCTOR_ALERTS.FILTER_WARNING' | translate }}
+                        </button>
+                        <button class="filter-tab" type="button" [class.active]="activeFilter === 'info'" (click)="setFilter('info')">
+                            {{ 'DOCTOR_ALERTS.FILTER_INFO' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alerts-list" *ngIf="filteredAlerts.length > 0; else emptyState">
+                <article class="card alert-card" *ngFor="let alert of filteredAlerts" [ngClass]="getLevelClass(alert.level)">
+                    <div class="alert-header-row">
+                        <div class="alert-meta">
+                            <span class="badge" [ngClass]="getLevelClass(alert.level)">{{ getLevelLabel(alert.level) | translate }}</span>
+                            <span class="time-label">{{ alert.timeLabel }}</span>
+                        </div>
+                        <span class="reviewed-pill" *ngIf="alert.reviewed">{{ 'DOCTOR_ALERTS.REVIEWED_LABEL' | translate }}</span>
+                    </div>
+
+                    <div class="alert-body">
+                        <h3>{{ alert.message }}</h3>
+                        <p><strong>{{ 'DOCTOR_ALERTS.PATIENT_LABEL' | translate }}:</strong> {{ alert.patientName }}</p>
+                        <p><strong>{{ 'DOCTOR_ALERTS.ACTION_REQUIRED' | translate }}:</strong> {{ alert.action }}</p>
+                    </div>
+
+                    <div class="alert-actions">
+                        <button class="btn btn-secondary" type="button" (click)="openPatientFile()">
+                            {{ 'DOCTOR_ALERTS.VIEW_PATIENT' | translate }}
+                        </button>
+                        <button class="btn btn-outline" type="button" (click)="openReports()">
+                            {{ 'DOCTOR_ALERTS.GO_TO_REPORTS' | translate }}
+                        </button>
+                        <button class="btn btn-primary" type="button" (click)="markReviewed(alert)" [disabled]="alert.reviewed">
+                            {{ 'DOCTOR_ALERTS.MARK_REVIEWED' | translate }}
+                        </button>
+                    </div>
+                </article>
+            </div>
+
+            <ng-template #emptyState>
+                <div class="card empty-state">
+                    <i class="pi pi-check-circle empty-icon"></i>
+                    <p>{{ 'DOCTOR_ALERTS.NO_ALERTS' | translate }}</p>
+                </div>
+            </ng-template>
+</main>

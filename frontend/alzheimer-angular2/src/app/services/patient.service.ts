@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subject, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -59,46 +59,33 @@ export class PatientService {
     this.refreshSubject.next();
   }
 
-  // Headers pour les requêtes
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
-    });
-  }
-
   // CRUD Operations
 
   // Lire tous les patients
   getAll(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/allPatient`, {
-      headers: this.getHeaders()
-    });
+    return this.http.get<Patient[]>(`${this.baseUrl}/allPatient`);
   }
 
   // Lire un patient par ID
   getById(id: number): Observable<Patient> {
-    return this.http.get<Patient>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.get<Patient>(`${this.baseUrl}/${id}`);
   }
 
   // Créer un nouveau patient (objet adapté au backend Spring)
   create(patient: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/addPatient`, patient, {
-      headers: this.getHeaders()
-    }).pipe(tap(() => this.triggerRefresh()));
+    return this.http.post<any>(`${this.baseUrl}/addPatient`, patient)
+      .pipe(tap(() => this.triggerRefresh()));
   }
 
   // Mettre à jour un patient
   update(id: number, patient: Partial<Patient> | Record<string, any>): Observable<Patient> {
-    return this.http.put<Patient>(`${this.baseUrl}/update`, patient, { headers: this.getHeaders() })
+    return this.http.put<Patient>(`${this.baseUrl}/update`, patient)
       .pipe(tap(() => this.triggerRefresh()));
   }
 
   // Supprimer un patient
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`, { headers: this.getHeaders() })
+    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
       .pipe(tap(() => this.triggerRefresh()));
   }
 
@@ -106,50 +93,45 @@ export class PatientService {
 
   // Rechercher des patients par nom
   searchByName(nom: string): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/search?nom=${nom}`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${this.baseUrl}/search?nom=${nom}`);
   }
 
   // Obtenir les patients actifs
   getActivePatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/actifs`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${this.baseUrl}/actifs`);
   }
 
   // Obtenir les patients par statut
   getByStatus(status: string): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/status/${status}`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${this.baseUrl}/status/${status}`);
   }
 
   // Mettre à jour le statut d'un patient
   updateStatus(id: number, status: string): Observable<Patient> {
-    return this.http.patch<Patient>(`${this.baseUrl}/${id}/status`, { status }, { headers: this.getHeaders() });
+    return this.http.patch<Patient>(`${this.baseUrl}/${id}/status`, { status });
   }
 
   // Obtenir les patients triés par statut (NOUVEAU)
   getPatientsSortedByStatus(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/sortedByStatus`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${this.baseUrl}/sortedByStatus`);
   }
 
   // Obtenir le nombre d'interventions du mois
   getInterventionsMois(id: number): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/${id}/interventions-mois`, { headers: this.getHeaders() });
+    return this.http.get<number>(`${this.baseUrl}/${id}/interventions-mois`);
   }
 
   assignerSoignant(patientId: number, soignantId: number | null): Observable<Patient> {
-    return this.http.patch<Patient>(`${this.baseUrl}/${patientId}/assigner-soignant`,
-      { soignantId }, { headers: this.getHeaders() });
+    return this.http.patch<Patient>(`${this.baseUrl}/${patientId}/assigner-soignant`, { soignantId });
   }
 
   getBySoignant(soignantId: number): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/soignant/${soignantId}`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${this.baseUrl}/soignant/${soignantId}`);
   }
 
   // Télécharger le PDF des traitements d'un patient
   downloadTreatmentsPdf(id: number): Observable<Blob> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      ...(token && { 'Authorization': `Bearer ${token}` })
-    });
-    return this.http.get(`${this.baseUrl}/${id}/treatments/pdf`, { headers, responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/${id}/treatments/pdf`, { responseType: 'blob' });
   }
 
   // Gestion des erreurs
@@ -157,4 +139,35 @@ export class PatientService {
     console.error('PatientService Error:', error);
     throw error;
   }
+
+  // Patient self-service profile (cognitive-service /api/patients/me)
+  getMe(): Observable<PatientProfile> {
+    return this.http.get<PatientProfile>(`${environment.apiUrl}/patients/me`);
+  }
+
+  updateMe(profile: PatientProfile): Observable<PatientProfile> {
+    return this.http.post<PatientProfile>(`${environment.apiUrl}/patients/me`, profile);
+  }
+}
+
+export interface PatientProfile {
+  id?: number;
+  keycloakId: string;
+  firstName: string;
+  lastName: string;
+  age: number;
+  bmi?: number;
+  systolicBP?: number;
+  diastolicBP?: number;
+  heartRate?: number;
+  bloodSugar?: number;
+  cholesterolTotal?: number;
+  smokingStatus?: string;
+  alcoholConsumption?: string;
+  physicalActivity?: number;
+  dietQuality?: number;
+  sleepQuality?: number;
+  familyHistory?: boolean;
+  diabetes?: boolean;
+  hypertension?: boolean;
 }

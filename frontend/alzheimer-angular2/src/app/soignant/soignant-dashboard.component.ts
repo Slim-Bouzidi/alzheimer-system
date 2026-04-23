@@ -13,6 +13,7 @@ import { NotificationTache } from '../models/notification-tache.model';
 import { FormulaireSuiviQuotidien } from '../models/suivi-quotidien.model';
 import { RapportHebdomadaire } from '../models/rapport-hebdo.model';
 import { EvenementAgenda, StatutAgenda } from '../models/agenda.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-soignant-dashboard',
@@ -80,10 +81,12 @@ export class SoignantDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private soignantService: SoignantService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
+    this.soignantName = this.authService.getDisplayName(false);
     this.refresh();
     this.intervalId = setInterval(() => {
       this.currentDate = new Date();
@@ -255,8 +258,8 @@ export class SoignantDashboardComponent implements OnInit, OnDestroy {
   // SOS / Urgence
 
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 
   isRappelMedicament = isRappelMedicament;

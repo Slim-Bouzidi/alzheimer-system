@@ -2,32 +2,52 @@
     <app-sidebar role="PATIENT" [userName]="patientName" userRole="Patient"></app-sidebar>
 
     <div class="main-wrapper">
-        <!-- Top Navigation (Simplified since Sidebar handles nav) -->
         <header class="topbar">
-            <div class="page-title">
-                <h1>Tableau de bord Patient</h1>
+            <div class="topbar-copy">
+                <p class="eyebrow">Patient workspace</p>
+                <h1>Daily care overview</h1>
+                <p>Keep appointments, medication, and emergency access in one calm dashboard.</p>
             </div>
-            <div class="user-actions">
-                <button class="btn-icon" title="Notifications">🔔 <span class="badge">2</span></button>
-                <button class="sos-btn-small" (click)="triggerSOS()">🚨 SOS</button>
+            <div class="topbar-actions">
+                <button class="ghost-btn" (click)="openRoute('/patient-appointments')">
+                    <i class="pi pi-calendar"></i>
+                    Upcoming visits
+                </button>
+                <button class="sos-btn-small" (click)="triggerSOS()">
+                    <i class="pi pi-bell"></i>
+                    Emergency
+                </button>
             </div>
         </header>
 
         <main class="content-area">
-            <!-- Welcome Header -->
-            <div class="welcome-header">
-                <div class="greeting">
-                    <h2>Bonjour, {{ patientName.split(' ')[0] }} 👋</h2>
-                    <p class="date-display">{{ currentDate | date:'EEEE d MMMM' }}</p>
+            <section class="hero-card">
+                <div>
+                    <p class="hero-kicker">Bonjour, {{ patientName.split(' ')[0] }}</p>
+                    <h2>Your plan for {{ currentDate | date:'EEEE, MMMM d' }}</h2>
+                    <p class="hero-text">The essentials are prepared for you: medication reminders, your next appointment, and the fastest path to support.</p>
                 </div>
-            </div>
+                <div class="hero-summary">
+                    <span class="summary-label">Medication progress</span>
+                    <strong>{{ completedMedications }} / {{ medications.length }}</strong>
+                </div>
+            </section>
+
+            <section class="highlights-grid">
+                <article class="highlight-card" *ngFor="let item of careHighlights" [ngClass]="item.tone">
+                    <div class="highlight-icon"><i class="pi" [ngClass]="item.icon"></i></div>
+                    <div>
+                        <span>{{ item.label }}</span>
+                        <strong>{{ item.value }}</strong>
+                    </div>
+                </article>
+            </section>
 
             <div class="dashboard-grid">
-                <!-- Medications Section -->
                 <section class="card medication-card">
                     <div class="card-header">
-                        <h2>💊 Médicaments du jour</h2>
-                        <span class="badge-status">2 / 4 Pris</span>
+                        <h2>Medication schedule</h2>
+                        <span class="badge-status">{{ completedMedications }} / {{ medications.length }} completed</span>
                     </div>
                     <div class="medication-timeline">
                         <div class="med-item" *ngFor="let med of medications" [class.taken]="med.taken">
@@ -35,21 +55,22 @@
                             <div class="med-info">
                                 <span class="med-name">{{ med.name }}</span>
                                 <span class="med-dose">{{ med.dose }}</span>
+                                <span class="med-helper">{{ med.helper }}</span>
                             </div>
                             <div class="med-status">
-                                <span class="check-icon" *ngIf="med.taken">✅</span>
-                                <span class="pending-icon" *ngIf="!med.taken">🕒</span>
+                                <i class="pi pi-check-circle check-icon" *ngIf="med.taken"></i>
+                                <i class="pi pi-clock pending-icon" *ngIf="!med.taken"></i>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Right Column: Appointment & Vitals -->
                 <div class="side-column">
-
-                    <!-- Next Appointment -->
                     <section class="card appointment-card">
-                        <h2>📅 Prochain Rendez-vous</h2>
+                        <div class="section-heading">
+                            <h2>Next appointment</h2>
+                            <button class="text-link" (click)="openRoute('/patient-appointments')">Open calendar</button>
+                        </div>
                         <div class="appointment-details">
                             <div class="appt-date">
                                 <span class="day">{{ nextAppointment.date }}</span>
@@ -58,33 +79,44 @@
                             <div class="appt-info">
                                 <span class="doctor-name">{{ nextAppointment.doctor }}</span>
                                 <span class="specialty">{{ nextAppointment.specialty }}</span>
-                                <span class="location">📍 {{ nextAppointment.location }}</span>
+                                <span class="location"><i class="pi pi-map-marker"></i> {{ nextAppointment.location }}</span>
+                                <p class="appointment-note">{{ nextAppointment.note }}</p>
                             </div>
                         </div>
-                        <button class="btn-primary-outline" (click)="contactDoctor()">Contacter</button>
+                        <button class="btn-primary-outline" (click)="contactDoctor()">Contact clinic</button>
                     </section>
 
-                    <!-- Vitals Summary -->
-                    <section class="card vitals-card">
-                        <h2>💗 Mes Constantes</h2>
-                        <div class="vitals-grid">
-                            <div class="vital-item">
-                                <span class="vital-label">Rythme Cardiaque</span>
-                                <span class="vital-value">{{ vitals.heartRate }} <small>bpm</small></span>
-                            </div>
-                            <div class="vital-item">
-                                <span class="vital-label">Tension</span>
-                                <span class="vital-value">{{ vitals.bloodPressure }}</span>
-                            </div>
-                            <div class="vital-item">
-                                <span class="vital-label">Poids</span>
-                                <span class="vital-value">{{ vitals.weight }}</span>
-                            </div>
+                    <section class="card wellness-card">
+                        <div class="section-heading">
+                            <h2>Wellness snapshot</h2>
+                            <button class="text-link" (click)="openRoute('/patient-exercises')">View routines</button>
+                        </div>
+                        <div class="wellness-grid">
+                            <article class="wellness-item" *ngFor="let card of wellnessCards">
+                                <i class="pi" [ngClass]="card.icon"></i>
+                                <div>
+                                    <span>{{ card.label }}</span>
+                                    <strong>{{ card.value }}</strong>
+                                    <small>{{ card.note }}</small>
+                                </div>
+                            </article>
                         </div>
                     </section>
-
                 </div>
             </div>
+
+            <section class="quick-actions-card">
+                <div class="section-heading">
+                    <h2>Quick actions</h2>
+                    <button class="text-link" (click)="logout()">Sign out</button>
+                </div>
+                <div class="quick-actions-grid">
+                    <button class="quick-action" *ngFor="let action of quickActions" (click)="openRoute(action.route)">
+                        <i class="pi" [ngClass]="action.icon"></i>
+                        <span>{{ action.label }}</span>
+                    </button>
+                </div>
+            </section>
         </main>
     </div>
 </div>

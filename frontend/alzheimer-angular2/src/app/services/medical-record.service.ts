@@ -54,6 +54,14 @@ export class MedicalRecordService {
     );
   }
 
+  getAll(): Observable<MedicalRecord[]> {
+    return this.http.get<MedicalRecord[]>(`${this.baseUrl}/allMedicalRecord`, { headers: this.getHeaders() });
+  }
+
+  getById(id: number): Observable<MedicalRecord> {
+    return this.http.get<MedicalRecord>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
   update(record: MedicalRecord): Observable<MedicalRecord> {
     return this.http.put<MedicalRecord>(
       `${this.baseUrl}/update`,

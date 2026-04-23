@@ -23,13 +23,12 @@ export interface CreateMemberBody {
 
 @Injectable({ providedIn: 'root' })
 export class MembersService {
-  /** Full base URL: /api/members (proxy forwards /api -> http://localhost:8082) */
+  /** Support-network members are always accessed through the gateway-relative /api surface. */
   private baseUrl = `${MEMBERS_API_BASE}/members`;
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<SupportMember[]> {
-    console.log('Calling API:', this.baseUrl);
     return this.http.get<SupportMember[]>(this.baseUrl, { headers: supportNetworkHttpHeaders() });
   }
 
@@ -45,7 +44,6 @@ export class MembersService {
       notes: member.notes || undefined,
       skills: member.skills?.length ? [...member.skills] : undefined,
     };
-    console.log('Calling API:', this.baseUrl);
     return this.http.post<SupportMember>(this.baseUrl, body, { headers: supportNetworkHttpHeaders() });
   }
 
@@ -61,12 +59,10 @@ export class MembersService {
       notes: member.notes || undefined,
       skills: member.skills != null ? [...member.skills] : undefined,
     };
-    console.log('Calling API:', `${this.baseUrl}/${id}`);
     return this.http.put<SupportMember>(`${this.baseUrl}/${id}`, body, { headers: supportNetworkHttpHeaders() });
   }
 
   delete(id: number): Observable<void> {
-    console.log('Calling API:', `${this.baseUrl}/${id}`);
     return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: supportNetworkHttpHeaders() });
   }
 }

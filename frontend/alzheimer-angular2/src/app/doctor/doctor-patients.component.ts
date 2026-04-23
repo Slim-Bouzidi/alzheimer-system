@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PatientService, Patient } from '../services/patient.service';
 import { UserService, User } from '../services/user.service';
 import { EmergencyContactService } from '../services/emergency-contact.service';
 import { MedicalRecordService } from '../services/medical-record.service';
 import { TreatmentService } from '../services/treatment.service';
-import { TranslateFallbackPipe } from '../shared/pipes/translate-fallback.pipe';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-doctor-patients',
     standalone: true,
-    imports: [CommonModule, FormsModule, SidebarComponent, TranslateFallbackPipe],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './doctor-patients.component.html',
     styleUrls: ['./doctor-patients.component.css']
 })
@@ -90,7 +90,9 @@ export class DoctorPatientsComponent implements OnInit {
         private userService: UserService,
         private emergencyContactService: EmergencyContactService,
         private medicalRecordService: MedicalRecordService,
-        private treatmentService: TreatmentService
+        private treatmentService: TreatmentService,
+        private authService: AuthService,
+        private translate: TranslateService
     ) { }
 
     ngOnInit(): void {
@@ -102,7 +104,6 @@ export class DoctorPatientsComponent implements OnInit {
         this.userService.getByRole('SOIGNANT').subscribe({
             next: (soignants) => {
                 this.soignants = soignants;
-                console.log('Soignants chargés:', soignants);
             },
             error: (err) => console.error('Erreur chargement soignants:', err)
         });
@@ -170,7 +171,6 @@ export class DoctorPatientsComponent implements OnInit {
 
     // Données mock temporaires (à remplacer par le backend)
     private loadMockData(): void {
-        console.log('Chargement des données mock en attente du backend Spring Boot...');
         this.patients = [
             {
                 id: 1,
@@ -274,7 +274,6 @@ export class DoctorPatientsComponent implements OnInit {
             }
         ];
         this.filteredPatients = [...this.patients];
-        console.log('Données mock chargées. Patients disponibles:', this.patients.length);
     }
 
     filterPatients(event: any): void {
@@ -307,10 +306,28 @@ export class DoctorPatientsComponent implements OnInit {
 
     getStatusLabel(status: string | undefined): string {
         switch ((status || '').toLowerCase()) {
-            case 'high-risk': return 'High risk';
-            case 'attention': return 'Surveillance';
-            case 'stable': return 'Stable';
-            default: return status || 'Stable';
+            case 'high-risk':
+                return this.translate.instant('DOCTOR.STATUS_HIGH_RISK');
+            case 'surveillance':
+            case 'attention':
+                return this.translate.instant('DOCTOR.STATUS_MONITORING');
+            case 'stable':
+                return this.translate.instant('DOCTOR.STATUS_STABLE');
+            default:
+                return status || this.translate.instant('DOCTOR.STATUS_STABLE');
+        }
+    }
+
+    getGenderLabel(gender: string | undefined): string {
+        switch ((gender || '').toUpperCase()) {
+            case 'M':
+            case 'MALE':
+                return this.translate.instant('DOCTOR.GENDER_MALE');
+            case 'F':
+            case 'FEMALE':
+                return this.translate.instant('DOCTOR.GENDER_FEMALE');
+            default:
+                return gender || this.translate.instant('COMMON.UNKNOWN');
         }
     }
 
@@ -328,7 +345,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.patientService.delete(patientId).subscribe({
             next: () => {
-                console.log(`Patient ${patientId} supprimé avec succès`);
                 // Retirer le patient de la liste locale
                 this.patients = this.patients.filter(p => p.id !== patientId);
                 this.filteredPatients = this.filteredPatients.filter(p => p.id !== patientId);
@@ -371,7 +387,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.patientService.update(patient.id, updatedPatient).subscribe({
             next: (response: any) => {
-                console.log('Statut du patient mis à jour:', response);
                 patient.status = newStatus;
                 patient.riskScore = response.riskScore;
                 patient.riskLevel = response.riskLevel;
@@ -395,8 +410,8 @@ export class DoctorPatientsComponent implements OnInit {
         }
     }
 
-    logout(): void {
-        this.router.navigate(['/test']);
+    async logout(): Promise<void> {
+        await this.authService.logout();
     }
 
     exportTreatmentsPdf(patient: Patient): void {
@@ -458,7 +473,7 @@ export class DoctorPatientsComponent implements OnInit {
             phone: this.newPatient.phone || null,
             address: this.newPatient.address || null,
             familyHistoryAlzheimer: !!this.newPatient.familyHistoryAlzheimer,
-            status: this.newPatient.status || 'active',
+            status: this.newPatient.status === 'surveillance' ? 'attention' : (this.newPatient.status || 'stable'),
             soignantId: 1  // Always 1 as specified
         };
 
@@ -466,7 +481,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.patientService.create(patientBody).subscribe({
             next: (createdPatient: any) => {
-                console.log('Patient created:', createdPatient);
                 alert('Patient added successfully.');
                 this.isLoading = false;
 
@@ -505,7 +519,6 @@ export class DoctorPatientsComponent implements OnInit {
                         );
                     }
                 }
-                console.log('Soignant assigné avec succès:', updated);
             },
             error: (err) => {
                 console.error('Erreur assignation soignant:', err);
@@ -515,7 +528,7 @@ export class DoctorPatientsComponent implements OnInit {
     }
 
     getSoignantName(patient: Patient): string {
-        return patient.soignant?.nom || 'Non assigné';
+        return patient.soignant?.nom || this.translate.instant('COMMON.NOT_ASSIGNED');
     }
 
     // Treatment Management
@@ -574,7 +587,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.treatmentService.createFromDTO(treatmentBody).subscribe({
             next: (createdTreatment: any) => {
-                console.log('Treatment created:', createdTreatment);
                 alert('Treatment added successfully.');
 
                 // Update the patient's treatments list
@@ -604,7 +616,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.treatmentService.delete(treatment.idTreatment).subscribe({
             next: () => {
-                console.log('Treatment deleted successfully');
                 // Remove from list
                 if (patient.treatments) {
                     patient.treatments = patient.treatments.filter(
@@ -649,7 +660,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.treatmentService.update(updateBody).subscribe({
             next: (updatedTreatment: any) => {
-                console.log('Treatment updated:', updatedTreatment);
                 if (patient.treatments) {
                     const index = patient.treatments.findIndex((t: any) => t.idTreatment === updatedTreatment.idTreatment);
                     if (index !== -1) {
@@ -718,7 +728,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.medicalRecordService.createFromDTO(recordBody).subscribe({
             next: (createdRecord: any) => {
-                console.log('Medical record created:', createdRecord);
                 alert('Medical record added successfully.');
 
                 // Update the patient's medical records list
@@ -748,7 +757,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.medicalRecordService.delete(record.idRecord).subscribe({
             next: () => {
-                console.log('Medical record deleted successfully');
                 // Remove from list
                 if (patient.medicalRecords) {
                     patient.medicalRecords = patient.medicalRecords.filter(
@@ -795,7 +803,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.medicalRecordService.update(updateBody).subscribe({
             next: (updatedRecord: any) => {
-                console.log('Medical record updated:', updatedRecord);
 
                 // Mettre à jour la ligne dans le tableau front
                 if (patient.medicalRecords) {
@@ -868,7 +875,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.emergencyContactService.createFromDTO(contactBody).subscribe({
             next: (createdContact: any) => {
-                console.log('Emergency contact created:', createdContact);
                 alert('Emergency contact added successfully.');
 
                 // Update the patient's emergency contacts list
@@ -898,7 +904,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.emergencyContactService.delete(contact.idContact).subscribe({
             next: () => {
-                console.log('Emergency contact deleted successfully');
                 // Remove from list
                 if (patient.emergencyContacts) {
                     patient.emergencyContacts = patient.emergencyContacts.filter(
@@ -943,7 +948,6 @@ export class DoctorPatientsComponent implements OnInit {
 
         this.emergencyContactService.update(updateBody).subscribe({
             next: (updatedContact: any) => {
-                console.log('Emergency contact updated:', updatedContact);
                 if (patient.emergencyContacts) {
                     const index = patient.emergencyContacts.findIndex((c: any) => c.idContact === updatedContact.idContact);
                     if (index !== -1) {

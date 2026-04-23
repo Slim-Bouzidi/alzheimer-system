@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   DeliveryStatus,
   DeliveryTask,
@@ -11,7 +12,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class DeliveryTaskService {
   private readonly baseUrl =
-    'http://localhost:8082/patient-service/api/delivery-tasks';
+    `${environment.apiUrl}/delivery-tasks`;
 
   constructor(private http: HttpClient) { }
 

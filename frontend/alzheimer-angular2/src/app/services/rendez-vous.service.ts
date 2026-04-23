@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface RendezVous {
@@ -52,6 +52,7 @@ export interface Patient {
 })
 export class RendezVousService {
   private apiUrl = `${environment.apiUrl}/rendez-vous`;
+  private readonly storageKey = 'doctor.rendezvous.local-store';
 
   constructor(private http: HttpClient) {}
 
@@ -67,58 +68,158 @@ export class RendezVousService {
 
   // Lire tous les rendez-vous
   getAll(): Observable<RendezVous[]> {
-    return this.http.get<RendezVous[]>(this.apiUrl, { headers: this.getHeaders() });
+    return of(this.readStore());
   }
 
   // Lire un rendez-vous par ID
   getById(id: number): Observable<RendezVous> {
-    return this.http.get<RendezVous>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    return of(this.readStore().find((item) => item.id === id) ?? {});
   }
 
   // Créer un nouveau rendez-vous
   create(rendezVous: RendezVous): Observable<RendezVous> {
-    return this.http.post<RendezVous>(this.apiUrl, rendezVous, { headers: this.getHeaders() });
+    const collection = this.readStore();
+    const nextId = collection.reduce((max, item) => Math.max(max, Number(item.id ?? 0)), 0) + 1;
+    const created = { ...rendezVous, id: nextId };
+    collection.push(created);
+    this.writeStore(collection);
+    return of(created);
   }
 
   // Mettre à jour un rendez-vous
   update(id: number, rendezVous: RendezVous): Observable<RendezVous> {
-    return this.http.put<RendezVous>(`${this.apiUrl}/${id}`, rendezVous, { headers: this.getHeaders() });
+    const collection = this.readStore();
+    const index = collection.findIndex((item) => item.id === id);
+    const updated = { ...collection[index], ...rendezVous, id };
+
+    if (index >= 0) {
+      collection[index] = updated;
+    } else {
+      collection.push(updated);
+    }
+
+    this.writeStore(collection);
+    return of(updated);
   }
 
   // Supprimer un rendez-vous
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
+    this.writeStore(this.readStore().filter((item) => item.id !== id));
+    return of(void 0);
   }
 
   // Méthodes supplémentaires utiles
 
   // Obtenir les rendez-vous d'un patient
   getByPatient(patientId: number): Observable<RendezVous[]> {
-    return this.http.get<RendezVous[]>(`${this.apiUrl}/patient/${patientId}`, { headers: this.getHeaders() });
+    return of(this.readStore().filter((item) => Number(item.patient?.id ?? item.patient?.idPatient) === patientId));
   }
 
   // Obtenir les rendez-vous par date
   getByDate(date: string): Observable<RendezVous[]> {
-    return this.http.get<RendezVous[]>(`${this.apiUrl}/date/${date}`, { headers: this.getHeaders() });
+    return of(this.readStore().filter((item) => (item.dateHeure ?? '').startsWith(date)));
   }
 
   // Obtenir les rendez-vous entre deux dates
   getByDateRange(dateDebut: string, dateFin: string): Observable<RendezVous[]> {
-    return this.http.get<RendezVous[]>(`${this.apiUrl}/periode?debut=${dateDebut}&fin=${dateFin}`, { headers: this.getHeaders() });
+    const start = new Date(dateDebut).getTime();
+    const end = new Date(dateFin).getTime();
+    return of(
+      this.readStore().filter((item) => {
+        const timestamp = new Date(item.dateHeure ?? '').getTime();
+        return Number.isFinite(timestamp) && timestamp >= start && timestamp <= end;
+      })
+    );
   }
 
   // Confirmer un rendez-vous
   confirmer(id: number): Observable<RendezVous> {
-    return this.http.put<RendezVous>(`${this.apiUrl}/${id}/confirmer`, {}, { headers: this.getHeaders() });
+    return this.update(id, { statut: 'CONFIRME' });
   }
 
   // Annuler un rendez-vous
   annuler(id: number): Observable<RendezVous> {
-    return this.http.put<RendezVous>(`${this.apiUrl}/${id}/annuler`, {}, { headers: this.getHeaders() });
+    return this.update(id, { statut: 'ANNULE' });
   }
 
   // Obtenir les patients disponibles
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.apiUrl.replace('/rendez-vous', '')}/patients`, { headers: this.getHeaders() });
+    return this.http.get<Patient[]>(`${environment.apiUrl}/patient/allPatient`, { headers: this.getHeaders() });
+  }
+
+  private readStore(): RendezVous[] {
+    if (typeof window === 'undefined') {
+      return this.seedRendezVous();
+    }
+
+    const raw = window.localStorage.getItem(this.storageKey);
+    if (!raw) {
+      const seed = this.seedRendezVous();
+      this.writeStore(seed);
+      return seed;
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as RendezVous[];
+      return Array.isArray(parsed) ? parsed : this.seedRendezVous();
+    } catch {
+      const seed = this.seedRendezVous();
+      this.writeStore(seed);
+      return seed;
+    }
+  }
+
+  private writeStore(collection: RendezVous[]): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.localStorage.setItem(this.storageKey, JSON.stringify(collection));
+  }
+
+  private seedRendezVous(): RendezVous[] {
+    return [
+      {
+        id: 1,
+        patient: { id: 1, nomComplet: 'Marie Dupont' },
+        titre: 'Suivi memoire',
+        type: 'Consultation',
+        statut: 'CONFIRME',
+        lieu: 'Cabinet principal',
+        motif: 'Evaluation cognitive trimestrielle',
+        notes: 'Apporter le carnet de suivi et les derniers bilans.',
+        duree: 45,
+        envoyerRappel: true,
+        dateHeure: '2025-04-22T09:30:00',
+        telephone: '06 12 34 56 78'
+      },
+      {
+        id: 2,
+        patient: { id: 2, nomComplet: 'Jean Martin' },
+        titre: 'Ajustement traitement',
+        type: 'Controle',
+        statut: 'PLANIFIE',
+        lieu: 'Teleconsultation',
+        motif: 'Point sur adherence et fatigue',
+        notes: 'Verifier les effets secondaires signales par l aidant.',
+        duree: 30,
+        envoyerRappel: true,
+        dateHeure: '2025-04-23T14:00:00',
+        telephone: '06 23 45 67 89'
+      },
+      {
+        id: 3,
+        patient: { id: 3, nomComplet: 'Alice Bernard' },
+        titre: 'Visite de routine',
+        type: 'Suivi',
+        statut: 'PLANIFIE',
+        lieu: 'Cabinet secondaire',
+        motif: 'Suivi neurologique mensuel',
+        notes: 'Prevoir un point avec le soignant apres la consultation.',
+        duree: 30,
+        envoyerRappel: true,
+        dateHeure: '2025-04-25T11:15:00',
+        telephone: '06 34 56 78 90'
+      }
+    ];
   }
 }

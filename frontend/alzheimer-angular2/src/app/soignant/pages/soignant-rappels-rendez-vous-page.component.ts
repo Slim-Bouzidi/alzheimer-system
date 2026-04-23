@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SoignantService } from '../soignant.service';
 import { RappelRendezVous, isRappelRendezVous } from '../../models/rappel.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-rappels-rendez-vous-page',
@@ -15,13 +16,13 @@ import { RappelRendezVous, isRappelRendezVous } from '../../models/rappel.model'
 export class SoignantRappelsRendezVousPageComponent implements OnInit {
   rappels: RappelRendezVous[] = [];
 
-  constructor(private soignantService: SoignantService, private router: Router) {}
+  constructor(private soignantService: SoignantService, private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.rappels = this.soignantService.getRappels().filter(isRappelRendezVous);
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

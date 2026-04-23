@@ -1,0 +1,113 @@
+.doctor-layout {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(180deg, #f4f7fb 0%, #eef4fb 100%);
+}
+
+.doctor-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.doctor-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 28px;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid #dbe5f0;
+  backdrop-filter: blur(14px);
+}
+
+.topbar-copy h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0f172a;
+}
+
+.topbar-copy p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.workspace-kicker {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.identity-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.identity-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.identity-role {
+  font-size: 0.86rem;
+  color: #475569;
+}
+
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dbe5f0;
+  border-radius: 14px;
+  padding: 11px 16px;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+@media (max-width: 960px) {
+  .doctor-layout {
+    flex-direction: column;
+  }
+
+  .doctor-topbar {
+    padding: 18px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .identity-chip {
+    align-items: flex-start;
+  }
+}

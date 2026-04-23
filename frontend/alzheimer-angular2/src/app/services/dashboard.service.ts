@@ -14,7 +14,6 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getDashboard(): Observable<NetworkDashboard> {
-    console.log('Calling API:', `${this.baseUrl}/network`);
     return this.http.get<NetworkDashboard>(`${this.baseUrl}/network`, {
       headers: supportNetworkHttpHeaders(),
     });

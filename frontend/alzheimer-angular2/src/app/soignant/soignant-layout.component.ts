@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { SoignantService } from './soignant.service';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
@@ -14,13 +15,16 @@ import { SoignantService } from './soignant.service';
   styleUrls: ['./soignant-layout.component.css']
 })
 export class SoignantLayoutComponent implements OnInit {
-  soignantName = 'Marie Martin';
   alertesNonTraiteesCount = 0;
   rapportsNonLusCount = 0;
   rapportHebdoNonEnvoye = false;
   notificationsCount = 0;
   suiviRempliAujourdhui = false;
-  constructor(private soignantService: SoignantService) { }
+  constructor(private soignantService: SoignantService, private authService: AuthService) { }
+
+  get soignantName(): string {
+    return this.authService.getDisplayName(false);
+  }
 
   ngOnInit(): void {
     this.refreshBadges();

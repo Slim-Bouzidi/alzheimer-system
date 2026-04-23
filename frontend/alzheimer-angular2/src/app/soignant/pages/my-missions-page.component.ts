@@ -277,7 +277,6 @@ export class MyMissionsPageComponent implements OnInit, OnDestroy {
             ? Number((event as Record<string, unknown>)['memberId'])
             : null;
         if (eventMemberId != null && this.selectedMemberId != null && eventMemberId === this.selectedMemberId) {
-          console.log('🔄 WS Mission update:', event);
           this.playNotificationSound();
           this.showSuccess(this.translate.instant('COMMON.NEW_UPDATE_RECEIVED'));
           this.toastr.success('Mission updated');
@@ -292,7 +291,6 @@ export class MyMissionsPageComponent implements OnInit, OnDestroy {
             ? Number((event as Record<string, unknown>)['memberId'])
             : null;
         if (eventMemberId != null && this.selectedMemberId != null && eventMemberId === this.selectedMemberId) {
-          console.log('📩 WS notification:', event);
           this.playNotificationSound();
           const txt =
             event && typeof event === 'object' && 'message' in (event as Record<string, unknown>)

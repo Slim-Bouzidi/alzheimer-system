@@ -2,15 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StaffProfileResponse } from '../core/models/staff-profile.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class StaffService {
-    private api = 'http://localhost:8082/patient-service/api/staff-profiles';
+    private api = `${environment.apiUrl}/staff-profiles`;
 
     constructor(private http: HttpClient) { }
 
     getAll(): Observable<StaffProfileResponse[]> {
-        return this.http.get<StaffProfileResponse[]>(`${this.api}/AllSttaf`);
+        return this.http.get<StaffProfileResponse[]>(this.api);
     }
 
     getActive(): Observable<StaffProfileResponse[]> {
@@ -22,7 +23,7 @@ export class StaffService {
     }
 
     create(data: any): Observable<StaffProfileResponse> {
-        return this.http.post<StaffProfileResponse>(`${this.api}/addstaff`, data);
+        return this.http.post<StaffProfileResponse>(this.api, data);
     }
 
     update(id: number, data: any): Observable<StaffProfileResponse> {

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { AuthService } from '../services/auth.service';
 
 // ── Interfaces ──────────────────────────────────────────────────────────────
 
@@ -77,7 +77,7 @@ export interface FormulaireRendezVous {
 @Component({
   selector: 'app-medical-agenda',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './medical-agenda.component.html',
   styleUrls: ['./medical-agenda.component.css']
 })
@@ -134,7 +134,7 @@ export class MedicalAgendaComponent implements OnInit {
   confirmationMessage = '';
   confirmationType: 'success' | 'warning' | 'error' = 'success';
 
-  constructor(private router: Router, private translate: TranslateService) {}
+  constructor(private router: Router, private translate: TranslateService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.genererCreneaux();
@@ -874,7 +874,7 @@ export class MedicalAgendaComponent implements OnInit {
     this.router.navigate(['/doctor-dashboard']);
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

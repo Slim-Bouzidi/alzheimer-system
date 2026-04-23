@@ -27,9 +27,7 @@ export class TopbarComponent {
   @ViewChild('createDialog') createDialog!: UserCreateDialogComponent;
 
   onAddUser(): void {
-    console.log('[Topbar] Add User clicked');
     if (this.createDialog) {
-      console.log('[Topbar] Calling createDialog.show()');
       this.createDialog.show();
     } else {
       console.error('[Topbar] createDialog is UNDEFINED! Check ViewChild reference.');

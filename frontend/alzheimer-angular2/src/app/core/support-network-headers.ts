@@ -1,8 +1,9 @@
 import { HttpHeaders } from '@angular/common/http';
 
 /**
- * Headers for support-network `/api/**` calls. Demo mode: no Bearer token (avoids 401 / Basic
- * challenges from invalid or unwanted Authorization on gateways).
+ * Base headers for support-network `/api/**` calls.
+ * The Authorization (Bearer) header is injected automatically by KeycloakAuthInterceptor
+ * for all requests matching `/api/**` paths.
  */
 export function supportNetworkHttpHeaders(): HttpHeaders {
   return new HttpHeaders({

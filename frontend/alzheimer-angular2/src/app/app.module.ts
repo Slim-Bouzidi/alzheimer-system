@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -12,8 +12,9 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './services/auth.service';
 import { SupportNetworkApiInterceptor } from './interceptors/support-network-api.interceptor';
+import { KeycloakAuthInterceptor } from './interceptors/keycloak-auth.interceptor';
 
 export function appInitTranslate(translate: TranslateService) {
   return () => {
@@ -40,7 +41,6 @@ export function appInitTranslate(translate: TranslateService) {
     ToastrModule.forRoot()
   ],
   providers: [
-    provideClientHydration(),
     providePrimeNG({
       theme: {
         preset: Aura
@@ -53,6 +53,7 @@ export function appInitTranslate(translate: TranslateService) {
       useValue: { prefix: '/assets/i18n/', suffix: '.json' },
     },
     { provide: APP_INITIALIZER, useFactory: appInitTranslate, deps: [TranslateService], multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: KeycloakAuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: SupportNetworkApiInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

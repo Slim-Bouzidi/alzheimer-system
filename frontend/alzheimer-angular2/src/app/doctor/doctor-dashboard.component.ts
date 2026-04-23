@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { AuthService } from '../auth/auth.service';
-import { User, UserRole } from '../models/user.model';
+import { AuthService, UserProfile } from '../services/auth.service';
 import { PatientService, Patient } from '../services/patient.service';
 
 @Component({
@@ -18,9 +17,6 @@ import { PatientService, Patient } from '../services/patient.service';
   styleUrl: './doctor-dashboard.component.css'
 })
 export class DoctorDashboardComponent implements OnInit {
-  currentUser: User | null = null;
-  UserRole = UserRole;
-
   // Statistiques médicales
   medicalStats = {
     totalPatients: 0,
@@ -90,8 +86,11 @@ export class DoctorDashboardComponent implements OnInit {
     private patientService: PatientService
   ) { }
 
+  get currentUser(): UserProfile | null {
+    return this.authService.getCurrentUser();
+  }
+
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
     this.todayDateLabel = new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     // Charger les patients depuis l'API
@@ -110,21 +109,6 @@ export class DoctorDashboardComponent implements OnInit {
     });
   }
 
-  getRoleDisplayName(role: UserRole): string {
-    switch (role) {
-      case UserRole.ADMIN:
-        return 'Administrateur';
-      case UserRole.AIDANT:
-        return 'Aidant';
-      case UserRole.SOIGNANT:
-        return 'Docteur';
-      case UserRole.PATIENT:
-        return 'Patient';
-      default:
-        return 'Inconnu';
-    }
-  }
-
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
   }
@@ -133,24 +117,20 @@ export class DoctorDashboardComponent implements OnInit {
     this.router.navigate(['/settings']);
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 
   // Actions médicales
   createMedicalReport(patientId: number): void {
-    console.log('Create medical report for patient:', patientId);
     // Ouvrir le formulaire de rapport médical
   }
 
   scheduleAppointment(patientId: number): void {
-    console.log('Schedule appointment for patient:', patientId);
     // Ouvrir le calendrier de prise de RDV
   }
 
   prescribeMedication(patientId: number): void {
-    console.log('Prescribe medication for patient:', patientId);
     // Ouvrir le formulaire de prescription
   }
 

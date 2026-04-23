@@ -18,23 +18,14 @@ function isSupportNetworkApiUrl(url: string): boolean {
   }
 }
 
-/**
- * Demo mode: pass-through only — no TranslateService / no catchError here (avoids NG0200:
- * HttpClient → interceptors → TranslateService → TranslateHttpLoader → HttpClient).
- *
- * Adds {@code X-Requested-With: XMLHttpRequest} and strips {@code Authorization} on /api/** so
- * gateways do not see malformed Bearer tokens.
- */
+/** Adds a harmless XMLHttpRequest hint for proxied API traffic without altering auth headers. */
 @Injectable()
 export class SupportNetworkApiInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!isSupportNetworkApiUrl(req.url)) {
       return next.handle(req);
     }
-    let headers = req.headers.set('X-Requested-With', 'XMLHttpRequest');
-    if (headers.has('Authorization')) {
-      headers = headers.delete('Authorization');
-    }
+    const headers = req.headers.set('X-Requested-With', 'XMLHttpRequest');
     return next.handle(req.clone({ headers }));
   }
 }

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export enum RouteStatus {
     DRAFT = 'DRAFT',
@@ -49,7 +50,7 @@ export interface RouteStopRequest {
 
 @Injectable({ providedIn: 'root' })
 export class RouteService {
-    private api = 'http://localhost:8082/patient-service/api/routes';
+    private api = `${environment.apiUrl}/routes`;
 
     constructor(private http: HttpClient) { }
 

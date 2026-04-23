@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -22,7 +23,7 @@ export interface ShiftRequest {
 
 @Injectable({ providedIn: 'root' })
 export class ShiftService {
-    private api = 'http://localhost:8082/patient-service/api/shifts';
+    private api = `${environment.apiUrl}/shifts`;
 
     constructor(private http: HttpClient) { }
 
@@ -30,8 +31,8 @@ export class ShiftService {
         return this.http.get<ShiftResponse[]>(this.api);
     }
 
-    getByStaff(staffId: number, activeOnly = true): Observable<ShiftResponse[]> {
-        return this.http.get<ShiftResponse[]>(`${this.api}/staff/${staffId}?activeOnly=${activeOnly}`);
+    getByStaff(staffId: number): Observable<ShiftResponse[]> {
+        return this.http.get<ShiftResponse[]>(`${this.api}/staff/${staffId}`);
     }
 
     getByDay(day: string): Observable<ShiftResponse[]> {

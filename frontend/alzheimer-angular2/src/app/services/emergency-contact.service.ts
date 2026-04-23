@@ -51,6 +51,14 @@ export class EmergencyContactService {
     );
   }
 
+  getAll(): Observable<EmergencyContact[]> {
+    return this.http.get<EmergencyContact[]>(`${this.baseUrl}/allEmergencyContact`, { headers: this.getHeaders() });
+  }
+
+  getById(id: number): Observable<EmergencyContact> {
+    return this.http.get<EmergencyContact>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
   update(contact: EmergencyContact): Observable<EmergencyContact> {
     return this.http.put<EmergencyContact>(
       `${this.baseUrl}/update`,

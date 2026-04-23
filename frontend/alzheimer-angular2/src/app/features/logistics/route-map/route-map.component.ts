@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 import * as L from 'leaflet';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
@@ -89,7 +90,7 @@ export class RouteMapComponent implements OnInit, OnDestroy {
     }
 
     private loadRouteData(): void {
-        this.http.get<any>(`/patient-service/api/routes/${this.routeId}`).subscribe({
+        this.http.get<any>(`${environment.apiUrl}/routes/${this.routeId}`).subscribe({
             next: (r) => {
                 this.routeInfo.set(r);
                 this.loadStopsAndStart((r.stops || []) as StopInfo[]);
@@ -135,7 +136,6 @@ export class RouteMapComponent implements OnInit, OnDestroy {
             setTimeout(() => {
                 if (this.map) {
                     this.map.invalidateSize();
-                    console.log(`Map size invalidated at ${delay}ms`);
                 }
             }, delay);
         });
@@ -189,7 +189,6 @@ export class RouteMapComponent implements OnInit, OnDestroy {
         this.pollingSubscription = interval(5000).pipe(
             switchMap(() => this.locationService.getLatest(this.routeId).pipe(catchError(() => of(null))))
         ).subscribe(loc => {
-            console.log('Location update received:', loc);
             if (loc) {
                 this.latestLocation.set(loc);
                 this.updateLivreurMarker(loc.latitude, loc.longitude);
@@ -246,8 +245,6 @@ export class RouteMapComponent implements OnInit, OnDestroy {
             this.isSimulating.set(false);
             return;
         }
-
-        console.log('Starting simulation for route:', this.routeId);
         this.isSimulating.set(true);
 
         const stopsWithCoords = [...this.stops()]

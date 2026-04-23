@@ -760,7 +760,6 @@ export class SoignantService {
    * Assign a patient to a caregiver
    */
   assignerPatient(patientId: string, soignantId: string): Observable<void> {
-    console.log(`Assigning patient ${patientId} to caregiver ${soignantId}`);
     // In real app, update DB. Here we just mock success.
     return of(void 0).pipe(delay(500));
   }

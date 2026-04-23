@@ -3,14 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
 
 @Component({
     selector: 'app-doctor-articles',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, SidebarComponent],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule],
     templateUrl: './doctor-articles.component.html',
     styleUrls: ['./doctor-articles.component.css']
 })

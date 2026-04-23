@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { SoignantService } from '../soignant.service';
 import { RapportSuiviService } from '../../services/rapport-suivi.service';
 import { RapportMedical } from '../../models/rapport-medical.model';
+import { AuthService } from '../../services/auth.service';
 import {
   RapportSuiviStructure,
   toutesDirectivesRapport,
@@ -30,7 +31,8 @@ export class SoignantRapportsPageComponent implements OnInit {
   constructor(
     private soignantService: SoignantService,
     private rapportSuiviService: RapportSuiviService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -98,7 +100,7 @@ export class SoignantRapportsPageComponent implements OnInit {
     });
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { FicheTransmission } from '../../models/fiche-transmission.model';
 import { RapportSuiviService } from '../../services/rapport-suivi.service';
 import { toutesDirectivesRapport } from '../../models/rapport-suivi-structure.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soignant-suivi-page',
@@ -73,7 +74,8 @@ export class SoignantSuiviPageComponent implements OnInit {
   constructor(
     private router: Router,
     private rapportSuiviService: RapportSuiviService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -134,17 +136,16 @@ export class SoignantSuiviPageComponent implements OnInit {
       this.fiche.dateEnvoi = new Date();
       this.submissionSuccess = true;
       // Ici, on appellerait le service pour sauvegarder
-      console.log('Fiche transmise :', this.fiche);
 
       setTimeout(() => {
-        this.router.navigate(['/soignant/dashboard']);
+        this.router.navigate(['/soignant-dashboard']);
       }, 2000);
     } else {
       alert(this.translate.instant('FICHE_TRANSMISSION.SIGN_BEFORE_SUBMIT'));
     }
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

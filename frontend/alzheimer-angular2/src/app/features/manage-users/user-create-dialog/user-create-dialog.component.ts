@@ -180,7 +180,6 @@ export class UserCreateDialogComponent {
   private messageService = inject(MessageService);
 
   show() {
-    console.log('[Dialog] show() called');
     this.user = {
       role: 'Patient',
       firstName: '',
@@ -189,7 +188,6 @@ export class UserCreateDialogComponent {
       email: ''
     };
     this.visible.set(true);
-    console.log('[Dialog] visible signal set to true');
   }
 
   onVisibleChange(val: boolean) {

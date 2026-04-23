@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -14,18 +14,12 @@ export interface User {
   created_at?: string;
 }
 
-export interface LoginRequest {
+export interface UserRegistrationRequest {
   email: string;
   password: string;
-}
-
-export interface LoginResponse {
-  id: number;
-  nom: string;
-  email: string;
+  firstName: string;
+  lastName: string;
   role: string;
-  telephone: string;
-  token: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,44 +28,31 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
-    });
-  }
-
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials);
-  }
-
-  register(user: User): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, user);
+  register(payload: UserRegistrationRequest): Observable<User> {
+    return this.http.post<User>(`${this.baseUrl}/register`, payload);
   }
 
   getAll(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl, { headers: this.getHeaders() });
+    return this.http.get<User[]>(this.baseUrl);
   }
 
   getById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.get<User>(`${this.baseUrl}/${id}`);
   }
 
   getByRole(role: string): Observable<User[]> {
-    return this.http.get<User[]>(`${this.baseUrl}/role/${role}`, { headers: this.getHeaders() });
+    return this.http.get<User[]>(`${this.baseUrl}?role=${encodeURIComponent(role)}`);
   }
 
   create(user: User): Observable<User> {
-    return this.http.post<User>(this.baseUrl, user, { headers: this.getHeaders() });
+    return this.http.post<User>(this.baseUrl, user);
   }
 
   update(id: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.baseUrl}/${id}`, user, { headers: this.getHeaders() });
+    return this.http.put<User>(`${this.baseUrl}/${id}`, user);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

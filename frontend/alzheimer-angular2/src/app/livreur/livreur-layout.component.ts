@@ -9,6 +9,7 @@ import {
   LivreurChatbotService
 } from './livreur-chatbot.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-livreur-layout',
@@ -18,7 +19,6 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./livreur-layout.component.css']
 })
 export class LivreurLayoutComponent {
-  livreurName = 'Livreur';
   chatbotOpen = false;
   isLoading = false;
   errorMessage = '';
@@ -34,13 +34,18 @@ export class LivreurLayoutComponent {
 
   constructor(
     private router: Router,
-    private readonly chatbotService: LivreurChatbotService
+    private readonly chatbotService: LivreurChatbotService,
+    private readonly authService: AuthService
   ) {
     this.loadQuestions();
   }
 
-  logout(): void {
-    this.router.navigate(['/test']);
+  get livreurName(): string {
+    return this.authService.getDisplayName(false);
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 
   toggleChatbot(): void {
@@ -64,8 +69,8 @@ export class LivreurLayoutComponent {
       error: (error: HttpErrorResponse) => {
         this.errorMessage =
           error.status === 404
-            ? 'Endpoint chatbot introuvable (404). Redemarrez patient-service pour charger les nouveaux endpoints.'
-            : 'Erreur de connexion au chatbot. Verifiez que patient-service est demarre.';
+            ? 'Endpoint chatbot introuvable (404). Redemarrez gestion-livreur pour charger les nouveaux endpoints.'
+            : 'Erreur de connexion au chatbot. Verifiez que gestion-livreur est demarre.';
         this.isLoading = false;
       }
     });
@@ -79,7 +84,7 @@ export class LivreurLayoutComponent {
       error: (error: HttpErrorResponse) => {
         this.errorMessage =
           error.status === 404
-            ? 'Questions chatbot introuvables (404). Redemarrez patient-service pour charger les nouveaux endpoints.'
+            ? 'Questions chatbot introuvables (404). Redemarrez gestion-livreur pour charger les nouveaux endpoints.'
             : 'Impossible de charger les questions predefinies.';
       }
     });

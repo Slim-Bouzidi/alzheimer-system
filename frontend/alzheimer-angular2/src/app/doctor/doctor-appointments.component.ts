@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RendezVousService, RendezVous } from '../services/rendez-vous.service';
 import { PatientService, Patient } from '../services/patient.service';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
-import { TranslateFallbackPipe } from '../shared/pipes/translate-fallback.pipe';
+import { AuthService } from '../services/auth.service';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr, 'fr-FR');
@@ -13,7 +13,7 @@ registerLocaleData(localeFr, 'fr-FR');
 @Component({
     selector: 'app-doctor-appointments',
     standalone: true,
-    imports: [CommonModule, FormsModule, SidebarComponent, TranslateFallbackPipe],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './doctor-appointments.component.html',
     styleUrls: ['./doctor-appointments.component.css']
 })
@@ -111,12 +111,10 @@ export class DoctorAppointmentsComponent implements OnInit {
     constructor(
         private router: Router,
         private rendezVousService: RendezVousService,
-        private patientService: PatientService
+        private patientService: PatientService,
+        private authService: AuthService,
+        private translate: TranslateService
     ) { }
-
-    private readonly translate = {
-        instant: (key: string) => key
-    };
 
     ngOnInit(): void {
         this.initializeCalendar();
@@ -129,7 +127,6 @@ export class DoctorAppointmentsComponent implements OnInit {
         this.patientService.getAll().subscribe({
             next: (patients) => {
                 this.patients = patients;
-                console.log('Patients chargés depuis la base de données:', patients);
             },
             error: (err) => {
                 console.error('Erreur chargement patients depuis le backend:', err);
@@ -143,7 +140,6 @@ export class DoctorAppointmentsComponent implements OnInit {
                 this.rendezVous = rendezVous;
                 this.filterRendezVous();
                 this.updateCalendarFromRendezVous();
-                console.log('Rendez-vous chargés depuis la base de données:', rendezVous);
             },
             error: (err) => {
                 console.error('Erreur chargement rendez-vous depuis le backend:', err);
@@ -157,7 +153,6 @@ export class DoctorAppointmentsComponent implements OnInit {
 
     // Données mock temporaires pour les patients
     private loadMockPatients(): void {
-        console.log('Chargement des patients mock en attente du backend...');
         this.patients = [
             { 
                 id: 1, 
@@ -260,12 +255,10 @@ export class DoctorAppointmentsComponent implements OnInit {
                 derniereVisite: '2023-10-05'
             }
         ];
-        console.log('Patients mock chargés. Patients disponibles:', this.patients.length);
     }
 
     // Données mock temporaires pour les rendez-vous
     private loadMockRendezVous(): void {
-        console.log('Chargement des rendez-vous mock en attente du backend...');
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -300,7 +293,6 @@ export class DoctorAppointmentsComponent implements OnInit {
         ];
         this.updateCalendarFromRendezVous();
         this.filterRendezVous();
-        console.log('Rendez-vous mock chargés. Rendez-vous disponibles:', this.rendezVous.length);
     }
 
     // Initialiser le calendrier
@@ -408,8 +400,8 @@ export class DoctorAppointmentsComponent implements OnInit {
         });
     }
 
-    logout(): void {
-        this.router.navigate(['/test']);
+    async logout(): Promise<void> {
+        await this.authService.logout();
     }
 
     selectDate(day: any): void {
@@ -417,17 +409,14 @@ export class DoctorAppointmentsComponent implements OnInit {
         this.calendarDays.forEach(d => d.isSelected = false);
         day.isSelected = true;
         this.selectedDate = day.fullDate;
-        console.log('Selected date:', day.fullDate);
     }
 
     approveRequest(id: number): void {
-        console.log('Approved request:', id);
         this.appointmentRequests = this.appointmentRequests.filter(r => r.id !== id);
         // Mock move to upcoming
     }
 
     declineRequest(id: number): void {
-        console.log('Declined request:', id);
         this.appointmentRequests = this.appointmentRequests.filter(r => r.id !== id);
     }
 
@@ -624,13 +613,13 @@ export class DoctorAppointmentsComponent implements OnInit {
             case 'high-risk': return this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_HIGH_RISK');
             case 'attention': return this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_ATTENTION');
             case 'stable': return this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_STABLE');
-            default: return status;
+            default: return status || this.translate.instant('COMMON.UNKNOWN');
         }
     }
 
     getPatientName(patientId: string): string {
         const patient = this.patients.find(p => p.id?.toString() === patientId);
-        return patient?.nomComplet ?? 'Patient inconnu';
+        return patient?.nomComplet ?? this.translate.instant('DOCTOR_APPOINTMENTS.UNKNOWN_PATIENT');
     }
 
     // Obtenir un patient par son ID
@@ -639,6 +628,15 @@ export class DoctorAppointmentsComponent implements OnInit {
     }
 
     getAppointmentTypeLabel(type: string): string {
+        if (!type) {
+            return this.translate.instant('DOCTOR_APPOINTMENTS.CONSULTATION');
+        }
+
+        if (type.startsWith('DOCTOR_APPOINTMENTS.')) {
+            return this.translate.instant(type);
+        }
+
+        const normalizedType = type.trim().toUpperCase().replace(/[\s-]+/g, '_');
         const types: { [key: string]: string } = {
             'CONSULTATION': this.translate.instant('DOCTOR_APPOINTMENTS.CONSULTATION'),
             'URGENCE': this.translate.instant('DOCTOR_APPOINTMENTS.EMERGENCY'),
@@ -651,17 +649,26 @@ export class DoctorAppointmentsComponent implements OnInit {
             'VISITE_DOMICILE': this.translate.instant('DOCTOR_APPOINTMENTS.HOME_VISIT'),
             'TELECONSULTATION': this.translate.instant('DOCTOR_APPOINTMENTS.TELECONSULTATION')
         };
-        return types[type] || type || '-';
+        return types[normalizedType] || type;
     }
 
     getStatutLabel(statut: string): string {
+        if (!statut) {
+            return this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_PLANNED');
+        }
+
+        if (statut.startsWith('DOCTOR_APPOINTMENTS.')) {
+            return this.translate.instant(statut);
+        }
+
+        const normalizedStatut = statut.trim().toUpperCase().replace(/[\s-]+/g, '_');
         const statuts: { [key: string]: string } = {
             'PLANIFIE': this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_PLANNED'),
             'CONFIRME': this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_CONFIRMED'),
             'TERMINE': this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_COMPLETED'),
             'ANNULE': this.translate.instant('DOCTOR_APPOINTMENTS.STATUS_CANCELLED')
         };
-        return statuts[statut] || statut;
+        return statuts[normalizedStatut] || statut;
     }
 
     updateCalendar(date: string): void {

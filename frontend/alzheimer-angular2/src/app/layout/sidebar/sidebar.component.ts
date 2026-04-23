@@ -79,15 +79,7 @@ export class SidebarComponent {
   ];
 
   onLogout(): void {
-    import('../../keycloak')
-      .then(m => {
-        // Ensure Keycloak logs out and redirects back to the SPA,
-        // which will then trigger a fresh login because of onLoad: 'login-required'
-        m.default.logout({ redirectUri: window.location.origin });
-      })
-      .catch(err => {
-        console.error('Keycloak logout failed', err);
-      });
+    void this.authService.logout();
   }
 
   toggle(): void {

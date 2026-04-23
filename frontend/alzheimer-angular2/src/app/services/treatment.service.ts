@@ -55,6 +55,14 @@ export class TreatmentService {
     );
   }
 
+  getAll(): Observable<Treatment[]> {
+    return this.http.get<Treatment[]>(`${this.baseUrl}/allTreatment`, { headers: this.getHeaders() });
+  }
+
+  getById(id: number): Observable<Treatment> {
+    return this.http.get<Treatment>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+  }
+
   update(treatment: Treatment): Observable<Treatment> {
     return this.http.put<Treatment>(
       `${this.baseUrl}/update`,

@@ -18,25 +18,22 @@ export class PatientSupportLinkService {
 
   constructor(private http: HttpClient) {}
 
-  /** GET /api/patients - list patients (support-network backend) */
+  /** GET /api/support-patients - list patients (support-network backend) */
   getPatients(): Observable<NetworkPatient[]> {
-    console.log('Calling API:', `${this.api}/patients`);
-    return this.http.get<NetworkPatient[]>(`${this.api}/patients`, {
+    return this.http.get<NetworkPatient[]>(`${this.api}/support-patients`, {
       headers: supportNetworkHttpHeaders(),
     });
   }
 
-  /** PUT /api/patients/{id} — update name, zone, WGS84 coordinates (for distance ranking). */
+  /** PUT /api/support-patients/{id} — update name, zone, WGS84 coordinates (for distance ranking). */
   updatePatient(id: number, body: SupportNetworkPatientUpdateDto): Observable<NetworkPatient> {
-    console.log('Calling API:', `${this.api}/patients/${id}`);
-    return this.http.put<NetworkPatient>(`${this.api}/patients/${id}`, body, {
+    return this.http.put<NetworkPatient>(`${this.api}/support-patients/${id}`, body, {
       headers: supportNetworkHttpHeaders(),
     });
   }
 
   /** GET /api/network/patient/{patientId} - links for patient */
   getLinksByPatient(patientId: number): Observable<PatientSupportLink[]> {
-    console.log('Calling API:', `${this.api}/network/patient/${patientId}`);
     return this.http.get<PatientSupportLink[]>(
       `${this.api}/network/patient/${patientId}`,
       { headers: supportNetworkHttpHeaders() }
@@ -45,7 +42,6 @@ export class PatientSupportLinkService {
 
   /** POST /api/network/link - create link (body: LinkCreateDto) */
   createLink(dto: LinkCreateDto): Observable<PatientSupportLink> {
-    console.log('Calling API:', `${this.api}/network/link`);
     return this.http.post<PatientSupportLink>(
       `${this.api}/network/link`,
       dto,
@@ -55,7 +51,6 @@ export class PatientSupportLinkService {
 
   /** PUT /api/network/{linkId} - update link (body: same LinkCreateDto as create) */
   updateLink(linkId: number, dto: LinkCreateDto): Observable<PatientSupportLink> {
-    console.log('Calling API:', `${this.api}/network/${linkId}`);
     return this.http.put<PatientSupportLink>(
       `${this.api}/network/${linkId}`,
       dto,
@@ -65,7 +60,6 @@ export class PatientSupportLinkService {
 
   /** DELETE /api/network/{linkId} */
   deleteLink(linkId: number): Observable<void> {
-    console.log('Calling API:', `${this.api}/network/${linkId}`);
     return this.http.delete<void>(`${this.api}/network/${linkId}`, {
       headers: supportNetworkHttpHeaders(),
     });

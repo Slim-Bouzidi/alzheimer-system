@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { RapportService, Rapport } from '../services/rapport.service';
 import { PatientService, Patient } from '../services/patient.service';
 import { RapportSuiviService } from '../services/rapport-suivi.service';
 import { RapportSuiviStructure } from '../models/rapport-suivi-structure.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-doctor-reports',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, SidebarComponent, TranslateModule],
+    imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
     templateUrl: './doctor-reports.component.html',
     styleUrls: ['./doctor-reports.component.css']
 })
@@ -35,7 +35,8 @@ export class DoctorReportsComponent implements OnInit {
         private rapportService: RapportService,
         private patientService: PatientService,
         private rapportSuiviService: RapportSuiviService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -153,12 +154,11 @@ export class DoctorReportsComponent implements OnInit {
         }
     }
 
-    logout(): void {
-        this.router.navigate(['/test']);
+    async logout(): Promise<void> {
+        await this.authService.logout();
     }
 
     downloadReport(id: number): void {
-        console.log(`Downloading report ${id}...`);
         alert(this.translate.instant('DOCTOR_REPORTS.DOWNLOAD_STARTED'));
     }
 

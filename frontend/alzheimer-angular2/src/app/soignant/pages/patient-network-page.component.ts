@@ -169,7 +169,6 @@ export class PatientNetworkPageComponent implements OnInit, OnDestroy {
     this.loadInitial();
     this.wsSubscriptions.push(
       this.websocketService.onMissionUpdate().subscribe((event) => {
-        console.log('🔄 WS Mission update:', event);
         this.toastr.success('Mission updated');
         this.loadLinks();
         if (this.dispatchHistoryQueried) {
@@ -179,7 +178,6 @@ export class PatientNetworkPageComponent implements OnInit, OnDestroy {
     );
     this.wsSubscriptions.push(
       this.websocketService.onNotification().subscribe((event) => {
-        console.log('📩 WS notification:', event);
         const txt =
           event && typeof event === 'object' && 'message' in (event as Record<string, unknown>)
             ? String((event as Record<string, unknown>)['message'] ?? 'New notification')
@@ -189,7 +187,6 @@ export class PatientNetworkPageComponent implements OnInit, OnDestroy {
     );
     this.wsSubscriptions.push(
       this.websocketService.onDispatchUpdate().subscribe((event) => {
-        console.log('📩 WS dispatch update:', event);
         this.toastr.success('Dispatch updated');
         if (this.dispatchHistoryQueried) {
           this.refreshDispatchHistory();
@@ -354,7 +351,6 @@ export class PatientNetworkPageComponent implements OnInit, OnDestroy {
   /** Placeholder: open patient file/dossier (e.g. navigate to patient file or open modal). */
   openPatientFile(): void {
     const patient = this.patients.find((p) => p.id === this.selectedPatientId);
-    console.log('Open patient file:', patient ?? this.selectedPatientId);
   }
 
   loadLinks(): void {

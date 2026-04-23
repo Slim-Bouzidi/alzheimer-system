@@ -1,7 +1,14 @@
 <aside class="sidebar" [class.role-soignant]="role === 'SOIGNANT'">
-  <div class="brand">
-    <span class="brand-icon">🏥</span>
-    <h2 class="brand-text">{{ 'SIDEBAR.BRAND' | translate }}</h2>
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="logo-box">
+        <i class="pi pi-heart-fill"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">{{ 'SIDEBAR.BRAND' | translate }}</span>
+        <span class="brand-subtitle">Clinical Workspace</span>
+      </div>
+    </div>
   </div>
 
   <!-- Menu SOIGNANT : structure complète -->
@@ -9,7 +16,7 @@
     <nav class="sidebar-nav">
       <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
-        <span class="nav-icon">{{ item.icon }}</span>
+        <i [class]="item.icon + ' nav-icon'"></i>
         <span class="nav-label">{{ item.label | translate }}</span>
         <span *ngIf="getBadgeCount(item.route) > 0" class="nav-badge nav-badge-{{ getBadgeType(item.route) }}">{{
           getBadgeCount(item.route) }}</span>
@@ -21,24 +28,24 @@
       <div class="nav-group">
         <button type="button" class="nav-item nav-item-toggle" (click)="toggleRappelsMenu()"
           [class.open]="rappelsMenuOpen">
-          <span class="nav-icon">⏰</span>
+          <i class="pi pi-clock nav-icon"></i>
           <span class="nav-label">{{ 'SIDEBAR.REMINDERS_MANAGEMENT' | translate }}</span>
           <span class="nav-chevron">{{ rappelsMenuOpen ? '▲' : '▼' }}</span>
         </button>
         <div class="nav-submenu" *ngIf="rappelsMenuOpen">
           <a routerLink="/soignant-rappels-medicaments" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">💊</span>
+            <i class="pi pi-heart nav-icon"></i>
             <span>{{ 'SIDEBAR.MEDICATION_REMINDERS' | translate }}</span>
           </a>
           <a routerLink="/soignant-rappels-repas" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
             class="nav-subitem">
-            <span class="nav-icon">🍽️</span>
+            <i class="pi pi-calendar-clock nav-icon"></i>
             <span>{{ 'SIDEBAR.MEAL_REMINDERS' | translate }}</span>
           </a>
           <a routerLink="/soignant-rappels-rendez-vous" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">📅</span>
+            <i class="pi pi-calendar nav-icon"></i>
             <span>{{ 'SIDEBAR.APPOINTMENT_REMINDERS' | translate }}</span>
           </a>
         </div>
@@ -48,34 +55,34 @@
       <div class="nav-group">
         <button type="button" class="nav-item nav-item-toggle" (click)="toggleNetworkMenu()"
           [class.open]="networkMenuOpen">
-          <span class="nav-icon">🔗</span>
+          <i class="pi pi-sitemap nav-icon"></i>
           <span class="nav-label">{{ 'SIDEBAR.NETWORK_MANAGEMENT' | translate }}</span>
           <span class="nav-chevron">{{ networkMenuOpen ? '▲' : '▼' }}</span>
         </button>
         <div class="nav-submenu" *ngIf="networkMenuOpen">
           <a routerLink="/soignant-dashboard/network/dashboard" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">📊</span>
+            <i class="pi pi-chart-line nav-icon"></i>
             <span>{{ 'SIDEBAR.NETWORK_DASHBOARD' | translate }}</span>
           </a>
           <a routerLink="/soignant-dashboard/network/members" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">👥</span>
+            <i class="pi pi-users nav-icon"></i>
             <span>{{ 'SIDEBAR.NETWORK_MEMBERS' | translate }}</span>
           </a>
           <a routerLink="/soignant-dashboard/network/patient-network" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">🧠</span>
+            <i class="pi pi-heart nav-icon"></i>
             <span>{{ 'SIDEBAR.NETWORK_PATIENT_NETWORK' | translate }}</span>
           </a>
           <a routerLink="/soignant-dashboard/network/availabilities" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">📆</span>
+            <i class="pi pi-calendar nav-icon"></i>
             <span>{{ 'SIDEBAR.NETWORK_AVAILABILITIES' | translate }}</span>
           </a>
           <a routerLink="/soignant-dashboard/network/missions" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }" class="nav-subitem">
-            <span class="nav-icon">🎯</span>
+            <i class="pi pi-send nav-icon"></i>
             <span>{{ 'SIDEBAR.NETWORK_MISSIONS' | translate }}</span>
           </a>
         </div>
@@ -86,23 +93,23 @@
     <!-- Section inférieure : toujours visible -->
     <div class="sidebar-footer">
       <a routerLink="/soignant-notifications" routerLinkActive="active" class="nav-item nav-item-footer">
-        <span class="nav-icon">💬</span>
+        <i class="pi pi-bell nav-icon"></i>
         <span class="nav-label">{{ 'SIDEBAR.NOTIFICATIONS' | translate }}</span>
         <span *ngIf="footerNotificationBadge > 0" class="nav-badge nav-badge-default">{{ footerNotificationBadge }}</span>
       </a>
       <a routerLink="/soignant-parametres" class="nav-item nav-item-footer">
-        <span class="nav-icon">⚙️</span>
+        <i class="pi pi-cog nav-icon"></i>
         <span class="nav-label">{{ 'SIDEBAR.SETTINGS' | translate }}</span>
       </a>
       <a routerLink="/soignant-profil" class="nav-item nav-item-footer">
-        <span class="nav-icon">👤</span>
+        <i class="pi pi-user nav-icon"></i>
         <span class="nav-label">{{ 'SIDEBAR.MY_PROFILE' | translate }}</span>
       </a>
       <div class="user-mini-profile">
-        <div class="avatar">{{ userName.charAt(0) }}</div>
+        <div class="avatar">{{ displayName.charAt(0) }}</div>
         <div class="user-info">
-          <p class="user-name">{{ userName }}</p>
-          <p class="user-role">{{ userRole }}</p>
+          <p class="user-name">{{ displayName }}</p>
+          <p class="user-role">{{ displayRole }}</p>
         </div>
       </div>
     </div>
@@ -113,16 +120,16 @@
     <nav class="sidebar-nav">
       <a *ngFor="let item of menuItems" [routerLink]="item.route" routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
-        <span class="nav-icon">{{ item.icon }}</span>
+        <i [class]="item.icon + ' nav-icon'"></i>
         <span class="nav-label">{{ item.label | translate }}</span>
       </a>
     </nav>
     <div class="sidebar-footer">
       <div class="user-mini-profile">
-        <div class="avatar">{{ userName.charAt(0) }}</div>
+        <div class="avatar">{{ displayName.charAt(0) }}</div>
         <div class="user-info">
-          <p class="user-name">{{ userName }}</p>
-          <p class="user-role">{{ userRole }}</p>
+          <p class="user-name">{{ displayName }}</p>
+          <p class="user-role">{{ displayRole }}</p>
         </div>
       </div>
     </div>
