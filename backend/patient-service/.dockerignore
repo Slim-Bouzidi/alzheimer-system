@@ -1,0 +1,8 @@
+target/*.jar.original
+.idea
+.mvn
+src
+mvnw
+mvnw.cmd
+pom.xml
+Dockerfile

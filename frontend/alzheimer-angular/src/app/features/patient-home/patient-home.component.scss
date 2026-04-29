@@ -43,8 +43,16 @@
   cursor: pointer;
   transition: background 0.2s, transform 0.15s;
 
-  &:hover { background: #4f46e5; transform: translateY(-1px); }
-  &.small { padding: 0.45rem 1rem; font-size: 0.8rem; margin-top: 0.75rem; }
+  &:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+  }
+
+  &.small {
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+  }
 }
 
 // ── Cards ──
@@ -53,7 +61,7 @@
   border-radius: 16px;
   padding: 1.5rem;
   border: 1px solid #f1f5f9;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .card-label {
@@ -74,8 +82,13 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 // ── Top Grid ──
@@ -84,8 +97,13 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1.25rem;
 
-  @media (max-width: 900px) { grid-template-columns: 1fr 1fr; }
-  @media (max-width: 600px) { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // Score Card
@@ -170,14 +188,22 @@
     padding: 1rem 0;
     color: #94a3b8;
 
-    i { font-size: 1.75rem; }
-    p { font-size: 0.82rem; margin: 0; }
+    i {
+      font-size: 1.75rem;
+    }
+
+    p {
+      font-size: 0.82rem;
+      margin: 0;
+    }
   }
 }
 
 // Alerts Card
 .alerts-card {
-  &.has-alerts { border-color: #fee2e2; }
+  &.has-alerts {
+    border-color: #fee2e2;
+  }
 
   .no-alerts {
     display: flex;
@@ -188,7 +214,9 @@
     font-weight: 600;
     padding: 0.5rem 0;
 
-    i { font-size: 1.25rem; }
+    i {
+      font-size: 1.25rem;
+    }
   }
 
   .alerts-summary {
@@ -203,7 +231,9 @@
       color: #f59e0b;
       line-height: 1;
 
-      &.critical { color: #ef4444; }
+      &.critical {
+        color: #ef4444;
+      }
     }
 
     .alert-desc {
@@ -211,8 +241,15 @@
       flex-direction: column;
       gap: 0.2rem;
 
-      strong { font-size: 0.875rem; color: #1e293b; }
-      span { font-size: 0.75rem; color: #64748b; }
+      strong {
+        font-size: 0.875rem;
+        color: #1e293b;
+      }
+
+      span {
+        font-size: 0.75rem;
+        color: #64748b;
+      }
     }
   }
 
@@ -231,12 +268,30 @@
     font-size: 0.75rem;
     line-height: 1.4;
 
-    &.critical { background: #fee2e2; color: #991b1b; }
-    &.high { background: #ffedd5; color: #c2410c; }
-    &.medium { background: #fef9c3; color: #a16207; }
-    &.low { background: #f0fdf4; color: #166534; }
+    &.critical {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-    i { flex-shrink: 0; margin-top: 1px; }
+    &.high {
+      background: #ffedd5;
+      color: #c2410c;
+    }
+
+    &.medium {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    &.low {
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    i {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
   }
 
   .more-alerts {
@@ -257,7 +312,9 @@
     font-size: 0.875rem;
     padding: 0.5rem 0;
 
-    i { font-size: 1.25rem; }
+    i {
+      font-size: 1.25rem;
+    }
   }
 
   .trend-list {
@@ -271,7 +328,10 @@
     align-items: center;
     gap: 0.75rem;
 
-    i.pi { color: #94a3b8; font-size: 0.9rem; }
+    i.pi {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
 
     .t-label {
       flex: 1;
@@ -290,10 +350,25 @@
       padding: 0.2rem 0.6rem;
       border-radius: 999px;
 
-      &.improving { background: #dcfce7; color: #166534; }
-      &.declining { background: #fee2e2; color: #991b1b; }
-      &.stable { background: #f1f5f9; color: #475569; }
-      &.insufficient_data { background: #f1f5f9; color: #94a3b8; }
+      &.improving {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      &.declining {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      &.stable {
+        background: #f1f5f9;
+        color: #475569;
+      }
+
+      &.insufficient_data {
+        background: #f1f5f9;
+        color: #94a3b8;
+      }
     }
   }
 }
@@ -341,7 +416,9 @@
     justify-content: center;
     flex-shrink: 0;
 
-    i { font-size: 1.1rem; }
+    i {
+      font-size: 1.1rem;
+    }
   }
 
   .game-info {
@@ -350,11 +427,22 @@
     flex-direction: column;
     gap: 0.2rem;
 
-    .game-name { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
-    .game-desc { font-size: 0.78rem; color: #94a3b8; }
+    .game-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .game-desc {
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
   }
 
-  .game-arrow { color: #cbd5e1; font-size: 0.8rem; }
+  .game-arrow {
+    color: #cbd5e1;
+    font-size: 0.8rem;
+  }
 }
 
 // ── Bottom Grid ──
@@ -363,7 +451,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 1.25rem;
 
-  @media (max-width: 700px) { grid-template-columns: 1fr; }
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // Activity Card
@@ -376,7 +466,9 @@
     font-size: 0.875rem;
     padding: 0.5rem 0;
 
-    i { font-size: 1.25rem; }
+    i {
+      font-size: 1.25rem;
+    }
   }
 
   .activity-list {
@@ -401,7 +493,10 @@
       justify-content: center;
       flex-shrink: 0;
 
-      i { font-size: 0.85rem; color: #6366f1; }
+      i {
+        font-size: 0.85rem;
+        color: #6366f1;
+      }
     }
 
     .act-info {
@@ -410,8 +505,16 @@
       flex-direction: column;
       gap: 0.1rem;
 
-      .act-name { font-size: 0.82rem; font-weight: 600; color: #334155; }
-      .act-date { font-size: 0.72rem; color: #94a3b8; }
+      .act-name {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #334155;
+      }
+
+      .act-date {
+        font-size: 0.72rem;
+        color: #94a3b8;
+      }
     }
 
     .act-score {
@@ -432,7 +535,9 @@
     font-size: 0.875rem;
     padding: 0.5rem 0;
 
-    i { font-size: 1.25rem; }
+    i {
+      font-size: 1.25rem;
+    }
   }
 
   .health-grid {
@@ -460,7 +565,9 @@
       font-weight: 700;
       color: #1e293b;
 
-      &.flag-yes { color: #ef4444; }
+      &.flag-yes {
+        color: #ef4444;
+      }
     }
   }
 }
@@ -477,5 +584,7 @@
   text-decoration: none;
   margin-top: 0.5rem;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }

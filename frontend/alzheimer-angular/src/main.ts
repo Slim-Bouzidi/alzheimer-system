@@ -54,15 +54,8 @@ keycloak.init({
   checkLoginIframe: false,
   pkceMethod: 'S256'
 }).then(async (authenticated) => {
-  // Sync user if authenticated
   if (authenticated) {
     await syncUserIfNeeded();
-  }
-
-  // If not authenticated and trying to access protected routes, redirect to landing
-  if (!authenticated && !window.location.pathname.includes('/landing') && !window.location.pathname.includes('/register')) {
-    window.location.href = '/landing';
-    return;
   }
 
   bootstrapApplication(AppComponent, appConfig)

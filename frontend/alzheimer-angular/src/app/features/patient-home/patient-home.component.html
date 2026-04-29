@@ -18,7 +18,8 @@
     <div class="card score-card">
       <div class="card-label">Cognitive Health Score</div>
       <ng-container *ngIf="!loadingReport">
-        <ng-container *ngIf="report?.cognitiveScore && report?.cognitiveScore?.category !== 'INSUFFICIENT_DATA'; else noScore">
+        <ng-container
+          *ngIf="report?.cognitiveScore && report?.cognitiveScore?.category !== 'INSUFFICIENT_DATA'; else noScore">
           <div class="score-big" [ngStyle]="{ color: scoreColor }">
             {{ report!.cognitiveScore.overallScore | number:'1.0-0' }}
             <span class="score-max">/100</span>
@@ -64,7 +65,8 @@
           </div>
         </div>
         <div class="alert-list" *ngIf="alertCount > 0">
-          <div class="alert-chip" *ngFor="let a of report!.activeAlerts.slice(0, 3)" [ngClass]="a.severity.toLowerCase()">
+          <div class="alert-chip" *ngFor="let a of report!.activeAlerts.slice(0, 3)"
+            [ngClass]="a.severity.toLowerCase()">
             <i class="pi pi-exclamation-triangle"></i>
             <span>{{ a.message | slice:0:60 }}{{ a.message.length > 60 ? '…' : '' }}</span>
           </div>
@@ -87,7 +89,8 @@
             <i class="pi" [ngClass]="getGameIcon(t.gameType)"></i>
             <span class="t-label">{{ getGameLabel(t.gameType) }}</span>
             <span class="t-badge" [ngClass]="t.trend.toLowerCase()">
-              <i class="pi" [ngClass]="t.trend === 'IMPROVING' ? 'pi-arrow-up-right' : t.trend === 'DECLINING' ? 'pi-arrow-down-right' : 'pi-minus'"></i>
+              <i class="pi"
+                [ngClass]="t.trend === 'IMPROVING' ? 'pi-arrow-up-right' : t.trend === 'DECLINING' ? 'pi-arrow-down-right' : 'pi-minus'"></i>
               {{ t.trend === 'INSUFFICIENT_DATA' ? 'New' : t.trend }}
             </span>
           </div>
@@ -188,7 +191,8 @@
           </div>
           <div class="health-item" *ngIf="profile.familyHistory !== undefined">
             <span class="h-label">Family History</span>
-            <span class="h-val" [class.flag-yes]="profile.familyHistory">{{ profile.familyHistory ? 'Yes' : 'No' }}</span>
+            <span class="h-val" [class.flag-yes]="profile.familyHistory">{{ profile.familyHistory ? 'Yes' : 'No'
+              }}</span>
           </div>
         </div>
         <a class="view-all-btn" routerLink="/profile">Edit profile →</a>

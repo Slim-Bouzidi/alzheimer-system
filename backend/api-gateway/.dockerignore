@@ -1,0 +1,6 @@
+# Ignore everything
+**
+
+# Allow only the JAR and Dockerfile
+!target/*.jar
+!Dockerfile

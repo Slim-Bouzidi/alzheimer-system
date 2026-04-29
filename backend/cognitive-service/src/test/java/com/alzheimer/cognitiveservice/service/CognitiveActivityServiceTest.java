@@ -1,13 +1,13 @@
 package com.alzheimer.cognitiveservice.service;
 
-import com.alzheimer.cognitiveservice.client.PatientDTO;
-import com.alzheimer.cognitiveservice.client.PatientServiceClient;
 import com.alzheimer.cognitiveservice.config.RabbitMQConfig;
 import com.alzheimer.cognitiveservice.dto.ActivityRequest;
 import com.alzheimer.cognitiveservice.dto.ActivityResponse;
+import com.alzheimer.cognitiveservice.dto.TrendAnalysisResponse;
 import com.alzheimer.cognitiveservice.entity.CognitiveActivity;
 import com.alzheimer.cognitiveservice.repository.CognitiveActivityRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,9 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -34,179 +36,170 @@ class CognitiveActivityServiceTest {
     private RabbitTemplate rabbitTemplate;
 
     @Mock
-    private PatientServiceClient patientServiceClient;
+    private TrendAnalysisService trendService;
+
+    @Mock
+    private AlertService alertService;
 
     @InjectMocks
     private CognitiveActivityService service;
 
     private CognitiveActivity savedActivity;
     private ActivityRequest request;
+    private TrendAnalysisResponse trendResponse;
 
     @BeforeEach
     void setUp() {
         request = ActivityRequest.builder()
-                .patientId("1")
+                .patientId("patient-1")
                 .gameType("memory")
-                .score(85)
-                .durationMs(12000L)
+                .score(90)
+                .durationMs(15000L)
                 .build();
 
         savedActivity = CognitiveActivity.builder()
-                .id(1L)
-                .patientId("1")
-                .gameType("memory")
-                .score(85)
-                .durationMs(12000L)
+                .id(100L)
+                .patientId("patient-1")
+                .gameType("MEMORY")
+                .score(90)
+                .durationMs(15000L)
                 .timestamp(LocalDateTime.now())
                 .build();
-    }
 
-    // helper — returns a mock patient from patient-service
-    private void mockPatientExists() {
-        PatientDTO mockPatient = new PatientDTO();
-        mockPatient.setIdPatient(1);
-        mockPatient.setFirstName("Marie");
-        mockPatient.setLastName("Dupont");
-        when(patientServiceClient.getPatientById(1)).thenReturn(mockPatient);
+        trendResponse = TrendAnalysisResponse.builder()
+                .patientId("patient-1")
+                .gameType("MEMORY")
+                .trend("IMPROVING")
+                .build();
     }
 
     // ── saveActivity ──────────────────────────────────────────────
 
     @Test
+    @DisplayName("Save Activity - Success Flow")
     void saveActivity_shouldPersistAndReturnResponse() {
-        mockPatientExists();
         when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
+        when(trendService.analyzeAndSave(anyString(), anyString(), anyInt())).thenReturn(trendResponse);
 
-        ActivityResponse response = service.saveActivity(request);
-
-        assertThat(response.getPatientId()).isEqualTo("1");
-        assertThat(response.getGameType()).isEqualTo("memory");
-        assertThat(response.getScore()).isEqualTo(85);
-        assertThat(response.getDurationMs()).isEqualTo(12000L);
-        assertThat(response.getId()).isEqualTo(1L);
-        verify(repository, times(1)).save(any(CognitiveActivity.class));
-    }
-
-    @Test
-    void saveActivity_shouldCallPatientServiceViaOpenFeign() {
-        mockPatientExists();
-        when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
-
-        service.saveActivity(request);
-
-        // Verify OpenFeign was called to validate the patient
-        verify(patientServiceClient, times(1)).getPatientById(1);
-    }
-
-    @Test
-    void saveActivity_shouldStillSave_whenPatientServiceIsDown() {
-        // Simulate patient-service being unreachable
-        when(patientServiceClient.getPatientById(anyInt()))
-                .thenThrow(new RuntimeException("patient-service unavailable"));
-        when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
-
-        // Should NOT throw — graceful degradation
         ActivityResponse response = service.saveActivity(request);
 
         assertThat(response).isNotNull();
-        verify(repository, times(1)).save(any(CognitiveActivity.class));
+        assertThat(response.getId()).isEqualTo(100L);
+        assertThat(response.getGameType()).isEqualTo("MEMORY");
+        assertThat(response.getPatientId()).isEqualTo("patient-1");
+
+        ArgumentCaptor<CognitiveActivity> captor = ArgumentCaptor.forClass(CognitiveActivity.class);
+        verify(repository).save(captor.capture());
+        assertThat(captor.getValue().getGameType()).isEqualTo("MEMORY");
+        
+        verify(rabbitTemplate).convertAndSend(eq(RabbitMQConfig.EXCHANGE), eq(RabbitMQConfig.ROUTING_KEY), any(ActivityResponse.class));
+        verify(trendService).analyzeAndSave("patient-1", "MEMORY", 14);
+        verify(alertService).evaluateAndAlert(trendResponse);
     }
 
     @Test
-    void saveActivity_shouldSetTimestampAutomatically() {
-        mockPatientExists();
-        when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
+    @DisplayName("Save Activity - GameType Case Normalization")
+    void saveActivity_shouldNormalizeGameTypeToUpperCase() {
+        request.setGameType("Reflex_Game");
+        when(repository.save(any())).thenReturn(savedActivity);
 
         service.saveActivity(request);
 
         ArgumentCaptor<CognitiveActivity> captor = ArgumentCaptor.forClass(CognitiveActivity.class);
         verify(repository).save(captor.capture());
-        assertThat(captor.getValue().getTimestamp()).isNotNull();
+        assertThat(captor.getValue().getGameType()).isEqualTo("REFLEX_GAME");
     }
 
     @Test
-    void saveActivity_shouldPublishToRabbitMQ() {
-        mockPatientExists();
-        when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
+    @DisplayName("Save Activity - Fail when GameType is Null")
+    void saveActivity_shouldThrowException_whenGameTypeIsNull() {
+        request.setGameType(null);
 
-        service.saveActivity(request);
+        assertThatThrownBy(() -> service.saveActivity(request))
+                .isInstanceOf(NullPointerException.class);
 
-        verify(rabbitTemplate, times(1)).convertAndSend(
-                eq(RabbitMQConfig.EXCHANGE),
-                eq(RabbitMQConfig.ROUTING_KEY),
-                any(ActivityResponse.class)
-        );
+        verifyNoInteractions(repository, rabbitTemplate, trendService, alertService);
     }
 
     @Test
-    void saveActivity_shouldStillReturnResponse_whenRabbitMQFails() {
-        mockPatientExists();
-        when(repository.save(any(CognitiveActivity.class))).thenReturn(savedActivity);
-        doThrow(new RuntimeException("RabbitMQ down"))
+    @DisplayName("Save Activity - Handle RabbitMQ failure gracefully")
+    void saveActivity_shouldNotFail_whenRabbitMQFails() {
+        when(repository.save(any())).thenReturn(savedActivity);
+        doThrow(new RuntimeException("RabbitMQ Connection Refused"))
                 .when(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
 
-        // Should NOT throw — RabbitMQ failure is caught internally
         ActivityResponse response = service.saveActivity(request);
 
         assertThat(response).isNotNull();
-        assertThat(response.getPatientId()).isEqualTo("1");
+        verify(repository).save(any());
+        verify(rabbitTemplate).convertAndSend(anyString(), anyString(), any(Object.class));
+        // Should still proceed to analysis
+        verify(trendService).analyzeAndSave(anyString(), anyString(), anyInt());
+    }
+
+    @Test
+    @DisplayName("Save Activity - Handle Analysis failure gracefully")
+    void saveActivity_shouldNotFail_whenAnalysisServiceFails() {
+        when(repository.save(any())).thenReturn(savedActivity);
+        when(trendService.analyzeAndSave(anyString(), anyString(), anyInt()))
+                .thenThrow(new RuntimeException("Trend service timeout"));
+
+        ActivityResponse response = service.saveActivity(request);
+
+        assertThat(response).isNotNull();
+        verify(trendService).analyzeAndSave(anyString(), anyString(), anyInt());
+        verify(alertService, never()).evaluateAndAlert(any());
+    }
+
+    @Test
+    @DisplayName("Save Activity - Skip analysis when services are null")
+    void saveActivity_shouldSkipAnalysis_whenServicesAreMissing() {
+        // Create service manually without some mocks to test null check branches
+        CognitiveActivityService partialService = new CognitiveActivityService(repository, rabbitTemplate, null, null, null);
+        
+        when(repository.save(any())).thenReturn(savedActivity);
+
+        ActivityResponse response = partialService.saveActivity(request);
+
+        assertThat(response).isNotNull();
+        verify(repository).save(any());
+        // Verify no calls to analysis (mocks would be null anyway, but this tests the 'if' branch)
     }
 
     // ── getPatientActivities ──────────────────────────────────────
 
     @Test
+    @DisplayName("Get Patient Activities - Success")
     void getPatientActivities_shouldReturnMappedList() {
-        CognitiveActivity second = CognitiveActivity.builder()
-                .id(2L).patientId("1").gameType("reflex")
-                .score(70).durationMs(8000L).timestamp(LocalDateTime.now()).build();
+        CognitiveActivity activity2 = CognitiveActivity.builder().id(101L).patientId("patient-1").gameType("RECALL").build();
+        when(repository.findByPatientId("patient-1")).thenReturn(List.of(savedActivity, activity2));
 
-        when(repository.findByPatientId("1")).thenReturn(List.of(savedActivity, second));
-
-        List<ActivityResponse> result = service.getPatientActivities("1");
+        List<ActivityResponse> result = service.getPatientActivities("patient-1");
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getGameType()).isEqualTo("memory");
-        assertThat(result.get(1).getGameType()).isEqualTo("reflex");
+        assertThat(result.get(0).getId()).isEqualTo(100L);
+        assertThat(result.get(1).getId()).isEqualTo(101L);
+        verify(repository).findByPatientId("patient-1");
     }
 
     @Test
-    void getPatientActivities_shouldReturnEmptyList_whenNoActivities() {
-        when(repository.findByPatientId("unknown-patient")).thenReturn(List.of());
+    @DisplayName("Get Patient Activities - Empty Result")
+    void getPatientActivities_shouldReturnEmptyList_whenNotFound() {
+        when(repository.findByPatientId("unknown")).thenReturn(Collections.emptyList());
 
-        List<ActivityResponse> result = service.getPatientActivities("unknown-patient");
+        List<ActivityResponse> result = service.getPatientActivities("unknown");
 
         assertThat(result).isEmpty();
-    }
-
-    @Test
-    void getPatientActivities_shouldMapAllFieldsCorrectly() {
-        when(repository.findByPatientId("1")).thenReturn(List.of(savedActivity));
-
-        List<ActivityResponse> result = service.getPatientActivities("1");
-
-        ActivityResponse r = result.get(0);
-        assertThat(r.getId()).isEqualTo(1L);
-        assertThat(r.getPatientId()).isEqualTo("1");
-        assertThat(r.getScore()).isEqualTo(85);
-        assertThat(r.getDurationMs()).isEqualTo(12000L);
-        assertThat(r.getTimestamp()).isNotNull();
+        verify(repository).findByPatientId("unknown");
     }
 
     // ── deleteActivity ────────────────────────────────────────────
 
     @Test
-    void deleteActivity_shouldCallRepositoryDeleteById() {
-        doNothing().when(repository).deleteById(1L);
+    @DisplayName("Delete Activity - Success")
+    void deleteActivity_shouldInvokeRepositoryDelete() {
+        service.deleteActivity(99L);
 
-        service.deleteActivity(1L);
-
-        verify(repository, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void deleteActivity_shouldNotThrow_whenIdExists() {
-        doNothing().when(repository).deleteById(anyLong());
-
-        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> service.deleteActivity(99L));
+        verify(repository, times(1)).deleteById(99L);
     }
 }

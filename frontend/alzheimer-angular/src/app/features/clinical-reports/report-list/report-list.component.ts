@@ -475,20 +475,13 @@ export class ReportListComponent implements OnInit {
     this.clinicalService.getMyRecords().subscribe({
       next: (data) => {
         this.records = data;
-        if (data.length === 0 && !this.isPatient) this.loadFallbackRecords();
       },
       error: (err) => {
-        if (!this.isPatient) this.loadFallbackRecords();
+        console.error('Error loading records', err);
       }
     });
   }
 
-  private loadFallbackRecords() {
-    this.clinicalService.findByPatientId(1).subscribe({
-      next: (data) => this.records = data,
-      error: () => {}
-    });
-  }
 
   addNew() {
     this.router.navigate(['/clinical-reports/new']);

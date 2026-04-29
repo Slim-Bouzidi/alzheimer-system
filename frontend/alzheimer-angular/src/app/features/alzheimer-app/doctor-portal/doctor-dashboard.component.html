@@ -1,9 +1,6 @@
 <div class="dash">
 
-  <app-sidebar-portal
-    [role]="'DOCTEUR'"
-    [userName]="'Dr. ' + doctorName"
-    [userRole]="'Neurologist'"
+  <app-sidebar-portal [role]="'DOCTEUR'" [userName]="'Dr. ' + doctorName" [userRole]="'Neurologist'"
     [alertesCount]="stats.criticalAlerts">
   </app-sidebar-portal>
 
