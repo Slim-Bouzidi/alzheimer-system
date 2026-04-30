@@ -18,7 +18,7 @@ spec:
     - name: docker-sock
       mountPath: /var/run/docker.sock
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: lachlanevenson/k8s-kubectl:v1.29.0
     command: ['cat']
     tty: true
   volumes:
@@ -38,15 +38,14 @@ spec:
                 }
             }
         }
-        stage('Dockerize & Push') {
+        stage('Dockerize') {
             steps {
                 container('docker') {
                     sh 'docker build -t alzheimer-user-service:latest ./backend/user-service'
-                    // In a real setup, you would push to Nexus here
                 }
             }
         }
-        stage('Deploy to K8s') {
+        stage('Deploy') {
             steps {
                 container('kubectl') {
                     sh 'kubectl apply -f k8s/microservices.yaml -n alzheimer'
