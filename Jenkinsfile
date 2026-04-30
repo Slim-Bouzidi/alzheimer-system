@@ -10,6 +10,10 @@ spec:
     image: maven:3.9.6-eclipse-temurin-17
     command: ['cat']
     tty: true
+  - name: node
+    image: node:20-alpine
+    command: ['cat']
+    tty: true
   - name: docker
     image: docker:latest
     command: ['cat']
@@ -52,6 +56,12 @@ spec:
         }
         stage('Build & Dockerize Frontend') {
             steps {
+                container('node') {
+                    dir('frontend/alzheimer-angular') {
+                        sh 'npm install'
+                        sh 'npm run build'
+                    }
+                }
                 container('docker') {
                     sh 'docker build -t alzheimer-frontend:latest ./frontend/alzheimer-angular'
                 }
