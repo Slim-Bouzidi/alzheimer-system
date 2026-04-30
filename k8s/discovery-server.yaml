@@ -26,7 +26,8 @@ spec:
     spec:
       containers:
       - name: discovery-server
-        image: alzheimer/discovery-server:latest # This will be replaced by your real image name
+        image: alzheimer-discovery-server:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8761
         env:

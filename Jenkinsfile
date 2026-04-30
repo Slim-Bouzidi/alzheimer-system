@@ -31,26 +31,43 @@ spec:
         }
     }
     stages {
-        stage('Build Backend') {
+        stage('Build & Dockerize Backend') {
             steps {
                 container('maven') {
                     dir('backend') {
                         sh 'mvn clean install -DskipTests'
                     }
                 }
-            }
-        }
-        stage('Dockerize') {
-            steps {
                 container('docker') {
-                    sh 'docker build -t alzheimer-user-service:latest ./backend/user-service'
+                    sh '''
+                        docker build -t alzheimer-api-gateway:latest ./backend/api-gateway
+                        docker build -t alzheimer-user-service:latest ./backend/user-service
+                        docker build -t alzheimer-cognitive-service:latest ./backend/cognitive-service
+                        docker build -t alzheimer-patient-service:latest ./backend/patient-service
+                        docker build -t alzheimer-discovery-server:latest ./backend/discovery-server
+                        docker build -t alzheimer-main-app:latest ./backend/AlzheimerApp
+                    '''
                 }
             }
         }
-        stage('Deploy') {
+        stage('Build & Dockerize Frontend') {
+            steps {
+                container('docker') {
+                    sh 'docker build -t alzheimer-frontend:latest ./frontend/alzheimer-angular'
+                }
+            }
+        }
+        stage('Deploy to K8s') {
             steps {
                 container('kubectl') {
-                    sh 'kubectl apply -f k8s/microservices.yaml -n alzheimer'
+                    sh '''
+                        kubectl apply -f k8s/configmap.yaml -n alzheimer
+                        kubectl apply -f k8s/infrastructure.yaml -n alzheimer
+                        kubectl apply -f k8s/discovery-server.yaml -n alzheimer
+                        kubectl apply -f k8s/keycloak.yaml -n alzheimer
+                        kubectl apply -f k8s/microservices.yaml -n alzheimer
+                        kubectl apply -f k8s/frontend.yaml -n alzheimer
+                    '''
                 }
             }
         }
