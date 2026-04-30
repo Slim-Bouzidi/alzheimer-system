@@ -18,9 +18,11 @@ spec:
     - name: docker-sock
       mountPath: /var/run/docker.sock
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:v1.29.0
+    image: bitnami/kubectl:1.29
     command: ['cat']
     tty: true
+    securityContext:
+      runAsUser: 0
   volumes:
   - name: docker-sock
     hostPath:
