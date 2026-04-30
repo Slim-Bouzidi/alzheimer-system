@@ -28,7 +28,9 @@ spec:
         stage('Build Backend') {
             steps {
                 container('maven') {
-                    sh 'mvn clean install -DskipTests'
+                    dir('backend') {
+                        sh 'mvn clean install -DskipTests'
+                    }
                 }
             }
         }
