@@ -18,7 +18,7 @@ spec:
     - name: docker-sock
       mountPath: /var/run/docker.sock
   - name: kubectl
-    image: bitnami/kubectl:1.29
+    image: alpine/k8s:1.29.0
     command: ['cat']
     tty: true
     securityContext:
