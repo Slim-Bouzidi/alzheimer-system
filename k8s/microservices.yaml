@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: alzheimer
+spec:
+  ports:
+    - port: 8084
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: alzheimer
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: alzheimer-user-service:latest # You will build this with Jenkins
+        envFrom:
+        - configMapRef:
+            name: alzheimer-config
+        env:
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: alzheimer-config
+              key: SPRING_DATASOURCE_URL_USER
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: alzheimer
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30080 # Access your API on VM_IP:30080
+  selector:
+    app: api-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: alzheimer
+spec:
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: alzheimer-api-gateway:latest
+        envFrom:
+        - configMapRef:
+            name: alzheimer-config

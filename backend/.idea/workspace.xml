@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7747b8de-47fb-45e6-951a-09893928722e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/CognitiveServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/CognitiveServiceApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/RabbitMQConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/config/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/controller/CognitiveActivityController.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/controller/CognitiveActivityController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest$ActivityRequestBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest$ActivityRequestBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse$ActivityResponseBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse$ActivityResponseBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/dto/ActivityResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity$CognitiveActivityBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity$CognitiveActivityBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/entity/CognitiveActivity.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/repository/CognitiveActivityRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" beforeDir="false" afterPath="$PROJECT_DIR$/cognitive-service/target/classes/com/alzheimer/cognitiveservice/service/CognitiveActivityService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +140,7 @@
       <workItem from="1776782418577" duration="3549000" />
       <workItem from="1776866612504" duration="5490000" />
       <workItem from="1777472240099" duration="4833000" />
-      <workItem from="1777506465726" duration="295000" />
+      <workItem from="1777506465726" duration="1487000" />
     </task>
     <servers />
   </component>
