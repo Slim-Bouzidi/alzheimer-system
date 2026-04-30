@@ -4,9 +4,11 @@ metadata:
   name: discovery-server
   namespace: alzheimer
 spec:
+  type: NodePort
   ports:
     - port: 8761
       targetPort: 8761
+      nodePort: 30761
   selector:
     app: discovery-server
 ---
