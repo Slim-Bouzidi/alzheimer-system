@@ -11,7 +11,7 @@ spec:
     command: ['cat']
     tty: true
   - name: docker
-    image: docker:20.10.12
+    image: docker:latest
     command: ['cat']
     tty: true
     volumeMounts:
