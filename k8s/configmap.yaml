@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alzheimer-config
+  namespace: alzheimer
+data:
+  SPRING_DATASOURCE_URL_USER: jdbc:mysql://mysql:3306/userdb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  SPRING_DATASOURCE_URL_PATIENT: jdbc:mysql://mysql:3306/patientdb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  SPRING_DATASOURCE_URL_COGNITIVE: jdbc:mysql://mysql:3306/cognitivedb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  SPRING_DATASOURCE_URL_APP: jdbc:mysql://mysql:3306/gestion_patients?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  RABBITMQ_HOST: rabbitmq
+  EUREKA_SERVER: http://discovery-server:8761/eureka
+  KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/alzheimer-realm
+  KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/alzheimer-realm/protocol/openid-connect/certs
